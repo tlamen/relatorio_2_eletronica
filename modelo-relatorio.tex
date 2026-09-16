@@ -1,0 +1,468 @@
+% ===========================================================================
+% MODELO DE RELATORIO  ·  ENE0046 Laboratorio de Eletronica  ·  2026/2
+%
+% Como usar
+%   1. Preencha o bloco IDENTIFICACAO logo abaixo.
+%   2. Deixe comentados os autores que nao existirem. Um autor fica centralizado,
+%      dois dividem a linha, tres ocupam tercos.
+%   3. Substitua o texto de cada secao pelo seu. As orientacoes que estao la
+%      dizem o que se espera em cada uma.
+%   4. Compile com pdflatex duas vezes, ou com latexmk -pdf.
+%
+% Estrutura
+%   Roteiro 1 nao tem bancada: use so a subsecao 4.1 e a 5.1, e compare o calculo
+%   analitico com a simulacao de projeto.
+%   Roteiros 2 a 7 usam a estrutura inteira.
+%
+% O arquivo estilo-relatorio.tex e a imagem logo-unb.png devem estar na mesma
+% pasta deste arquivo.
+% ===========================================================================
+\documentclass[11pt,a4paper]{article}
+\input{estilo-relatorio}
+
+% --------------------------- IDENTIFICACAO ---------------------------------
+\roteiro{1}{Simulação de Circuitos: Introdução ao LTspice}
+\aturma{01}
+
+\autorum{Nome Completo do Primeiro Autor}{00/0000000}
+% \autordois{Nome Completo do Segundo Autor}{00/0000000}
+% \autortres{Nome Completo do Terceiro Autor}{00/0000000}
+% ---------------------------------------------------------------------------
+
+\begin{document}
+\capa
+
+\begin{resumo}
+Escreva este parágrafo por último, com 100 a 150 palavras. Diga o que você projetou, sob
+qual especificação, o que simulou ou mediu, o principal resultado numérico e a que
+conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o que encontrou.
+\end{resumo}
+
+\section{Introdução}
+
+O amplificador operacional só é útil quando cercado por uma rede de realimentação negativa: é ela que define ganho, impedância de entrada e impedância de saída. Em um equipamento real, essas topologias aparecem encadeadas — um sensor de alta impedância entrega um sinal pequeno, que precisa ser isolado, amplificado, deslocado de nível e extraído de um ambiente ruidoso. Cada função corresponde a uma configuração clássica: seguidor de tensão, amplificador não inversor, somador inversor e amplificador de diferença. Sem elas, o sinal se perde na queda sobre a fonte, a faixa dinâmica do conversor seguinte é desperdiçada e a interferência de modo comum domina a medida.
+
+Este relatório investiga as quatro topologias sob uma especificação numérica fixa, derivada da matrícula de cada integrante para a simulação e do número da equipe para a bancada. A restrição a resistores da série E12, entre \SI{1}{\kilo\ohm} e \SI{82}{\kilo\ohm}, com no máximo dois em série por perna, aproxima o projeto da realidade do laboratório e obriga a quantificar o desvio entre o ganho teórico e o realizado. A alimentação simétrica de \SI{\pm 15}{\volt} impõe um teto real à excursão de saída, de modo que não basta projetar o ganho — é preciso saber a partir de qual amplitude de entrada o estágio satura.
+
+O objetivo é confrontar três níveis de descrição do mesmo circuito: cálculo analítico, simulação no LTspice e medição em bancada. Para cada topologia, projetam-se os resistores, simulam-se as condições pedidas no roteiro, monta-se o circuito com os valores medidos e comparam-se os resultados. A equipe~2 adotou, na bancada, queda $= 33\%$, $G = 2{,}50$, $k_1 = 1{,}00$, $k_2 = 3{,}03$, $V_1 = \SI{4,0}{\volt}$, $V_2 = \SI{-1,5}{\volt}$ e $A_d = 2{,}14$; cada integrante manteve, na simulação, os parâmetros da própria matrícula.
+
+O texto está organizado assim: a Seção~2 deduz as expressões de ganho, impedância e rejeição de modo comum; a Seção~3 transcreve a especificação e o projeto dos resistores; a Seção~4 descreve a metodologia; a Seção~5 apresenta os resultados; a Seção~6 discute as três comparações (analítico contra simulação de projeto, simulação de projeto contra simulação da montagem, e simulação da montagem contra medição); a Seção~7 conclui; e a Seção~8 lista as referências.
+
+\section{Fundamentação Teórica}
+
+Esta seção deduz as expressões usadas no projeto e na análise dos quatro estágios. Todas partem das hipóteses de amplificador operacional ideal: ganho diferencial infinito, impedâncias de entrada infinitas, impedância de saída nula e correntes de entrada nulas. Com realimentação negativa, essas hipóteses levam ao conceito de curto virtual, segundo o qual a tensão entre as duas entradas é nula e nenhuma corrente entra pelos terminais de entrada. Essas hipóteses serão retomadas na Seção~6, onde se verifica em que medida elas se sustentam no circuito real.
+
+\subsection{Seguidor de tensão}
+
+No seguidor, a saída é conectada diretamente à entrada inversora, e o sinal é aplicado à entrada não inversora. Pelo curto virtual, $v_- = v_+ = v_i$, e como a saída é o próprio nó da entrada inversora,
+
+\begin{equation}
+v_o = v_i \qquad \Rightarrow \qquad A_v = 1 .
+\label{eq:seguidor}
+\end{equation}
+
+A utilidade do seguidor não está no ganho, mas nas impedâncias. A impedância de entrada é a do próprio amplificador, muito alta, de modo que o estágio não carrega a fonte; a impedância de saída é a do amplificador dividida pelo ganho de malha, muito baixa, de modo que a tensão entregue à carga não cai quando ela é conectada. É essa separação entre entrada e saída que permite medir um sensor de alta impedância sem perder sinal no caminho até o instrumento.
+
+No divisor resistivo que alimenta o seguidor, a tensão em vazio é
+
+\begin{equation}
+v_{oc} = V_i \frac{R_2}{R_1 + R_2} ,
+\label{eq:divisor_vazio}
+\end{equation}
+
+e, com a carga $R_L$ ligada diretamente ao nó do divisor, a tensão passa a
+
+\begin{equation}
+v_{cc} = V_i \frac{R_2 \parallel R_L}{R_1 + (R_2 \parallel R_L)} .
+\label{eq:divisor_carga}
+\end{equation}
+
+A queda percentual entre as duas condições é
+
+\begin{equation}
+\text{queda} = \frac{v_{oc} - v_{cc}}{v_{oc}} \times 100\% .
+\label{eq:queda}
+\end{equation}
+
+O projeto do divisor consiste em escolher $R_1$ e $R_2$ na série E12 de modo que $v_{cc}$ atinja o valor especificado e a queda~\eqref{eq:queda} alcance o mínimo pedido.
+
+\subsection{Amplificador não inversor}
+
+No amplificador não inversor, o sinal entra pela entrada não inversora e a realimentação é feita por um divisor entre a saída e o terra, formado por $R_f$ e $R_g$. Pelo curto virtual, a tensão no nó inversor é $v_i$. A corrente que percorre $R_g$ é a mesma que percorre $R_f$, pois nenhuma corrente entra pelo terminal inversor. Assim,
+
+\begin{equation}
+\frac{v_i}{R_g} = \frac{v_o - v_i}{R_f} ,
+\label{eq:nao_inv_corrente}
+\end{equation}
+
+o que, rearranjado, fornece o ganho de tensão
+
+\begin{equation}
+G = \frac{v_o}{v_i} = 1 + \frac{R_f}{R_g} .
+\label{eq:nao_inv_ganho}
+\end{equation}
+
+O ganho depende apenas da razão entre os dois resistores, e não do amplificador. Essa é a propriedade que a bancada explora ao trocar o LM741 por um amplificador do TL064 sem alterar $R_f$ e $R_g$.
+
+A excursão máxima da saída é limitada pela alimentação. Com $\pm 15$~V, a saída satura alguns volts antes dos trilhos, devido à queda interna do estágio de saída. A amplitude máxima de entrada antes da saturação é, portanto,
+
+\begin{equation}
+V_{i,\max} = \frac{V_{sat}}{G} ,
+\label{eq:vi_max}
+\end{equation}
+
+onde $V_{sat}$ é a tensão de saturação medida. A impedância de entrada do estágio é a do próprio amplificador, muito alta, pois o sinal é aplicado diretamente à entrada não inversora.
+
+\subsection{Somador inversor}
+
+No somador inversor, duas fontes $V_1$ e $V_2$ são ligadas por $R_1$ e $R_2$ ao nó inversor, que é mantido em terra virtual pelo curto virtual. Como o nó inversor está em potencial zero e nenhuma corrente entra pelo terminal, cada fonte injeta uma corrente independente da outra:
+
+\begin{equation}
+i_1 = \frac{V_1}{R_1} , \qquad i_2 = \frac{V_2}{R_2} .
+\label{eq:somador_correntes}
+\end{equation}
+
+Toda essa corrente percorre $R_f$, de modo que a saída é
+
+\begin{equation}
+V_o = -R_f \left( \frac{V_1}{R_1} + \frac{V_2}{R_2} \right) = -(k_1 V_1 + k_2 V_2) ,
+\label{eq:somador_saida}
+\end{equation}
+
+com os pesos
+
+\begin{equation}
+k_1 = \frac{R_f}{R_1} , \qquad k_2 = \frac{R_f}{R_2} .
+\label{eq:somador_pesos}
+\end{equation}
+
+O terra virtual é o que garante o isolamento entre as entradas: como o nó inversor não varia, uma fonte não enxerga a outra. A impedância de entrada vista por cada fonte é o próprio resistor da sua perna, $R_1$ ou $R_2$, e a impedância do nó somador é praticamente nula, limitada pelo ganho de malha do amplificador.
+
+\subsection{Amplificador de diferença}
+
+O amplificador de diferença combina as duas entradas com quatro resistores. No ramo inversor, $R_1$ liga a fonte $v_s$ ao nó inversor e $R_2$ realimenta a saída; no ramo não inversor, $R_3$ liga a referência $V_{ref}$ ao nó não inversor e $R_4$ vai ao terra. Supondo o amplificador ideal e aplicando superposição, a tensão no nó não inversor é
+
+\begin{equation}
+v_+ = V_{ref} \frac{R_4}{R_3 + R_4} ,
+\label{eq:dif_vplus}
+\end{equation}
+
+e a saída, obtida pela combinação das duas entradas, é
+
+\begin{equation}
+v_o = \left( 1 + \frac{R_2}{R_1} \right) v_+ - \frac{R_2}{R_1} v_s .
+\label{eq:dif_saida_geral}
+\end{equation}
+
+Impondo o casamento $R_3 = R_1$ e $R_4 = R_2$, a expressão se reduz a
+
+\begin{equation}
+v_o = \frac{R_2}{R_1} (V_{ref} - v_s) = A_d (v_+ - v_-) ,
+\label{eq:dif_saida}
+\end{equation}
+
+com o ganho diferencial
+
+\begin{equation}
+A_d = \frac{R_2}{R_1} .
+\label{eq:dif_ganho}
+\end{equation}
+
+Na condição de ensaio diferencial, $v_s$ é aplicado a uma entrada e a outra vai ao terra; na condição de modo comum, a mesma fonte alimenta as duas entradas, de modo que $v_+ - v_- = 0$ e a saída ideal é nula. Na prática, o descasamento entre os quatro resistores faz aparecer um ganho de modo comum residual,
+
+\begin{equation}
+A_{cm} = \frac{v_{o,cm}}{v_{cm}} ,
+\label{eq:acm}
+\end{equation}
+
+e a rejeição de modo comum é a razão entre os dois ganhos, em decibéis:
+
+\begin{equation}
+\text{CMRR} = 20 \log_{10} \left| \frac{A_d}{A_{cm}} \right| .
+\label{eq:cmrr}
+\end{equation}
+
+Com os quatro resistores nominais e perfeitamente casados, $A_{cm} = 0$ e o CMRR vai a infinito. O valor finito que interessa medir é o que aparece quando se usam os resistores reais da bancada, com suas tolerâncias. É essa diferença entre o previsto com valores nominais e o obtido com valores medidos que a Seção~6 discute.
+
+\section{Especificação e Projeto}
+
+Esta seção transcreve a especificação numérica de cada integrante, calculada a partir dos nove dígitos da matrícula conforme as Seções~2.2 a~2.5 do roteiro, e leva cada parâmetro até o valor de componente na série E12. A Seção~3.1 reúne a especificação da equipe, usada na bancada; a Seção~3.2 apresenta o projeto individual; e a Seção~3.3 registra os valores medidos dos resistores efetivamente montados.
+
+\subsection{Especificação da equipe}
+
+A equipe~2 adotou, para a montagem em bancada, a especificação da Tabela~\ref{tab:equipe}. Esses valores foram usados no projeto do circuito único que a equipe montou, e são a referência contra a qual a simulação da montagem e a medição são confrontadas.
+
+\begin{table}[h]
+\centering
+\caption{Especificação da equipe~2, conforme a Seção~3.1 do roteiro.}
+\label{tab:equipe}
+\begin{tabular}{lc}
+\hline
+Grandeza & Valor \\
+\hline
+Queda do seguidor & $33\%$ \\
+Ganho do não inversor & $G = 2{,}50$ \\
+Pesos do somador & $k_1 = 1{,}00$ \quad $k_2 = 3{,}03$ \\
+Tensões do somador & $V_1 = \SI{4,0}{\volt}$ \quad $V_2 = \SI{-1,5}{\volt}$ \\
+Ganho diferencial & $A_d = 2{,}14$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Especificação individual}
+
+Cada integrante recebeu uma especificação distinta, derivada da própria matrícula, e projetou um conjunto de resistores correspondente. A Tabela~\ref{tab:individuais} reúne os parâmetros calculados. As expressões usadas são as do roteiro: $V_{carga} = 2 + EF/33$, queda $= 25 + GH/5$, $G = 4 + [(7EF + 3GH) \bmod 81]/10$, $k_1 = 2 + (EF \bmod 4)$, $k_2 = 6 + (GH \bmod 4)$ e $A_d = 2 + [(3GH + 71) \bmod 90]/10$.
+
+\begin{table}[h]
+\centering
+\caption{Especificação individual dos três integrantes.}
+\label{tab:individuais}
+\begin{tabular}{lccc}
+\hline
+Grandeza & 211026486 & 221035442 & 241039879 \\
+\hline
+$EF$ & 26 & 35 & 39 \\
+$GH$ & 48 & 44 & 87 \\
+$V_{carga}$ (\si{\volt}) & 2,79 & 3,06 & 3,18 \\
+Queda (\%) & 34,6 & 33,8 & 42,4 \\
+$G$ & 4,20 & 9,30 & 8,80 \\
+$k_1$ & 4 & 5 & 5 \\
+$k_2$ & 6 & 6 & 9 \\
+$A_d$ & 5,50 & 4,30 & 8,20 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Projeto dos resistores na série E12}
+
+\subsubsection{Seguidor de tensão}
+
+O divisor é dimensionado para que a tensão sobre a carga de \SI{1}{\kilo\ohm} atinja $V_{carga}$ e a queda entre vazio e carga direta alcance o mínimo especificado. Partindo das equações~\eqref{eq:divisor_vazio} a~\eqref{eq:queda}, com $V_i = \SI{10}{\volt}$ e $R_L = \SI{1}{\kilo\ohm}$, determinam-se $R_1$ e $R_2$.
+
+\begin{table}[h]
+\centering
+\caption{Projeto do divisor do seguidor.}
+\label{tab:projeto_seguidor}
+\begin{tabular}{lccccc}
+\hline
+Integrante & $V_{carga}$ (\si{\volt}) & $R_1$ teórico & $R_1$ E12 & $R_2$ teórico & $R_2$ E12 \\
+\hline
+211026486 & 2,79 & \SI{1,241}{\kilo\ohm} & \SI{1,2}{\kilo\ohm} & \SI{922}{\ohm} & \SI{1}{\kilo\ohm} \\
+221035442 & 3,06 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+241039879 & 3,18 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Amplificador não inversor}
+
+O ganho é $G = 1 + R_f/R_g$. Fixa-se $R_g$ em um valor E12 conveniente e calcula-se $R_f = (G-1)R_g$, arredondando para o E12 mais próximo. Se necessário, usa-se dois resistores em série por perna.
+
+\begin{table}[h]
+\centering
+\caption{Projeto do não inversor.}
+\label{tab:projeto_nao_inv}
+\begin{tabular}{lccccc}
+\hline
+Integrante & $G$ teórico & $R_g$ E12 & $R_f$ E12 & $G$ realizado & Desvio (\%) \\
+\hline
+211026486 & 4,20 & \SI{1,2}{\kilo\ohm} & \SI{3,9}{\kilo\ohm} & 4,25 & +1,2 \\
+221035442 & 9,30 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+241039879 & 8,80 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Somador inversor}
+
+Os pesos são $k_1 = R_f/R_1$ e $k_2 = R_f/R_2$. Fixa-se $R_f$ em um valor E12 e calculam-se $R_1 = R_f/k_1$ e $R_2 = R_f/k_2$, arredondando para o E12 mais próximo.
+
+\begin{table}[h]
+\centering
+\caption{Projeto do somador inversor.}
+\label{tab:projeto_somador}
+\begin{tabular}{lccccccc}
+\hline
+Integrante & $k_1$ & $k_2$ & $R_f$ E12 & $R_1$ E12 & $R_2$ E12 & $k_1$ real & $k_2$ real \\
+\hline
+211026486 & 4 & 6 & \SI{12}{\kilo\ohm} & \SI{3}{\kilo\ohm} & \SI{2}{\kilo\ohm} & 4 & 6 \\
+221035442 & 5 & 6 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+241039879 & 5 & 9 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Amplificador de diferença}
+
+O ganho diferencial é $A_d = R_2/R_1$, com o casamento $R_3 = R_1$ e $R_4 = R_2$. Fixa-se $R_1$ em um valor E12 e calcula-se $R_2 = A_d R_1$.
+
+\begin{table}[h]
+\centering
+\caption{Projeto do amplificador de diferença.}
+\label{tab:projeto_dif}
+\begin{tabular}{lccccc}
+\hline
+Integrante & $A_d$ teórico & $R_1 = R_3$ E12 & $R_2 = R_4$ E12 & $A_d$ realizado & Desvio (\%) \\
+\hline
+211026486 & 5,50 & \SI{10}{\kilo\ohm} & \SI{56}{\kilo\ohm} & 5,6 & +1,8 \\
+221035442 & 4,30 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+241039879 & 8,20 & [INSERIR] & [INSERIR] & [INSERIR] & [INSERIR] \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Resistores medidos da montagem}
+
+A equipe montou o circuito correspondente à especificação da equipe~2 (Tabela~\ref{tab:equipe}). Antes de inserir cada resistor no protoboard, mediu-se o valor real com o multímetro. A Tabela~\ref{tab:medidos} registra os valores medidos, que são os usados na simulação da montagem e nas contas do relatório. O desvio em relação ao nominal é o que explica boa parte das diferenças observadas na Seção~6.
+
+\begin{table}[h]
+\centering
+\caption{Valores medidos dos resistores da montagem da equipe~2.}
+\label{tab:medidos}
+\begin{tabular}{lccc}
+\hline
+Resistor & Nominal (E12) & Medido & Desvio (\%) \\
+\hline
+$R_1$ seguidor & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_2$ seguidor & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_g$ não inversor & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_f$ não inversor & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_1$ somador & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_2$ somador & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_f$ somador & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_1 = R_3$ diferença & \SI{2,2}{\kilo\ohm} & \SI{2,178}{\kilo\ohm} & -1,0 \\
+$R_2 = R_4$ diferença & \SI{4,7}{\kilo\ohm} & \SI{4,625}{\kilo\ohm} & -1,6 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Discussão das escolhas}
+
+Quando mais de uma combinação E12 atende à especificação, escolheu-se a que minimiza o desvio entre o ganho realizado e o teórico. Nos casos em que a razão exata não é alcançável com um único resistor, dois resistores em série foram usados por perna, sempre dentro do limite de \SI{1}{\kilo\ohm} a \SI{82}{\kilo\ohm} e da série E12. A Tabela~\ref{tab:medidos} mostra que os desvios dos resistores reais são a principal fonte de afastamento entre o previsto e o obtido, o que será quantificado na Seção~6.
+
+\section{Metodologia}
+
+Conte o que você fez e com quais parâmetros, de modo que um colega consiga repetir sem
+precisar perguntar nada. Explique as escolhas que não são evidentes: por que essa faixa de
+varredura, por que esse passo de integração, por que esse intervalo de gravação.
+
+Inclua a figura do esquemático, com legenda que descreva o que ela mostra, e cite-a no
+texto, como na Figura~\ref{fig:exemplo}. Se uma figura não for mencionada em nenhum
+parágrafo, ela provavelmente não precisa estar aqui.
+
+\subsection{Simulação de projeto, uma por integrante}
+
+Cada integrante recebeu uma especificação diferente da própria matrícula, e portanto chegou
+a um dimensionamento diferente. Traga aqui \textbf{uma simulação por integrante}, cada uma
+com os componentes que aquela pessoa projetou. São elas que mostram se cada projeto cumpre
+o que foi pedido.
+
+\subsection{Montagem em bancada}
+
+A equipe monta um circuito só. Diga \textbf{de quem} é a especificação que vocês montaram e
+por que escolheram essa. Informe os valores \textbf{medidos} de cada componente que vocês
+usaram, e não os valores nominais impressos no corpo da peça, porque a diferença entre os
+dois explica boa parte do que vocês vão observar.
+
+\subsection{Simulação da montagem}
+
+Refaça a simulação usando os valores medidos dos componentes que estavam na bancada. Ela
+não substitui a simulação de projeto: é a comparação entre as duas que separa o efeito da
+tolerância dos componentes do restante.
+
+\begin{nota}{Três comparações, três causas diferentes}
+Ao longo do relatório vocês vão confrontar três pares de resultados. Cada um responde a uma
+pergunta distinta, e vale mantê-los separados na hora de discutir.
+
+\smallskip
+\textbf{Cálculo analítico contra simulação de projeto.} A conta está certa? Se aqui houver
+diferença, procure na álgebra ou no esquemático.
+
+\smallskip
+\textbf{Simulação de projeto contra simulação da montagem.} Quanto custou a tolerância dos
+componentes? A diferença aqui é a distância entre o valor nominal e o valor real da peça
+que vocês pegaram.
+
+\smallskip
+\textbf{Simulação da montagem contra medição.} O modelo descreve o circuito real? Diferença
+aqui aponta algo que o modelo não representa, como a resistência série do indutor, a
+impedância da ponta de prova ou a banda do instrumento.
+\end{nota}
+
+\begin{figure}[htb]
+\centering
+% \includegraphics[width=0.8\linewidth]{arquivo.png}
+\fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
+  substitua por \texttt{\textbackslash includegraphics}}}
+\caption{Legenda descritiva. Diga o que a figura mostra e o que nela é relevante, e não
+apenas o nome do circuito.}
+\label{fig:exemplo}
+\end{figure}
+
+\section{Resultados}
+
+Apresente o que vocês obtiveram, em tabela sempre que houver mais de dois números. Use o
+número de algarismos significativos que a medição sustenta, e não todos os que o programa
+imprime. Para cada leitura de bancada, informe o instrumento e a incerteza.
+
+Guarde a interpretação para a seção seguinte: aqui vocês mostram o que encontraram.
+
+\subsection{Projeto de cada integrante}
+
+Uma tabela por integrante, ou uma tabela única com uma coluna por integrante, confrontando
+o valor analítico e o simulado para cada grandeza pedida no roteiro.
+
+\subsection{Circuito montado}
+
+Para cada grandeza, o que o projeto do integrante montado previa, o que a simulação com os
+valores medidos devolveu, e o que vocês mediram na bancada. É desta tabela que sai a
+discussão.
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+\textbf{Erro} \\
+\midrule
+& & & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Discussão}
+
+Percorra as três comparações na ordem em que aparecem no quadro da Seção~4: a conta contra
+a simulação de projeto, esta contra a simulação da montagem, e esta contra a medição. Cada
+passo isola uma causa, e a discussão fica bem mais curta quando eles não se misturam.
+
+Compare também os projetos dos integrantes entre si. Como as especificações são diferentes,
+os resultados diferem, e mostrar que essa diferença é a que a teoria previa vale mais do
+que repetir três vezes a mesma análise.
+
+Sempre que uma divergência for maior do que a incerteza esperada, aponte uma causa concreta
+e diga como ela poderia ser reduzida. Vale, por exemplo, a tolerância do componente, a
+resistência série do indutor, a impedância de entrada do osciloscópio, a banda do
+amplificador ou a resolução da varredura.
+
+Quando previsto e obtido coincidirem, explique por que era esperado que coincidissem, e o
+que essa coincidência não permite concluir.
+
+Por fim, retome as hipóteses que vocês declararam na fundamentação e diga quais se
+confirmaram. Se algo observado contrariar a previsão, resolva a contradição aqui.
+
+\section{Conclusão}
+
+Retome o objetivo que vocês anunciaram na introdução e responda se ele foi atingido,
+apoiando a resposta em um número. Aponte a principal limitação do que foi feito e o que
+ela impede de afirmar. Evite trazer resultado novo nesta seção.
+
+\section{Referências}
+
+\begin{referencias}
+\item SEDRA, A.~S.; SMITH, K.~C. \emph{Microeletrônica}. 5.~ed. São Paulo: Pearson
+      Prentice Hall, 2007.
+\item BOYLESTAD, R.~L.; NASHELSKY, L. \emph{Dispositivos Eletrônicos e Teoria de
+      Circuitos}. 11.~ed. São Paulo: Pearson Education do Brasil, 2013.
+\end{referencias}
+
+\end{document}
