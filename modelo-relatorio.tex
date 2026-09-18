@@ -409,6 +409,30 @@ Seguidor & \SI{4,54654}{\volt} & \SI{4,54548}{\milli\ampere} & \SI{4,54654}{\vol
     \label{fig:resultados_simulacao_seguidor}
 \end{figure}
 
+\subsubsection{Não inversor (Enzo Morrone de Azevedo Muniz - 221035442)}
+
+Essa simulação busca verificar o funcionamento do amplificador operacional para entradas AC usando um circuito clássico de amplificador não inversor. Além disso, foi verificado o funcionamento dele em caso a entrada cause a saturação da saída.
+
+Na figura \ref{fig:montagem_simulacao_nao_inversor} está o circuito utilizado na simulação. Para o resistor $R_f$ foi utilizado associação em série de dois resistores E12 para criar um de valor $R_f = \SI{83}{\kilo\ohm}$. Escolhedo $R_g = \SI{10}{\kilo\ohm}$, permite uma amplificação de $G=1 + \frac{R_f}{R_g} = 9.3$, conforme especificação do projeto.
+
+Foi utilizado um capacitor entre a fonte e a entrada não inversora do amplificador para evitar que o simulador fique travado resolvendo timestemps de pico segundos. Além disso, a opção startup na análise .tran, permite que a saida comporte como esperado, ao centraliza-la em zero.
+
+Para a análise da saída, foi observado o grafico de onda na figura \ref{fig:onda_simulacao_nao_inversor}. De verde, tem-se a saída quando a amplitude de entrada é \SI{1}{\volt}, e observa uma senoide regular. De azul, quando a entrada é \SI{2}{\volt}, a senoide se aproximou uma onda quadrada. Isso acontece devido a saturação, já que $2*9.3 = \SI{18.6}{\volt} > \SI{15}{\volt}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagens/simulacao_nao_inversor_1.png}
+    \caption{Circuito montado na simulação do não inversor.}
+    \label{fig:montagem_simulacao_nao_inversor}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagens/simulacao_nao_inversor_2.png}
+    \caption{Onda na simulação do não inversor.}
+    \label{fig:onda_simulacao_nao_inversor}
+\end{figure}
+
 \subsubsection{Somador Inversor (Matheus Vieira Tiveron - 241039879)}
 
 As simulações individuais foram realizadas com alimentação simétrica de \SI{\pm 15}{\volt} e com os valores E12 dimensionados na Seção~3. No seguidor de tensão, a análise de ponto de operação foi executada nas três condições pedidas, com $R_1=\SI{1,5}{\kilo\ohm}$, $R_2=\SI{2,2}{\kilo\ohm}$ e carga de \SI{1}{\kilo\ohm}. Foram obtidos \SI{5,94595}{\volt} em vazio, \SI{3,14286}{\volt} com a carga diretamente ligada e \SI{5,94705}{\volt} na carga alimentada pelo seguidor.
