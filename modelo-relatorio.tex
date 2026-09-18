@@ -233,25 +233,6 @@ $A_d$ & 5,50 & 7,60 & 7,40 \\
 \end{tabular}
 \end{table}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{lc}
-\multicolumn{2}{c}{\textbf{Especificação individual de Matheus Vieira Tiveron}} \\[0.5em]
-\hline
-Grandeza & 241039879 \\
-\hline
-$EF$ & 39 \\
-$GH$ & 87 \\
-$V_{carga}$ (\si{\volt}) & 3,18 \\
-Queda (\%) & 42,4 \\
-$G$ & 8,80 \\
-$k_1$ & 5 \\
-$k_2$ & 9 \\
-$A_d$ & 7,40 \\
-\hline
-\end{tabular}
-\end{table}
-
 \subsection{Projeto dos resistores na série E12}
 
 \subsubsection{Seguidor de tensão}
@@ -342,13 +323,13 @@ A equipe montou o circuito correspondente à especificação da equipe~2 (Tabela
 \hline
 Resistor & Nominal (E12) & Medido & Desvio (\%) \\
 \hline
-$R_1$ seguidor & [INSERIR] & [INSERIR] & [INSERIR] \\
-$R_2$ seguidor & [INSERIR] & [INSERIR] & [INSERIR] \\
-$R_g$ não inversor & [INSERIR] & [INSERIR] & [INSERIR] \\
-$R_f$ não inversor & [INSERIR] & [INSERIR] & [INSERIR] \\
-$R_1$ somador & [INSERIR] & [INSERIR] & [INSERIR] \\
-$R_2$ somador & [INSERIR] & [INSERIR] & [INSERIR] \\
-$R_f$ somador & [INSERIR] & [INSERIR] & [INSERIR] \\
+$R_1$ seguidor & \SI{1}{\kilo\ohm} & \SI{0,978}{\kilo\ohm} & -2,2 \\
+$R_2$ seguidor & \SI{1}{\kilo\ohm} & \SI{0,986}{\kilo\ohm} & -1,4 \\
+$R_g$ não inversor & \SI{1}{\kilo\ohm} & \SI{0,986}{\kilo\ohm} & -1,4 \\
+$R_f$ não inversor & \SI{1,5}{\kilo\ohm} & \SI{1,476}{\kilo\ohm} & -1,6 \\
+$R_1$ somador & \SI{3,03}{\kilo\ohm} & \SI{2,929}{\kilo\ohm} & -3,3 \\
+$R_2$ somador & \SI{1}{\kilo\ohm} & \SI{0,986}{\kilo\ohm} & -1,4 \\
+$R_f$ somador & \SI{3,03}{\kilo\ohm} & \SI{2,901}{\kilo\ohm} & -4,2 \\
 $R_1 = R_3$ diferença & \SI{2,2}{\kilo\ohm} & \SI{2,178}{\kilo\ohm} & -1,0 \\
 $R_2 = R_4$ diferença & \SI{4,7}{\kilo\ohm} & \SI{4,625}{\kilo\ohm} & -1,6 \\
 \hline
@@ -371,7 +352,64 @@ parágrafo, ela provavelmente não precisa estar aqui.
 
 \subsection{Simulação de projeto, uma por integrante}
 
-\subsubsection{Matheus Vieira Tiveron -- matrícula 241039879}
+Cada integrante simulou o conjunto correspondente à própria matrícula, com os resistores E12 que projetou na Seção~3. A Tabela~\ref{tab:simulacoes} resume, por arquivo, o circuito, a diretiva de análise e a condição simulada.
+
+\begin{table}[h]
+\centering
+\caption{Arquivos de simulação e análises executadas.}
+\label{tab:simulacoes}
+\begin{tabular}{lll}
+\hline
+Arquivo & Circuito & Análise \\
+\hline
+\texttt{item\_1.asc} & Seguidor de tensão & \texttt{.op} em três condições \\
+\texttt{item\_2.asc} & Não inversor & \texttt{.tran} com \texttt{.step} de amplitude \\
+\texttt{item\_3.asc} & Somador inversor & \texttt{.op} \\
+\texttt{item\_4.asc} & Somador inversor & \texttt{.dc} de $V_1$ \\
+\texttt{item\_5.asc} & Diferença & \texttt{.tran} em duas condições \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Seguidor de tensão (Bernardo Manciola Lobo - 211026486)}
+
+O objetivo desta simulação é verificar se o divisor resistivo projetado entrega a tensão especificada sobre a carga de \SI{1}{\kilo\ohm} e se a queda entre a condição em vazio e a de carga direta atinge o mínimo pedido, além de confirmar que o seguidor com o LM741 isola o divisor da carga. O circuito simulado está na Figura~\ref{fig:montagem_simulacao_seguidor}, e os valores de ponto de operação estão na Figura~\ref{fig:resultados_simulacao_seguidor} e na Tabela~\ref{tab:seguidor_op}.
+
+Com o divisor em vazio, a tensão no nó de saída é \SI{4,54542}{\volt} e a corrente drenada é \SI{4,54542}{\milli\ampere}. Com a carga de \SI{1}{\kilo\ohm} ligada diretamente, a tensão cai para \SI{2,94118}{\volt} e a corrente drenada cai para \SI{2,94118}{\milli\ampere}, o que dá uma queda de \SI{35,3}{\%}, acima do mínimo de \SI{33}{\%} especificado para a equipe~2. A escolha de $R_1$ e $R_2$ na série E12, portanto, atende ao requisito de tensão sobre a carga e ao requisito de queda mínima, com uma margem de \SI{2,3}{} pontos percentuais.
+
+Com o seguidor entre o divisor e a carga, a tensão no nó do divisor volta a \SI{4,54654}{\volt}, praticamente igual à condição em vazio (diferença de \SI{1,1}{\milli\volt}, atribuível à corrente de entrada não nula do modelo do LM741), e a tensão sobre a carga é a mesma do nó do divisor, o que confirma o ganho unitário. A corrente drenada do divisor permanece em torno de \SI{4,545}{\milli\ampere}, mostrando que o seguidor isola o divisor da carga: a queda entre vazio e seguidor com carga é de apenas \SI{0,02}{\%}, contra \SI{35,3}{\%} sem ele. A diferença entre as correntes de vazio e com seguidor é de \SI{0,06}{\micro\ampere}, compatível com a corrente de entrada do LM741.
+
+\begin{table}[h]
+\centering
+\caption{Tensões e correntes simuladas no seguidor de tensão.}
+\label{tab:seguidor_op}
+\begin{tabular}{lcccc}
+\hline
+Condição & Tensão no nó & Corrente drenada & Tensão na carga & Queda (\%) \\
+\hline
+Vazio & \SI{4,54542}{\volt} & \SI{4,54542}{\milli\ampere} & --- & --- \\
+Carga direta & \SI{2,94118}{\volt} & \SI{2,94118}{\milli\ampere} & \SI{2,94118}{\volt} & 35,3 \\
+Seguidor & \SI{4,54654}{\volt} & \SI{4,54548}{\milli\ampere} & \SI{4,54654}{\volt} & 0,02 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagens/simulacao_seguidor_2.png}
+    \caption{Circuito montado na simulação do seguidor de tensão.}
+    \label{fig:montagem_simulacao_seguidor}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagens/simulacao_seguidor_1.png}
+    \caption{Resultados das medições da simulação do seguidor de tensão.}
+    \label{fig:resultados_simulacao_seguidor}
+\end{figure}
+
+\subsubsection{Somador Inversor (Matheus Vieira Tiveron - 241039879)}
 
 As simulações individuais foram realizadas com alimentação simétrica de \SI{\pm 15}{\volt} e com os valores E12 dimensionados na Seção~3. No seguidor de tensão, a análise de ponto de operação foi executada nas três condições pedidas, com $R_1=\SI{1,5}{\kilo\ohm}$, $R_2=\SI{2,2}{\kilo\ohm}$ e carga de \SI{1}{\kilo\ohm}. Foram obtidos \SI{5,94595}{\volt} em vazio, \SI{3,14286}{\volt} com a carga diretamente ligada e \SI{5,94705}{\volt} na carga alimentada pelo seguidor.
 
@@ -405,10 +443,97 @@ Por fim, o amplificador de diferença com TL064 foi montado com $R_1=R_3=\SI{10}
 
 \subsection{Montagem em bancada}
 
-A equipe monta um circuito só. Diga \textbf{de quem} é a especificação que vocês montaram e
-por que escolheram essa. Informe os valores \textbf{medidos} de cada componente que vocês
-usaram, e não os valores nominais impressos no corpo da peça, porque a diferença entre os
-dois explica boa parte do que vocês vão observar.
+A equipe montou o circuito correspondente à especificação da equipe~2 (Tabela~\ref{tab:equipe}), porque é essa a especificação que a turma definiu para a bancada. Antes de inserir cada resistor no protoboard, mediu-se o valor real com o multímetro; a Tabela~\ref{tab:medidos} registra esses valores, que são os usados nas contas do relatório. A alimentação seguiu a Seção~3.2 do roteiro: o par rastreado da fonte forneceu os \SI{\pm 15}{\volt}, com capacitores de desacoplamento de \SI{100}{\nano\farad} entre cada alimentação e o terra, junto aos pinos; as senoides vieram do gerador configurado para carga de alta impedância; e o comum do par rastreado, o negativo da saída de \SI{6}{\volt}, o terra do gerador e o da ponta do osciloscópio foram ligados ao mesmo ponto do protoboard. Todas as medidas de tensão alternada são amplitudes máximas lidas no osciloscópio, e todas as medidas contínuas foram feitas com o multímetro.
+
+\subsubsection{Seguidor de tensão}
+
+Montou-se o divisor com $R_1 = R_2 = \SI{1}{\kilo\ohm}$ e a carga de $R_L = \SI{1}{\kilo\ohm}$, alimentado por uma senoide de \SI{1}{\kilo\hertz} e \SI{4}{\volt} de pico do gerador. Mediu-se a amplitude no osciloscópio em quatro condições: saída do divisor em vazio, saída do divisor com a carga ligada diretamente, saída do seguidor sem carga e saída do seguidor com a carga. A carga foi inserida e retirada do circuito, e nunca ficou ligada nos dois pontos ao mesmo tempo. Os valores medidos estão na Tabela~\ref{tab:seguidor_bancada}. Em vazio, a saída do divisor foi de \SI{2}{\volt}; com a carga direta, caiu para \SI{1,36}{\volt}; com o seguidor, tanto sem quanto com carga, manteve-se em \SI{2}{\volt}.
+
+\begin{table}[h]
+\centering
+\caption{Tensões medidas no seguidor de tensão em bancada.}
+\label{tab:seguidor_bancada}
+\begin{tabular}{lc}
+\hline
+Condição & Amplitude de saída (\si{\volt}) \\
+\hline
+Divisor em vazio & 2,00 \\
+Divisor com carga direta & 1,36 \\
+Seguidor sem carga & 2,00 \\
+Seguidor com carga & 2,00 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Não inversor}
+
+Montou-se o amplificador não inversor com $R_g = \SI{1}{\kilo\ohm}$ e $R_f = \SI{1,5}{\kilo\ohm}$, o que corresponde a um ganho projetado de $G = 1 + 1{,}5/1 = 2{,}50$, exatamente o valor da especificação da equipe~2. Aplicou-se uma senoide de \SI{1}{\kilo\hertz} com amplitude de entrada de \SI{4}{\volt} de pico, ajustada no gerador, e mediu-se a saída no osciloscópio, que resultou em \SI{10}{\volt} de pico. Os valores estão na Tabela~\ref{tab:nao_inv_bancada}. O ganho realizado em bancada é, portanto, $G = 10/4 = 2{,}5$. 
+
+\begin{table}[h]
+\centering
+\caption{Tensões medidas no não inversor em bancada.}
+\label{tab:nao_inv_bancada}
+\begin{tabular}{lcc}
+\hline
+Grandeza & Valor medido \\
+\hline
+$R_g$ & \SI{1}{\kilo\ohm} \\
+$R_f$ & \SI{1,5}{\kilo\ohm} \\
+$V_{in}$ (pico) & \SI{4}{\volt} \\
+$V_o$ (pico) & \SI{10}{\volt} \\
+Ganho realizado & 2,5 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Somador inversor}
+
+Montou-se o somador inversor com $R_f = \SI{2,7}{\kilo\ohm} + \SI{330}{\ohm}$ em série, totalizando \SI{3,03}{\kilo\ohm}, e $R_1 = R_f = \SI{3,03}{\kilo\ohm}$, o que dá $k_1 = 1{,}00$; e $R_2 = \SI{1}{\kilo\ohm}$, o que dá $k_2 = 3{,}03$. Esses valores coincidem com a especificação da equipe~2. A entrada $V_1$ foi a senoide de \SI{1}{\kilo\hertz} com \SI{4}{\volt} de pico do gerador, e $V_2$ foi o nível contínuo de \SI{-1,5}{\volt} tirado da saída de \SI{6}{\volt} da fonte, com o terminal positivo ligado ao ponto comum do protoboard. A saída medida no osciloscópio foi $V_o = -V_1 + 4{,}545$~V, ou seja, uma senoide invertida de \SI{4}{\volt} de pico somada a um nível contínuo de \SI{4,545}{\volt}. A montagem está na Figura~\ref{fig:somador_bancada}, e os valores estão na Tabela~\ref{tab:somador_bancada}.
+
+\begin{table}[h]
+\centering
+\caption{Tensões medidas no somador inversor em bancada.}
+\label{tab:somador_bancada}
+\begin{tabular}{lcc}
+\hline
+Grandeza & Valor \\
+\hline
+$R_f$ & \SI{2,7}{\kilo\ohm} + \SI{330}{\ohm} = \SI{3,03}{\kilo\ohm} \\
+$R_1$ & \SI{3,03}{\kilo\ohm} \\
+$R_2$ & \SI{1}{\kilo\ohm} \\
+$k_1$ & 1,00 \\
+$k_2$ & 3,03 \\
+$V_1$ (pico) & \SI{4}{\volt} \\
+$V_2$ & \SI{-1,5}{\volt} \\
+$V_o$ & $-V_1 + \SI{4,545}{\volt}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Amplificador de diferença}
+
+Montou-se o amplificador de diferença com o TL064, com os quatro resistores casados dois a dois, de modo a realizar o ganho diferencial $A_d = 2{,}14$ da especificação da equipe~2. No ensaio diferencial, aplicou-se uma senoide de \SI{1}{\kilo\hertz} e \SI{100}{\milli\volt} de pico numa entrada e a referência contínua $V_{ref} = \SI{0,5}{\volt}$ na outra. No ensaio de modo comum, ligaram-se as duas entradas juntas ao gerador, com \SI{1}{\kilo\hertz} e \SI{5}{\volt} de pico. A montagem está na Figura~\ref{fig:dif_bancada}, e os valores medidos estão na Tabela~\ref{tab:dif_bancada}.
+
+> **[INSERIR: valores dos quatro resistores medidos, tensão de saída no ensaio diferencial, tensão de saída no ensaio de modo comum e ganho de modo comum calculado. As imagens das duas condições de ensaio entram como figuras.]**
+
+\begin{table}[h]
+\centering
+\caption{Tensões medidas no amplificador de diferença em bancada.}
+\label{tab:dif_bancada}
+\begin{tabular}{lcc}
+\hline
+Grandeza & Ensaio diferencial & Ensaio de modo comum \\
+\hline
+$R_1 = R_3$ & [INSERIR] & [INSERIR] \\
+$R_2 = R_4$ & [INSERIR] & [INSERIR] \\
+$V_{in}$ (pico) & \SI{100}{\milli\volt} & \SI{5}{\volt} \\
+$V_{ref}$ & \SI{0,5}{\volt} & --- \\
+$V_o$ (pico) & [INSERIR] & [INSERIR] \\
+$A_d$ realizado & [INSERIR] & --- \\
+$A_{cm}$ & --- & [INSERIR] \\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{Simulação da montagem}
 
