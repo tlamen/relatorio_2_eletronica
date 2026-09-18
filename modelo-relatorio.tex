@@ -512,7 +512,7 @@ Ganho realizado & 2,5 \\
 
 \subsubsection{Somador inversor}
 
-Montou-se o somador inversor com $R_f = \SI{2,7}{\kilo\ohm} + \SI{330}{\ohm}$ em série, totalizando \SI{3,03}{\kilo\ohm}, e $R_1 = R_f = \SI{3,03}{\kilo\ohm}$, o que dá $k_1 = 1{,}00$; e $R_2 = \SI{1}{\kilo\ohm}$, o que dá $k_2 = 3{,}03$. Esses valores coincidem com a especificação da equipe~2. A entrada $V_1$ foi a senoide de \SI{1}{\kilo\hertz} com \SI{4}{\volt} de pico do gerador, e $V_2$ foi o nível contínuo de \SI{-1,5}{\volt} tirado da saída de \SI{6}{\volt} da fonte, com o terminal positivo ligado ao ponto comum do protoboard. A saída medida no osciloscópio foi $V_o = -V_1 + 4{,}545$~V, ou seja, uma senoide invertida de \SI{4}{\volt} de pico somada a um nível contínuo de \SI{4,545}{\volt}. A montagem está na Figura~\ref{fig:somador_bancada}, e os valores estão na Tabela~\ref{tab:somador_bancada}.
+Montou-se o somador inversor com $R_f = \SI{2,7}{\kilo\ohm} + \SI{330}{\ohm}$ em série, totalizando \SI{3,03}{\kilo\ohm}, e $R_1 = R_f = \SI{3,03}{\kilo\ohm}$, o que dá $k_1 = 1{,}00$; e $R_2 = \SI{1}{\kilo\ohm}$, o que dá $k_2 = 3{,}03$. Esses valores coincidem com a especificação da equipe~2. A entrada $V_1$ foi a senoide de \SI{1}{\kilo\hertz} com \SI{4}{\volt} de pico do gerador, e $V_2$ foi o nível contínuo de \SI{-1,5}{\volt} tirado da saída de \SI{6}{\volt} da fonte, com o terminal positivo ligado ao ponto comum do protoboard. A saída medida no osciloscópio foi $V_o = -V_1 + 4{,}545$~V, ou seja, uma senoide invertida de \SI{4}{\volt} de pico somada a um nível contínuo de \SI{4,545}{\volt}. Os valores estão na Tabela~\ref{tab:somador_bancada}.
 
 \begin{table}[h]
 \centering
@@ -536,9 +536,23 @@ $V_o$ & $-V_1 + \SI{4,545}{\volt}$ \\
 
 \subsubsection{Amplificador de diferença}
 
-Montou-se o amplificador de diferença com o TL064, com os quatro resistores casados dois a dois, de modo a realizar o ganho diferencial $A_d = 2{,}14$ da especificação da equipe~2. No ensaio diferencial, aplicou-se uma senoide de \SI{1}{\kilo\hertz} e \SI{100}{\milli\volt} de pico numa entrada e a referência contínua $V_{ref} = \SI{0,5}{\volt}$ na outra. No ensaio de modo comum, ligaram-se as duas entradas juntas ao gerador, com \SI{1}{\kilo\hertz} e \SI{5}{\volt} de pico. A montagem está na Figura~\ref{fig:dif_bancada}, e os valores medidos estão na Tabela~\ref{tab:dif_bancada}.
+Montou-se o amplificador de diferença com o TL064, com os quatro resistores casados dois a dois, de modo a realizar o ganho diferencial $A_d = 2{,}14$ da especificação da equipe~2. No ensaio diferencial, aplicou-se uma senoide de \SI{1}{\kilo\hertz} e \SI{100}{\milli\volt} de pico numa entrada e a referência contínua $V_{ref} = \SI{0,5}{\volt}$ na outra. No ensaio de modo comum, ligaram-se as duas entradas juntas ao gerador, com \SI{1}{\kilo\hertz} e \SI{5}{\volt} de pico. A montagem está na Figura~\ref{fig:montagem_diferenciador}, e os valores medidos estão na Tabela~\ref{tab:dif_bancada}.
 
-> **[INSERIR: valores dos quatro resistores medidos, tensão de saída no ensaio diferencial, tensão de saída no ensaio de modo comum e ganho de modo comum calculado. As imagens das duas condições de ensaio entram como figuras.]**
+No ensaio diferencial, aplicou-se uma senoide de \SI{1}{\kilo\hertz} e \SI{100}{\milli\volt} de pico numa entrada e a referência contínua de \SI{0,5}{\volt} na outra. A saída medida no osciloscópio foi uma senoide de \SI{204}{\milli\volt} de pico, o que dá um ganho diferencial medido de $A_d = 204/100 = 2{,}04$, contra o projetado de $2{,}14$ e o simulado de $2{,}1354$. O desvio de \SI{4,5}{\%} em relação ao projetado é compatível com a tolerância dos resistores da bancada. A Figura~\ref{fig:osciloscopio} mostra as formas de onda de entrada e saída.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{montagem_diferenciador.jpeg}
+\caption{Montagem em bancada do amplificador de diferença}
+\label{fig:montagem_diferenciador}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{osciloscopio.jpg}
+\caption{Valores obtidos do modo diferencial medidos em osciloscópio}
+\label{fig:osciloscopio}
+\end{figure}
 
 \begin{table}[h]
 \centering
@@ -548,51 +562,130 @@ Montou-se o amplificador de diferença com o TL064, com os quatro resistores cas
 \hline
 Grandeza & Ensaio diferencial & Ensaio de modo comum \\
 \hline
-$R_1 = R_3$ & [INSERIR] & [INSERIR] \\
-$R_2 = R_4$ & [INSERIR] & [INSERIR] \\
+$R_1 = R_3$ & \SI{4,165}{\kilo\ohm} & \SI{4,165}{\kilo\ohm} \\
+$R_2 = R_4$ & \SI{2,178}{\kilo\ohm} & \SI{2,178}{\kilo\ohm} \\
 $V_{in}$ (pico) & \SI{100}{\milli\volt} & \SI{5}{\volt} \\
 $V_{ref}$ & \SI{0,5}{\volt} & --- \\
-$V_o$ (pico) & [INSERIR] & [INSERIR] \\
-$A_d$ realizado & [INSERIR] & --- \\
-$A_{cm}$ & --- & [INSERIR] \\
+$V_o$ (pico) & \SI{204}{\milli\volt} & \SI{0}{\volt} \\
+$A_d$ realizado & 2,04 & --- \\
 \hline
 \end{tabular}
 \end{table}
 
 \subsection{Simulação da montagem}
 
-Refaça a simulação usando os valores medidos dos componentes que estavam na bancada. Ela
-não substitui a simulação de projeto: é a comparação entre as duas que separa o efeito da
-tolerância dos componentes do restante.
+Refez-se a simulação com os valores de componente efetivamente usados na bancada, e não com os valores de projeto da Seção~4.1. O objetivo é separar duas causas de desvio que a medição sozinha não distingue: a tolerância dos componentes que a equipe pegou e o comportamento do circuito real que o modelo ideal não representa. Se a simulação da montagem se aproximar da medição, a diferença entre projeto e bancada vem quase toda da tolerância; se ela continuar distante, o que sobra aponta para algo fora do modelo, como a impedância da ponta de prova, a banda do amplificador ou a resistência de contato do protoboard. Os mesmos arquivos da Seção~4.1 foram reaproveitados, alterando apenas os valores dos resistores e, quando necessário, as amplitudes de entrada para coincidir com as ajustadas no gerador. Os valores medidos usados nesta seção estão na Tabela~\ref{tab:medidos}.
 
-\begin{nota}{Três comparações, três causas diferentes}
-Ao longo do relatório vocês vão confrontar três pares de resultados. Cada um responde a uma
-pergunta distinta, e vale mantê-los separados na hora de discutir.
+\subsubsection{Seguidor de tensão}
 
-\smallskip
-\textbf{Cálculo analítico contra simulação de projeto.} A conta está certa? Se aqui houver
-diferença, procure na álgebra ou no esquemático.
+Na bancada, o divisor foi montado com $R_1 = R_2 = \SI{1}{\kilo\ohm}$ e a carga de $R_L = \SI{1}{\kilo\ohm}$, alimentado por \SI{4}{\volt} de pico. Repetiu-se a análise \texttt{.op} do \texttt{item\_1.asc} com esses mesmos valores, e os resultados estão na Tabela~\ref{tab:seguidor_sim_bancada}. Com o divisor em vazio, a tensão no nó de saída é \SI{2}{\volt} e a corrente drenada é \SI{2}{\milli\ampere}. Com a carga de \SI{1}{\kilo\ohm} ligada diretamente, a tensão cai para \SI{1,33333}{\volt} e a corrente drenada cai para \SI{1,33333}{\milli\ampere}
 
-\smallskip
-\textbf{Simulação de projeto contra simulação da montagem.} Quanto custou a tolerância dos
-componentes? A diferença aqui é a distância entre o valor nominal e o valor real da peça
-que vocês pegaram.
+A queda simulada com esses valores é
 
-\smallskip
-\textbf{Simulação da montagem contra medição.} O modelo descreve o circuito real? Diferença
-aqui aponta algo que o modelo não representa, como a resistência série do indutor, a
-impedância da ponta de prova ou a banda do instrumento.
-\end{nota}
+\begin{equation}
+\text{queda} = \frac{2 - 1{,}33333}{2} \times 100\% = 33{,}3\% ,
+\label{eq:queda_sim_bancada}
+\end{equation}
 
-\begin{figure}[htb]
+que coincide com o mínimo de \SI{33}{\%} da especificação da equipe~2. Com o seguidor entre o divisor e a carga, a tensão no nó do divisor volta a \SI{2,00102}{\volt}, praticamente igual à condição em vazio (diferença de \SI{1,02}{\milli\volt}, atribuível à corrente de entrada do modelo do LM741), e a tensão sobre a carga é a mesma do nó do divisor, o que confirma o ganho unitário. A corrente drenada do divisor com o seguidor é de \SI{2,00113}{\milli\ampere}, praticamente a mesma da condição em vazio.
+
+\begin{table}[h]
 \centering
-% \includegraphics[width=0.8\linewidth]{arquivo.png}
-\fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
-  substitua por \texttt{\textbackslash includegraphics}}}
-\caption{Legenda descritiva. Diga o que a figura mostra e o que nela é relevante, e não
-apenas o nome do circuito.}
-\label{fig:exemplo}
-\end{figure}
+\caption{Simulação da montagem do seguidor de tensão, com $R_1 = R_2 = R_L = \SI{1}{\kilo\ohm}$ e $V_{in} = \SI{4}{\volt}$.}
+\label{tab:seguidor_sim_bancada}
+\begin{tabular}{lcccc}
+\hline
+Condição & Tensão no nó & Corrente drenada & Tensão na carga & Queda (\%) \\
+\hline
+Vazio & \SI{2,00}{\volt} & \SI{2,00}{\milli\ampere} & --- & --- \\
+Carga direta & \SI{1,33333}{\volt} & \SI{1,33333}{\milli\ampere} & \SI{1,33333}{\volt} & 33,3 \\
+Seguidor & \SI{2,00102}{\volt} & \SI{2,00113}{\milli\ampere} & \SI{2,00102}{\volt} & 0,05 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Não inversor}
+
+Na bancada, o estágio foi montado com $R_g = \SI{1}{\kilo\ohm}$ e $R_f = \SI{1,5}{\kilo\ohm}$, e a entrada foi ajustada em \SI{4}{\volt} de pico. Para simplificar a leitura e comparar com o ganho projetado, repetiu-se a análise de ponto de operação (\texttt{.op}) com uma fonte contínua de \SI{4}{\volt} no lugar da senoide; o ganho é o mesmo em corrente alternada e contínua, e a análise \texttt{.op} devolve diretamente o valor numérico da saída. Os resultados estão na Tabela~\ref{tab:nao_inv_sim_bancada}. Com a entrada de \SI{4}{\volt}, a saída é $V_o = \SI{10,0028}{\volt}$, o que dá um ganho simulado de $G = 10{,}0028/4 = 2{,}5007$, praticamente o valor projetado de $2{,}50$. A corrente em $R_g$ é $I_{Rg} = \SI{4,00108}{\milli\ampere}$ e a corrente em $R_f$ é $I_{Rf} = \SI{4,00118}{\milli\ampere}$, praticamente iguais, o que confirma que nenhuma corrente entra pelo terminal inversor e que a realimentação está funcionando como previsto. A tensão no nó inversor é $V_{n001} = \SI{4,00108}{\volt}$, praticamente igual à entrada de \SI{4}{\volt}, o que confirma o curto virtual.
+
+\begin{table}[h]
+\centering
+\caption{Simulação da montagem do não inversor, com $R_g = \SI{1}{\kilo\ohm}$, $R_f = \SI{1,5}{\kilo\ohm}$ e $V_{in} = \SI{4}{\volt}$ contínuo.}
+\label{tab:nao_inv_sim_bancada}
+\begin{tabular}{lcc}
+\hline
+Grandeza & Valor simulado & Valor projetado \\
+\hline
+$V_{in}$ & \SI{4}{\volt} & \SI{4}{\volt} \\
+$V_o$ & \SI{10,0028}{\volt} & \SI{10}{\volt} \\
+$G$ realizado & 2,5007 & 2,50 \\
+$I_{Rg}$ & \SI{4,00108}{\milli\ampere} & --- \\
+$I_{Rf}$ & \SI{4,00118}{\milli\ampere} & --- \\
+$V_{n001}$ (nó inversor) & \SI{4,00108}{\volt} & \SI{4}{\volt} \\
+\hline
+\end{tabular}
+\end{table}
+
+A diferença entre $V_o$ e o valor projetado é de \SI{2,8}{\milli\volt}, e a diferença entre a tensão do nó inversor e a entrada é de \SI{1,08}{\milli\volt}. Ambas são compatíveis com o ganho finito e a tensão de offset do modelo do LM741, e não com erro de projeto. O ganho simulado com os valores da bancada é, portanto, o mesmo da simulação de projeto, o que já era esperado, porque os resistores usados na bancada são exatamente os valores nominais \SI{1}{\kilo\ohm} e \SI{1,5}{\kilo\ohm}.
+
+\subsubsection{Somador inversor}
+
+Na bancada, o estágio foi montado com $R_f = \SI{2,7}{\kilo\ohm} + \SI{330}{\ohm} = \SI{3,03}{\kilo\ohm}$, $R_1 = \SI{3,03}{\kilo\ohm}$ e $R_2 = \SI{1}{\kilo\ohm}$, o que dá $k_1 = 1{,}00$ e $k_2 = 3{,}03$, coincidindo com a especificação da equipe~2. As entradas foram $V_1 = \SI{4}{\volt}$ (senoide) e $V_2 = \SI{-1{,}5}{\volt}$ (contínuo). Para simplificar a leitura e comparar diretamente com o previsto, repetiu-se a análise de ponto de operação (\texttt{.op}) do \texttt{item\_3.asc} com $V_1$ e $V_2$ contínuos, e os resultados estão na Tabela~\ref{tab:somador_sim_bancada}. A saída simulada é $V_o = \SI{0,550324}{\volt}$.
+
+\begin{table}[h]
+\centering
+\caption{Simulação da montagem do somador inversor, com $R_f = \SI{3,03}{\kilo\ohm}$, $R_1 = \SI{3,03}{\kilo\ohm}$, $R_2 = \SI{1}{\kilo\ohm}$, $V_1 = \SI{4}{\volt}$ e $V_2 = \SI{-1{,}5}{\volt}$.}
+\label{tab:somador_sim_bancada}
+\begin{tabular}{lcc}
+\hline
+Grandeza & Valor simulado & Valor previsto \\
+\hline
+$V_1$ & \SI{4}{\volt} & \SI{4}{\volt} \\
+$V_2$ & \SI{-1,5}{\volt} & \SI{-1,5}{\volt} \\
+$V_o$ & \SI{0,550324}{\volt} & \SI{0,545}{\volt} \\
+$I_{R1}$ & \SI{1,501}{\milli\ampere} & --- \\
+$I_{R2}$ & \SI{-1,3198}{\milli\ampere} & --- \\
+$I_{R3}$ (realimentação) & \SI{1,501}{\milli\ampere} & --- \\
+$V_{n001}$ (nó inversor) & \SI{0,997}{\milli\volt} & \SI{0}{\volt} \\
+\hline
+\end{tabular}
+\end{table}
+
+O valor previsto pela equação~\eqref{eq:somador_saida}, com $k_1 = 1{,}00$ e $k_2 = 3{,}03$, é
+
+\begin{equation}
+V_o = -(1{,}00 \cdot 4 + 3{,}03 \cdot (-1{,}5)) = -(4 - 4{,}545) = \SI{0,545}{\volt} .
+\label{eq:somador_previsto_bancada}
+\end{equation}
+
+A diferença entre o simulado e o previsto é de \SI{5,3}{\milli\volt}, compatível com o ganho finito e a tensão de offset do modelo do LM741, e não com erro de projeto ou de arredondamento dos resistores. As correntes confirmam o funcionamento do somador: a corrente em $R_1$ é $I_{R1} = \SI{1,501}{\milli\ampere}$ no sentido do nó inversor, a corrente em $R_2$ é $I_{R2} = \SI{1,3198}{\milli\ampere}$ saindo do nó inversor (porque $V_2$ é negativa e puxa corrente da fonte para o nó), e a corrente em $R_f$ é $I_{R3} = \SI{1,501}{\milli\ampere}$ saindo do nó inversor para a saída. A soma das correntes que entram no nó é praticamente igual à que sai, como exige o curto virtual. A tensão no nó inversor é $V_{n001} = \SI{0,997}{\milli\volt}$, praticamente zero, o que confirma o terra virtual.
+
+A comparação com a medição de bancada — que devolveu $V_o = -V_1 + \SI{4,545}{\volt}$, ou seja, uma senoide invertida de \SI{4}{\volt} de pico somada a \SI{4,545}{\volt} contínuos — fica para a Seção~6. Note que o valor \SI{4,545}{\volt} medido é a soma de $k_2 \cdot |V_2| = 4{,}545$~V com o termo $k_1 V_1 = 4$~V, o que é coerente com o previsto, mas a parcela contínua e a alternada aparecem misturadas no osciloscópio. A simulação \texttt{.op} com $V_1$ contínuo separa as duas parcelas e confirma que o termo contínuo é \SI{0,545}{\volt} quando $V_1 = \SI{4}{\volt}$ e $V_2 = \SI{-1{,}5}{\volt}$.
+
+\subsubsection{Amplificador de diferença}
+
+Na bancada, o estágio foi montado com o TL064 e quatro resistores, com $R_1 = R_3 = \SI{2,2}{\kilo\ohm}$ e $R_2 = R_4 = \SI{4,7}{\kilo\ohm}$, o que corresponde a um ganho diferencial projetado de $A_d = 4{,}7/2{,}2 = 2{,}136$. Para separar as duas condições de ensaio sem desmontar o circuito, montaram-se dois circuitos independentes no mesmo arquivo: um para o ensaio de modo comum (sufixo \texttt{c}) e outro para o ensaio diferencial (sufixo \texttt{d}). No ensaio diferencial, aplicou-se \SI{0,1}{\volt} em uma entrada e a referência de \SI{0,5}{\volt} na outra; no ensaio de modo comum, aplicou-se a mesma tensão de \SI{0,5}{\volt} nas duas entradas. Os resultados da análise \texttt{.op} estão na Tabela~\ref{tab:dif_sim_bancada}.
+
+\begin{table}[h]
+\centering
+\caption{Simulação da montagem do amplificador de diferença, com $R_1 = R_3 = \SI{2,2}{\kilo\ohm}$ e $R_2 = R_4 = \SI{4,7}{\kilo\ohm}$.}
+\label{tab:dif_sim_bancada}
+\begin{tabular}{lcc}
+\hline
+Grandeza & Ensaio diferencial & Ensaio de modo comum \\
+\hline
+$V_{in}$ & \SI{0,1}{\volt} & \SI{0,5}{\volt} \\
+$V_{ref}$ & \SI{0,5}{\volt} & \SI{0,5}{\volt} \\
+$V_+$ (nó não inversor) & \SI{0,34058}{\volt} & \SI{0,34058}{\volt} \\
+$V_-$ (nó inversor) & \SI{0,340451}{\volt} & \SI{0,340596}{\volt} \\
+$V_o$ (saída) & \SI{0,854143}{\volt} & \SI{0,051}{\milli\volt} \\
+$A_d$ realizado & 2,1354 & --- \\
+$A_{cm}$ & --- & $1{,}03 \times 10^{-4}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+No ensaio diferencial, a saída simulada é \SI{0,854143}{\volt}, contra o valor previsto de \SI{0,8545}{\volt} pela equação~\eqref{eq:dif_saida}; a diferença de \SI{0,4}{\milli\volt} é compatível com o ganho finito e a tensão de offset do modelo do TL064. O ganho diferencial realizado é $A_d = 2{,}1354$, praticamente o projetado. No ensaio de modo comum, a saída simulada é \SI{0,051}{\milli\volt}, praticamente zero, o que confirma que o casamento dos quatro resistores faz o termo de modo comum desaparecer. O ganho de modo comum simulado é $A_{cm} = 1{,}03 \times 10^{-4}$, e o CMRR correspondente vai a infinito no limite do modelo ideal. A comparação com a medição de bancada, onde os resistores reais têm tolerância, fica para a Seção~6.
 
 \section{Resultados}
 
