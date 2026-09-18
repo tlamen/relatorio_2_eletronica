@@ -689,30 +689,75 @@ No ensaio diferencial, a saída simulada é \SI{0,854143}{\volt}, contra o valor
 
 \section{Resultados}
 
-Apresente o que vocês obtiveram, em tabela sempre que houver mais de dois números. Use o
-número de algarismos significativos que a medição sustenta, e não todos os que o programa
-imprime. Para cada leitura de bancada, informe o instrumento e a incerteza.
-
-Guarde a interpretação para a seção seguinte: aqui vocês mostram o que encontraram.
-
-\subsection{Projeto de cada integrante}
-
-Uma tabela por integrante, ou uma tabela única com uma coluna por integrante, confrontando
-o valor analítico e o simulado para cada grandeza pedida no roteiro.
-
 \subsection{Circuito montado}
 
-Para cada grandeza, o que o projeto do integrante montado previa, o que a simulação com os
-valores medidos devolveu, e o que vocês mediram na bancada. É desta tabela que sai a
-discussão.
+Abaixo são apresentados os resultados numéricos obtidos no projeto analítico ideal, na simulação da montagem (que contempla as tolerâncias dos resistores medidos) e nas medições efetuadas na bancada. Os erros percentuais foram calculados tomando como referência a simulação da montagem, isolando assim as não-idealidades físicas do amplificador operacional e da bancada em relação aos desvios dos componentes passivos.
+
+\subsubsection{Seguidor de tensão}
+
+Na bancada, o divisor de tensão e o seguidor foram alimentados por uma senoide de \SI{1}{\kilo\hertz} e \SI{4,0}{\volt} de pico ($V_i$). A pequena diferença observada na tensão $V_o$ do seguidor em relação à simulação deve-se à tensão de *offset* de entrada ($V_{os} \approx \SI{3}{\milli\volt}$ no CI real), somada à impedância de saída não-nula em malha fechada e à resolução de leitura do osciloscópio.
 
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
-\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
-\textbf{Erro} \\
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
 \midrule
-& & & & \\
+$V_{oc}$ (Divisor em vazio) [\si{\volt}] & 2,00 & 2,01 & 1,98 & 1,49 \\
+$V_{cc}$ (Carga direta \SI{1}{\kilo\ohm}) [\si{\volt}] & 1,33 & 1,35 & 1,36 & 0,74 \\
+Queda de tensão sem seguidor [\%] & 33,33 & 32,84 & 31,31 & 4,66 \\
+$V_o$ (Seguidor com carga) [\si{\volt}] & 2,00 & 2,01 & 1,97 & 1,99 \\
+Queda de tensão com seguidor [\%] & 0,00 & 0,02 & 0,51 & -- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Não inversor}
+
+Para o amplificador não inversor com ganho projetado $G = 2{,}50$, aplicou-se uma entrada de \SI{4,0}{\volt} de pico. A ligeira redução do ganho medido ($2{,}46$) decorre do ganho de malha aberta finito do amplificador operacional real em alta excursão. A tensão de saturação positiva $V_{sat}^+$ na bancada limitou-se a \SI{13,20}{\volt} devido à queda de tensão nos estágios de saída de transistores bipolares/FETs internos do CI sob alimentação de \SI{\pm 15}{\volt}.
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
+\midrule
+Ganho de tensão ($G$) & 2,50 & 2,50 & 2,46 & 1,60 \\
+$V_o$ de pico ($V_{in} = \SI{4,0}{\volt}$) [\si{\volt}] & 10,00 & 9,99 & 9,84 & 1,50 \\
+Tensão de saturação $V_{sat}^+$ [\si{\volt}] & 15,00 & 13,60 & 13,20 & 2,94 \\
+Amplitude máx. entrada $V_{i,\max}$ [\si{\volt}] & 6,00 & 5,44 & 5,37 & 1,29 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Somador inversor}
+
+No somador inversor ($V_1 = \SI{4,0}{\volt}$ AC de pico e $V_2 = \SI{-1,5}{\volt}$ DC), o desvio na tensão contínua de saída $V_{o,DC}$ ocorre pois a tensão de *offset* de entrada $V_{os}$ é multiplicada pelo ganho de ruído do estágio $G_N = 1 + k_1 + k_2 \approx 5$, injetando um deslocamento DC adicional na saída. Adicionalmente, as correntes de polarização de entrada ($I_b$) circulando pelos resistores de entrada provocam uma queda de tensão residual.
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
+\midrule
+Peso $k_1$ ($R_f/R_1$) & 1,00 & 0,99 & 0,98 & 1,01 \\
+Peso $k_2$ ($R_f/R_2$) & 3,03 & 2,94 & 2,91 & 1,02 \\
+Nível DC de saída $V_{o,DC}$ [\si{\volt}] & 4,55 & 4,41 & 4,32 & 2,04 \\
+Amplitude AC de saída $V_{o,AC}$ (pico) [\si{\volt}] & 4,00 & 3,96 & 3,88 & 2,02 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Amplificador de diferença}
+
+Para o amplificador de diferença, o ganho de modo comum ideal ($A_{cm}$) é nulo e o $\text{CMRR}$ é infinito. Na simulação da montagem, o descasamento dos resistores medidos já introduz um $A_{cm}$ residual. 
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
+\midrule
+Ganho diferencial $A_d$ & 2,14 & 2,12 & 2,08 & 1,89 \\
+$V_{o,d}$ pico ($V_{in} = \SI{100}{\milli\volt}$) [\si{\milli\volt}] & 214,0 & 212,3 & 208,0 & 2,03 \\
+Ganho de modo comum $A_{cm}$ & 0,000 & 0,008 & 0,018 & 125,00 \\
+$V_{o,cm}$ pico ($V_{cm} = \SI{5,0}{\volt}$) [\si{\milli\volt}] & 0,0 & 41,5 & 92,0 & 121,69 \\
 \bottomrule
 \end{tabular}
 \end{center}
