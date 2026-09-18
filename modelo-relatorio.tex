@@ -764,30 +764,42 @@ $V_{o,cm}$ pico ($V_{cm} = \SI{5,0}{\volt}$) [\si{\milli\volt}] & 0,0 & 41,5 & 9
 
 \section{Discussão}
 
-Percorra as três comparações na ordem em que aparecem no quadro da Seção~4: a conta contra
-a simulação de projeto, esta contra a simulação da montagem, e esta contra a medição. Cada
-passo isola uma causa, e a discussão fica bem mais curta quando eles não se misturam.
+A Tabela~\ref{tab:comparacao_resultados} reúne as principais comparações entre cálculo, simulação e bancada. Nos projetos individuais, a coluna de bancada não se aplica, pois essa etapa foi apenas simulada.
 
-Compare também os projetos dos integrantes entre si. Como as especificações são diferentes,
-os resultados diferem, e mostrar que essa diferença é a que a teoria previa vale mais do
-que repetir três vezes a mesma análise.
+\begin{table}[htbp]
+\centering
+\caption{Comparação entre os resultados calculados, simulados e medidos.}
+\label{tab:comparacao_resultados}
+\footnotesize
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}p{2.4cm}p{2.7cm}p{2.7cm}p{2.7cm}p{3.0cm}@{}}
+\toprule
+\textbf{Circuito} & \textbf{Cálculo} & \textbf{Simulação} & \textbf{Bancada} & \textbf{Comparação} \\
+\midrule
+Seguidor individual (Bernardo) & $V_L=\SI{2,79}{\volt}$; queda mínima de $34,6\%$ & $V_L=\SI{2,94118}{\volt}$; queda de $35,3\%$ & --- & $V_L$ ficou $5,4\%$ acima do especificado; a queda mínima foi atendida. \\
 
-Sempre que uma divergência for maior do que a incerteza esperada, aponte uma causa concreta
-e diga como ela poderia ser reduzida. Vale, por exemplo, a tolerância do componente, a
-resistência série do indutor, a impedância de entrada do osciloscópio, a banda do
-amplificador ou a resolução da varredura.
+Não inversor individual (Enzo) & $G=9,30$ & $G=9,30$; saída linear para \SI{1}{\volt} de pico e saturada para \SI{2}{\volt} de pico & --- & Ganho exato; a saturação era esperada, pois a saída ideal seria \SI{18,6}{\volt}. \\
 
-Quando previsto e obtido coincidirem, explique por que era esperado que coincidissem, e o
-que essa coincidência não permite concluir.
+Somador individual (Matheus) & $V_o=\SI{-13}{\volt}$ & $V_o=\SI{-12,9748}{\volt}$ & --- & Diferença de \SI{25,2}{\milli\volt} ($0,19\%$). \\
 
-Por fim, retome as hipóteses que vocês declararam na fundamentação e diga quais se
-confirmaram. Se algo observado contrariar a previsão, resolva a contradição aqui.
+Seguidor da equipe & $V_{oc}=\SI{2,00}{\volt}$; $V_{cc}=\SI{1,33}{\volt}$; $V_o=\SI{2,00}{\volt}$ & \SI{2,01}{\volt}; \SI{1,35}{\volt}; \SI{2,01}{\volt}, respectivamente & \SI{1,98}{\volt}; \SI{1,36}{\volt}; \SI{1,97}{\volt}, respectivamente & Maior erro de $4,66\%$ na queda sem seguidor; com o seguidor, a queda foi $0,51\%$. \\
+
+Não inversor da equipe & $G=2,50$; $V_o=\SI{10,00}{\volt}$; $V_{sat}^{+}=\SI{15,00}{\volt}$ & $G=2,50$; \SI{9,99}{\volt}; \SI{13,60}{\volt} & $G=2,46$; \SI{9,84}{\volt}; \SI{13,20}{\volt} & Erros de $1,60\%$, $1,50\%$ e $2,94\%$, respectivamente. \\
+
+Somador da equipe & $k_1=1,00$; $k_2=3,03$; $V_{o,DC}=\SI{4,55}{\volt}$; $V_{o,AC}=\SI{4,00}{\volt}$ & $0,99$; $2,94$; \SI{4,41}{\volt}; \SI{3,96}{\volt} & $0,98$; $2,91$; \SI{4,32}{\volt}; \SI{3,88}{\volt} & Erros entre $1,01\%$ e $2,04\%$. \\
+
+Diferença da equipe & $A_d=2,14$; $A_{cm}=0$; CMRR ideal infinito & $A_d=2,12$; $A_{cm}=0,008$; CMRR de \SI{48,5}{\decibel} & $A_d=2,08$; $A_{cm}=0,018$; CMRR de \SI{41,3}{\decibel} & Erro de $1,89\%$ em $A_d$ e redução de \SI{7,2}{\decibel} no CMRR. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Os projetos individuais confirmaram o dimensionamento. O maior desvio de ganho foi $7,8\%$ no amplificador de diferença do Enzo, devido à aproximação por resistores E12. No não inversor, a distorção para a maior amplitude foi causada pela saturação, e não por erro na razão resistiva.
+
+Na montagem da equipe, os erros das grandezas diferenciais ficaram abaixo de $5\%$. O seguidor reduziu a queda sobre a carga de $31,31\%$ para $0,51\%$. No modo comum, pequenas tensões residuais produziram grande erro relativo e reduziram o CMRR de \SI{48,5}{\decibel} para \SI{41,3}{\decibel}. Os resultados validam o modelo ideal na região linear; os desvios são compatíveis com saturação, offset, tolerância e descasamento dos resistores, contatos do protoboard e resolução dos instrumentos.
 
 \section{Conclusão}
 
-Retome o objetivo que vocês anunciaram na introdução e responda se ele foi atingido,
-apoiando a resposta em um número. Aponte a principal limitação do que foi feito e o que
-ela impede de afirmar. Evite trazer resultado novo nesta seção.
+O objetivo de projetar, simular e verificar as quatro configurações foi atingido. O seguidor reduziu a queda de $31,31\%$ para $0,51\%$; o não inversor apresentou ganho de $2,46$ para $2,50$ projetado; o somador teve erros de até $2,04\%$; e o amplificador de diferença apresentou $A_d=2,08$ para $2,14$ projetado. Os resultados validam as equações na região linear e evidenciam saturação, offset e CMRR finito. A principal limitação foi a medição de pequenas tensões de modo comum, cuja sensibilidade à resolução dos instrumentos e ao casamento dos resistores reduz a precisão do CMRR experimental.
 
 \section{Referências}
 
