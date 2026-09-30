@@ -182,6 +182,11 @@ dois explica boa parte do que vocês vão observar.
 \midrule
   $R_f$ & $\SI{12}{\kilo\ohm}$ & $\SI{11,74}{\kilo\ohm}$ & \\
   $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,982}{\kilo\ohm}$ & \\
+
+  $R_f$ & $\SI{10}{\kilo\ohm}$ & $\SI{10}{\kilo\ohm}$ & \\
+
+  $R_{f2}$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,60}{\kilo\ohm}$ & \\
+  $R_{g2}$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,985}{\kilo\ohm}$ & \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -286,6 +291,43 @@ discussão.
   $V_{out}$ de $G_1$ para \SI{72,5}{\kilo\hertz} & & & \SI{156}{\milli\volt} & \\
   $V_{out}$ de $G_1$ para \SI{115,3}{\kilo\hertz} & & & \SI{124}{\milli\volt} & \\
   $V_{out}$ de $G_1$ para \SI{120}{\kilo\hertz} & & & \SI{118}{\milli\volt} & \\
+
+  188m de vpp
+  $V_{out}$ de $G_1$ para \SI{100}{\hertz} & & & \SI{2440}{\milli\volt} & \\
+  $V_{out}$ de $G_1$ para \SI{14,51}{\kilo\hertz} & & & \SI{2320}{\milli\volt} & \\
+  $V_{out}$ de $G_1$ para \SI{28,92}{\kilo\hertz} & & & \SI{2040}{\milli\volt} & \\
+  $V_{out}$ de $G_1$ para \SI{43,33}{\kilo\hertz} & & & \SI{1760}{\milli\volt} & \\
+  $V_{out}$ de $G_1$ para \SI{57,74}{\kilo\hertz} & & & \SI{1560}{\milli\volt} & \\
+  $V_{out}$ de $G_1$ para \SI{72,5}{\kilo\hertz} & & & \SI{1320}{\milli\volt} & \\
+  $V_{out}$ de $G_1$ para \SI{115,3}{\kilo\hertz} & & & \SI{960}{\milli\volt} & \\
+  $V_{out}$ de $G_1$ para \SI{120}{\kilo\hertz} & & & \SI{960}{\milli\volt} & \\
+
+  20m de vpp
+  $V_{out}$ de $G_2$ para \SI{100}{\hertz} & & & \SI{2120}{\milli\volt} & \\
+  $V_{out}$ de $G_2$ para \SI{14,51}{\kilo\hertz} & & & \SI{920}{\milli\volt} & \\
+  $V_{out}$ de $G_2$ para \SI{28,92}{\kilo\hertz} & & & \SI{520}{\milli\volt} & \\
+  $V_{out}$ de $G_2$ para \SI{43,33}{\kilo\hertz} & & & \SI{360}{\milli\volt} & \\
+  $V_{out}$ de $G_2$ para \SI{57,74}{\kilo\hertz} & & & \SI{320}{\milli\volt} & \\
+  $V_{out}$ de $G_2$ para \SI{72,5}{\kilo\hertz} & & & \SI{240}{\milli\volt} & \\
+  $V_{out}$ de $G_2$ para \SI{115,3}{\kilo\hertz} & & & \SI{200}{\milli\volt} & \\
+  $V_{out}$ de $G_2$ para \SI{120}{\kilo\hertz} & & & \SI{160}{\milli\volt} & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Slew Rate - Resultados}
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+\textbf{Erro} \\
+\midrule
+  Frequencia triangulo LM741 & & & \SI{42}{\kilo\hertz} & \\
+  Frequencia triangulo TL068 & & & \SI{150}{\kilo\hertz} & \\
+
+  Slew rate LM741 & & & \SI{0,48}{\volt/\micro\second} & \\
+  Slew rate TL068 & & & \SI{2,18}{\volt/\micro\second} & \\
+
 \bottomrule
 \end{tabular}
 \end{center}
