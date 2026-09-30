@@ -21,7 +21,7 @@
 \input{estilo-relatorio}
 
 % --------------------------- IDENTIFICACAO ---------------------------------
-\roteiro{3}{Amplificador Operacional: Nao-idealidades}
+\roteiro{3}{Amplificador Operacional: Não-idealidades}
 \aturma{01}
 
 \autorum{Bernardo Manciola Lobo}{21/1026486}
@@ -40,16 +40,22 @@ conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o q
 
 \section{Introdução}
 
-Comece pelo problema, e não pelo circuito. Que necessidade de engenharia deu origem a esta
-topologia, onde você a encontraria em um equipamento real e o que aconteceria sem ela. Duas
-ou três referências ajudam aqui.
+Amplificadores operacionais são componentes muito úteis, por isso, são tema de diversas disciplinas dos cursos de engenharia.
+Por isso, por motivos de simplificação, muitas vezes são apresentados como componentes "perfeitos" tendo caracteristicas como:
+ganho infinito, resistensia de entrada infinita, curto virtual entre as entradas, entre outros.
+Essas caracteristicas são apenas aproximações, que não condizem com o mundo real. Assim, existem "imperfeições", não idealidades. Algumas delas, são problemas para as suas aplicações, já outras, aproveitam dessas imperfeições.
 
-Depois estreite o foco: que aspecto você vai investigar, sob quais condições, e por que
-vale a pena verificá-lo. Se o roteiro impõe alguma restrição de projeto que parece
-arbitrária, aproveite para explicar a razão dela.
+Um exemplo onde a não idealidade atrapalha é a tensão de offset em aparelhos de eletrocardiograma.
+Em um eletrocardiograma simplificadamente, o objetivo é comparar o potencial em dois eletrodos (esquerdo e direito) posicionados no corpo humano e desta forma inferir os sinais eletricos que são gerados com o batimento do coração.
+O problema é que os sinais eletricos gerados são extremamente pequenos, e a tensão de offset do amplificador, a qual só é aplicada em um dos eletrodos e mesmo podendo ser poucos mili volts, quando amplificada, faz dois sinais iguais ter uma grande diferença - atrapalhando a interpretação dos sinais. Esse problema é resolvível caso a tensão de offset seja conhecida.
 
-No último parágrafo, diga qual é o objetivo deste relatório e como o texto está
-organizado, seção a seção.
+Um outro exemplo onde a não idealidade agora pode ser benéfica, é o efeito do slew rate na distorção de sinais de ondas sonoras.
+Guitarristas, principalmente, apreciam a distorção do sinal sonoro para a criação de novas notas musicais. 
+Comparado com diodos, os quais funcionam "cortando" os sinais mais potentes, por exemplo, amplificadores operacionais permitem atingir uma distorção mais suave ao transformar as ondas senoidais do sinal sonoro em ondas triangulares por meio do slew rate. Para essa amplicação, amplificadores com slew rate baixo, uma característica ruim na maioria dos contextos, são preferidos aos outros com slew rate muito grande.
+
+Assim, foram escolhidos 4 não idealidades para investigar: a tensão de offset, a corrente de polarização, a resposta em frequência e o slew rate. Esses parametros serão estudados nos circuitos integrados LM741 e TL064, ambos da Texas Intruments.
+O objetivo deste relatório é discutir, medir e verificar essas 4 não idealidades. 
+O texto está organizado nas secções: Fundamentação teórica, Especificação e projeto, Metodologia, Simulação e Resultados.
 
 \section{Fundamentação teórica}
 
