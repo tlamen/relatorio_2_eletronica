@@ -237,50 +237,49 @@ apenas o nome do circuito.}
 
 \section{Resultados}
 
-Apresente o que vocês obtiveram, em tabela sempre que houver mais de dois números. Use o
-número de algarismos significativos que a medição sustenta, e não todos os que o programa
-imprime. Para cada leitura de bancada, informe o instrumento e a incerteza.
-
-Guarde a interpretação para a seção seguinte: aqui vocês mostram o que encontraram.
-
-\subsection{Projeto de cada integrante}
-
-Uma tabela por integrante, ou uma tabela única com uma coluna por integrante, confrontando
-o valor analítico e o simulado para cada grandeza pedida no roteiro.
-
 \subsection{Circuito montado}
 
-Para cada grandeza, o que o projeto do integrante montado previa, o que a simulação com os
-valores medidos devolveu, e o que vocês mediram na bancada. É desta tabela que sai a
-discussão.
+Abaixo são apresentados os resultados numéricos obtidos no projeto analítico ideal, na simulação
+da montagem e nas medições efetuadas na bancada. Os erros percentuais foram calculados tomando comoreferência a simulação da montagem.
 
 \subsubsection{Tensao de offset - Resultados}
+
+Para medir a tensão de offset, foi feito um amplificador não inversor com ganho de 101 e colocado a tensão das duas entradas sob o mesmo potencial.
+Depois, a saída dividia por 101 é a tensão de offset.
+
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
 \textbf{Erro} \\
 \midrule
-  Tensao de offset LM741 & & & \SI{-148,49}{\milli\volt} & \\
-  Tensao de offset TL068 & & & \SI{-2,663}{\milli\volt} & \\
+Tensao de offset LM741 & \SI{1}{\milli\volt} & \SI{1,09}{\milli\volt} & \SI{148,49}{\milli\volt} & \SI{372,29}{\percent} \\
+Tensao de offset TL068 & \SI{3}{\milli\volt} & \SI{26}{\micro\volt} & \SI{2,663}{\milli\volt} & \SI{10342,3}{\percent} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\subsubsection{Corrente de polarizacao - Resultados}
+\subsubsection{Corrente de polarização - Resultados}
+
+Para a corrente de polarização, pegou-se o experimento da tensão de offset e adicionou um resistor entre a entrada não inversora e a referencia,
+para assim, com o valor da saída, calcular a corrente de polarização.
+
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
 \textbf{Erro} \\
 \midrule
-  Corrente de polarizacao LM741 & & & \SI{-32,4}{\nano\ampere} & \\
-  Corrente de polarizacao TL068 & & & \SI{-17,17}{\nano\ampere} & \\
+Corrente de polarizacao LM741 & \SI{80}{\nano\ampere} & \SI{57,7}{\nano\ampere} & \SI{32,4}{\nano\ampere} & \SI{-56,14}{\percent} \\
+Corrente de polarizacao TL068 & \SI{20}{\nano\ampere} & \SI{0}{\nano\ampere} & \SI{17,17}{\nano\ampere} & N/A \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \subsubsection{Resposta em frequencia - Resultados}
+
+Para medir a resposta em frequencia, foi aplicado uma pequena tensão na entrada para as diferentes frequencias.
+
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
@@ -289,51 +288,64 @@ discussão.
 \midrule
   $G_1 = 0,707G_{1ideal}$ & & & & \\
   $G_2 = 0,707G_{2ideal}$ & & & & \\
-  $V_{out}$ de $G_1$ para \SI{100}{\hertz} & & & \SI{236}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{14,51}{\kilo\hertz} & & & \SI{228}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{28,92}{\kilo\hertz} & & & \SI{216}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{43,33}{\kilo\hertz} & & & \SI{192}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{57,74}{\kilo\hertz} & & & \SI{172}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{72,5}{\kilo\hertz} & & & \SI{156}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{115,3}{\kilo\hertz} & & & \SI{124}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{120}{\kilo\hertz} & & & \SI{118}{\milli\volt} & \\
-
-  188m de vpp
-  $V_{out}$ de $G_1$ para \SI{100}{\hertz} & & & \SI{2440}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{14,51}{\kilo\hertz} & & & \SI{2320}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{28,92}{\kilo\hertz} & & & \SI{2040}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{43,33}{\kilo\hertz} & & & \SI{1760}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{57,74}{\kilo\hertz} & & & \SI{1560}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{72,5}{\kilo\hertz} & & & \SI{1320}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{115,3}{\kilo\hertz} & & & \SI{960}{\milli\volt} & \\
-  $V_{out}$ de $G_1$ para \SI{120}{\kilo\hertz} & & & \SI{960}{\milli\volt} & \\
-
-  20m de vpp
-  $V_{out}$ de $G_2$ para \SI{100}{\hertz} & & & \SI{2120}{\milli\volt} & \\
-  $V_{out}$ de $G_2$ para \SI{14,51}{\kilo\hertz} & & & \SI{920}{\milli\volt} & \\
-  $V_{out}$ de $G_2$ para \SI{28,92}{\kilo\hertz} & & & \SI{520}{\milli\volt} & \\
-  $V_{out}$ de $G_2$ para \SI{43,33}{\kilo\hertz} & & & \SI{360}{\milli\volt} & \\
-  $V_{out}$ de $G_2$ para \SI{57,74}{\kilo\hertz} & & & \SI{320}{\milli\volt} & \\
-  $V_{out}$ de $G_2$ para \SI{72,5}{\kilo\hertz} & & & \SI{240}{\milli\volt} & \\
-  $V_{out}$ de $G_2$ para \SI{115,3}{\kilo\hertz} & & & \SI{200}{\milli\volt} & \\
-  $V_{out}$ de $G_2$ para \SI{120}{\kilo\hertz} & & & \SI{160}{\milli\volt} & \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\subsubsection{Slew Rate - Resultados}
+Com o ganho de 13, foi aplicado uma entrada de $V_{pp} = \SI{188}{\milli\volt} $
+
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
 \textbf{Erro} \\
 \midrule
-  Frequencia triangulo LM741 & & & \SI{42}{\kilo\hertz} & \\
-  Frequencia triangulo TL068 & & & \SI{150}{\kilo\hertz} & \\
+$V_{out}$ de $G_1$ para \SI{100}{\hertz} & \SI{2444}{\milli\volt} & \SI{2444}{\milli\volt} & \SI{2440}{\milli\volt} & \SI{-0,16}{\percent} \\
+$V_{out}$ de $G_1$ para \SI{14,51}{\kilo\hertz} & \SI{2444}{\milli\volt} & \SI{2401,7}{\milli\volt} & \SI{2320}{\milli\volt} & \SI{-3,40}{\percent} \\
+$V_{out}$ de $G_1$ para \SI{28,92}{\kilo\hertz} & \SI{2444}{\milli\volt} & \SI{2287,7}{\milli\volt} & \SI{2040}{\milli\volt} & \SI{-10,83}{\percent} \\
+$V_{out}$ de $G_1$ para \SI{43,33}{\kilo\hertz} & \SI{2444}{\milli\volt} & \SI{2129,4}{\milli\volt} & \SI{1760}{\milli\volt} & \SI{-17,35}{\percent} \\
+$V_{out}$ de $G_1$ para \SI{57,74}{\kilo\hertz} & \SI{2444}{\milli\volt} & \SI{1954,6}{\milli\volt} & \SI{1560}{\milli\volt} & \SI{-20,19}{\percent} \\
+$V_{out}$ de $G_1$ para \SI{72,5}{\kilo\hertz} & \SI{2444}{\milli\volt} & \SI{1778,5}{\milli\volt} & \SI{1320}{\milli\volt} & \SI{-25,78}{\percent} \\
+$V_{out}$ de $G_1$ para \SI{115,3}{\kilo\hertz} & \SI{2444}{\milli\volt} & \SI{1356,3}{\milli\volt} & \SI{960}{\milli\volt} & \SI{-29,22}{\percent} \\
+$V_{out}$ de $G_1$ para \SI{120}{\kilo\hertz} & \SI{2444}{\milli\volt} & \SI{1318,9}{\milli\volt} & \SI{960}{\milli\volt} & \SI{-27,21}{\percent} \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-  Slew rate LM741 & & & \SI{0,48}{\volt/\micro\second} & \\
-  Slew rate TL068 & & & \SI{2,18}{\volt/\micro\second} & \\
+Com o ganho de 101, foi aplicado uma entrada de $V_{pp} = \SI{20}{\milli\volt} $
 
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+\textbf{Erro} \\
+\midrule
+$V_{out}$ de $G_2$ para \SI{100}{\hertz} & \SI{2020}{\milli\volt} & \SI{2020}{\milli\volt} & \SI{2120}{\milli\volt} & \SI{+4,95}{\percent} \\
+$V_{out}$ de $G_2$ para \SI{14,51}{\kilo\hertz} & \SI{2020}{\milli\volt} & \SI{1138,5}{\milli\volt} & \SI{920}{\milli\volt} & \SI{-19,19}{\percent} \\
+$V_{out}$ de $G_2$ para \SI{28,92}{\kilo\hertz} & \SI{2020}{\milli\volt} & \SI{654,2}{\milli\volt} & \SI{520}{\milli\volt} & \SI{-20,51}{\percent} \\
+$V_{out}$ de $G_2$ para \SI{43,33}{\kilo\hertz} & \SI{2020}{\milli\volt} & \SI{449,9}{\milli\volt} & \SI{360}{\milli\volt} & \SI{-19,98}{\percent} \\
+$V_{out}$ de $G_2$ para \SI{57,74}{\kilo\hertz} & \SI{2020}{\milli\volt} & \SI{341,3}{\milli\volt} & \SI{320}{\milli\volt} & \SI{-6,24}{\percent} \\
+$V_{out}$ de $G_2$ para \SI{72,5}{\kilo\hertz} & \SI{2020}{\milli\volt} & \SI{273,3}{\milli\volt} & \SI{240}{\milli\volt} & \SI{-12,18}{\percent} \\
+$V_{out}$ de $G_2$ para \SI{115,3}{\kilo\hertz} & \SI{2020}{\milli\volt} & \SI{172,8}{\milli\volt} & \SI{200}{\milli\volt} & \SI{+15,74}{\percent} \\
+$V_{out}$ de $G_2$ para \SI{120}{\kilo\hertz} & \SI{2020}{\milli\volt} & \SI{166,1}{\milli\volt} & \SI{160}{\milli\volt} & \SI{-3,67}{\percent} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Slew Rate - Resultados}
+
+Foi aplicado uma tensão senoide de $V_p = \SI{2,5}{\volt}$ na entrada, observado a frequencia onde a saída se tornava uma onda triangular e assim calculado o slew rate.
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+\textbf{Erro} \\
+\midrule
+Frequencia triangulo LM741 & \SI{45,2}{\kilo\hertz} & \SI{45,2}{\kilo\hertz} & \SI{42}{\kilo\hertz} & \SI{-7,08}{\percent} \\
+Frequencia triangulo TL068 & \SI{180}{\kilo\hertz} & \SI{180}{\kilo\hertz} & \SI{150}{\kilo\hertz} & \SI{-16,67}{\percent} \\
+Slew rate LM741 & \SI{0,5}{\volt/\micro\second} & \SI{0,50}{\volt/\micro\second} & \SI{0,48}{\volt/\micro\second} & \SI{-4,00}{\percent} \\
+Slew rate TL068 & \SI{3,5}{\volt/\micro\second} & \SI{3,50}{\volt/\micro\second} & \SI{2,18}{\volt/\micro\second} & \SI{-37,71}{\percent} \\
 \bottomrule
 \end{tabular}
 \end{center}
