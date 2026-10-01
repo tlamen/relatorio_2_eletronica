@@ -57,71 +57,161 @@ Assim, foram escolhidos 4 não idealidades para investigar: a tensão de offset,
 O objetivo deste relatório é discutir, medir e verificar essas 4 não idealidades. 
 O texto está organizado nas secções: Fundamentação teórica, Especificação e projeto, Metodologia, Simulação e Resultados.
 
-\section{Fundamentação teórica}
+\section{Fundamentação Teórica}
 
-Deduza as expressões que você vai usar mais adiante, partindo das leis de circuito.
-Numere as equações que forem retomadas no restante do texto.
+Esta seção deduz as expressões usadas no projeto e na análise dos quatro ensaios. As hipóteses de amplificador ideal — ganho infinito, impedâncias de entrada infinitas, impedância de saída nula, offset nulo e banda infinita — são abandonadas uma a uma, e cada abandono gera uma expressão que será confrontada com a medição.
+
+\subsection{Tensão de offset}
+
+A assimetria do par de entrada equivale a uma fonte contínua $V_{os}$ em série com uma das entradas. No amplificador não inversor de ganho $G$, com a entrada não inversora aterrada, essa fonte é amplificada como se fosse sinal, e a saída fica
 
 \begin{equation}
-H(j\omega) = \frac{1}{1+j\omega RC}
-\label{eq:exemplo}
+V_o = G \, V_{os} \qquad \Rightarrow \qquad V_{os} = \frac{V_o}{G} .
+\label{eq:offset}
 \end{equation}
 
-Toda grandeza que aparecer nos resultados precisa ter sido apresentada aqui. Explique o que
-cada termo significa fisicamente, não apenas o que a letra representa. Registre as hipóteses
-que você está assumindo, como linearidade ou idealidade dos componentes: se alguma delas
-não se sustentar no experimento, você vai retomá-la na discussão.
+No ensaio da Seção~2.1, $G = 101$, com $R_f = \SI{100}{\kilo\ohm}$ e $R_g = \SI{1}{\kilo\ohm}$, de modo que a tensão de offset do modelo é a saída dividida por 101.
 
-Se o circuito tiver regimes de funcionamento distintos, apresente cada um e diga o que os
-separa.
+\subsection{Corrente de polarização}
 
-\section{Especificação e projeto}
+As entradas drenam uma corrente contínua $I_b$. Sobre a resistência vista pela entrada, essa corrente produz uma tensão que se soma ao offset. Com um resistor $R_s$ entre o terra e a entrada não inversora, a tensão nessa entrada passa a $-I_b R_s$ (o sinal depende do sentido da corrente), e a saída fica
 
-Esta seção transcreve a especificação numérica de cada integrante, calculada a partir dos nove dígitos da matrícula conforme as Seções~2.2 a~2.5 do roteiro, e leva cada parâmetro até o valor de componente na série E12. A Seção~3.1 reúne a especificação da equipe, usada na bancada; a Seção~3.2 apresenta o projeto individual; e a Seção~3.3 registra os valores medidos dos resistores efetivamente montados.
+\begin{equation}
+V_o = G \left( V_{os} - I_b R_s \right) .
+\label{eq:polarizacao}
+\end{equation}
+
+A diferença entre a saída com $R_s$ e a saída sem $R_s$ isola o termo da corrente:
+
+\begin{equation}
+\Delta V_o = -G \, I_b \, R_s \qquad \Rightarrow \qquad I_b = \frac{\Delta V_o}{G \, R_s} .
+\label{eq:ib}
+\end{equation}
+
+Com $G = 101$ e $R_s = \SI{100}{\kilo\ohm}$, a corrente de polarização é a variação da saída dividida por $101 \times 100$ kΩ.
+
+\subsection{Resposta em frequência}
+
+O ganho em malha aberta cai com a frequência como um passa-baixas de primeira ordem, com um produto ganho por banda constante, o \textit{GBW}. Com a realimentação fixando o ganho em $G$, a frequência de corte do estágio é
+
+\begin{equation}
+f_c = \frac{\text{GBW}}{G} .
+\label{eq:fc}
+\end{equation}
+
+A resposta em frequência do estágio realimentado é
+
+\begin{equation}
+A(f) = \frac{G}{\sqrt{1 + (f/f_c)^2}} ,
+\label{eq:resposta}
+\end{equation}
+
+de modo que, em $f = f_c$, o ganho cai a $1/\sqrt{2} \approx 0{,}707$ do valor em baixa frequência. Multiplicando $G$ por $f_c$ recupera-se o produto ganho por banda, que deve ser o mesmo para os dois ganhos do mesmo amplificador.
+
+\subsection{Slew rate}
+
+A saída não varia mais rápido que o slew rate $SR$. Uma senoide de amplitude $V_p$ e frequência $f$ exige, na passagem por zero, uma taxa de variação
+
+\begin{equation}
+\left. \frac{dv_o}{dt} \right|_{\max} = 2\pi f V_p .
+\label{eq:slew}
+\end{equation}
+
+Quando essa taxa ultrapassa o slew rate do amplificador, a saída deixa de ser senoide e vira triângulo. A frequência a partir da qual isso ocorre é
+
+\begin{equation}
+f_{\max} = \frac{SR}{2\pi V_p} .
+\label{eq:fmax}
+\end{equation}
+
+Diferentemente da largura de banda, que é linear, o limite por slew rate depende da amplitude: quanto maior $V_p$, menor a frequência em que a distorção aparece.
+
+\section{Especificação e Projeto}
+
+Esta seção transcreve a especificação numérica de cada integrante, calculada a partir dos nove dígitos da matrícula, e leva cada parâmetro até o valor de componente na série E12.
 
 \subsection{Especificação da equipe}
 
-A equipe~2 adotou, para a montagem em bancada, a especificação da Tabela~\ref{tab:equipe}. Esses valores foram usados no projeto do circuito único que a equipe montou, e são a referência contra a qual a simulação da montagem e a medição são confrontadas.
+A equipe~2 adotou, para a bancada, o ganho baixo $G_1 = 13$ e a amplitude de pico $V_p = \SI{2,5}{\volt}$. O ganho alto é $G_2 = 101$ para todas as equipes, com $R_f = \SI{100}{\kilo\ohm}$ e $R_g = \SI{1}{\kilo\ohm}$.
 
 \begin{table}[h]
 \centering
-\caption{Especificação da equipe~2, conforme a Seção~3.1 do roteiro.}
-\label{tab:equipe}
+\caption{Especificação da equipe~2.}
+\label{tab:equipe_r3}
 \begin{tabular}{lc}
 \hline
 Grandeza & Valor \\
 \hline
-  Ganho baixo $G_1$ & $11\%$ \\
-  $V_p$ do slew rate & \SI{2,5}{\volt} \\
+$G_1$ (ganho baixo) & 13 \\
+$G_2$ (ganho alto) & 101 \\
+$V_p$ (slew rate) & \SI{2,5}{\volt} \\
+$R_f$ (ganho 101) & \SI{100}{\kilo\ohm} \\
+$R_g$ (ganho 101) & \SI{1}{\kilo\ohm} \\
 \hline
 \end{tabular}
 \end{table}
 
-Transcreva os parâmetros que a sua matrícula determina, mostrando a conta a partir dos
-dígitos.
+\subsection{Especificação individual}
 
-\begin{espec}
-Matrícula \mat{00/0000000}. \\
-Preencha aqui os parâmetros calculados a partir dos dígitos, conforme o roteiro.
-\end{espec}
+Cada integrante recebeu uma especificação distinta, derivada da própria matrícula. A Tabela~\ref{tab:individuais_r3} reúne os parâmetros calculados.
 
-Leve cada parâmetro até o valor de componente, deixando visível a expressão que você
-inverteu para chegar lá. Depois escolha o valor na série comercial e calcule o quanto essa
-escolha afasta você do valor ideal. A tabela abaixo organiza isso, e é ela que depois
-permite separar o que veio do projeto do que veio da montagem.
-
-\begin{center}
-\begin{tabular}{@{}lrrr@{}}
-\toprule
-\textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
-\midrule
-& & & \\
-\bottomrule
+\begin{table}[h]
+\centering
+\caption{Especificação individual dos integrantes.}
+\label{tab:individuais_r3}
+\begin{tabular}{lccc}
+\hline
+Grandeza & 211026486 & 221035442 & 241039879 \\
+\hline
+$EF$ & 26 & 35 & 39 \\
+$GH$ & 48 & 44 & 87 \\
+$I$ & 6 & 2 & 9 \\
+$G_1$ & 25 & 20 + 14 = 34 & 20 + 18 = 38 \\
+$G_2$ & 87 & 83 & 80 + 5 = 85 \\
+$V_p$ & 5,0 & 3,0 & 6,5 \\
+\hline
 \end{tabular}
-\end{center}
+\end{table}
 
-Se mais de uma combinação atender à especificação, diga por que escolheu esta, mostrando
-que as outras ficavam mais distantes.
+\subsection{Projeto dos resistores}
+
+\subsubsection{Ganho alto ($G_2 = 101$)}
+
+Fixo para todas as equipes: $R_f = \SI{100}{\kilo\ohm}$ e $R_g = \SI{1}{\kilo\ohm}$, o que dá $G_2 = 1 + 100/1 = 101$.
+
+\subsubsection{Ganho baixo ($G_1$ da equipe = 13)}
+
+Com um resistor por perna, entre os valores do laboratório, procura-se o par que realize $G_1 = 13$. A combinação escolhida é $R_f = \SI{12}{\kilo\ohm}$ e $R_g = \SI{1}{\kilo\ohm}$.
+
+
+\subsubsection{Ganhos individuais}
+
+Na etapa de simulação, cada integrante projeta seu próprio par de resistores para $G_1$ e $G_2$, conforme a Tabela~\ref{tab:individuais_r3}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Dimensionamento dos resistores e ganhos para cada integrante.}
+    \label{tab:resistores_integrantes}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{cccccccc}
+        \toprule
+        \textbf{Integrante (Matrícula)} & \textbf{Parâmetro} & \textbf{Ganho Teórico (\(G\))} & \textbf{\(R_f\) Adotado} & \textbf{\(R_g\) Adotado} & \textbf{Ganho Real} & \textbf{Desvio (\%)} \\
+        \midrule
+        \multirow{2}{*}{211026486} 
+             & \(G_1\) (Baixo) & 25 & \(12\,\text{k}\Omega + 12\,\text{k}\Omega\) & \(1\,\text{k}\Omega\) & 25,00 & 0,00\% \\
+             & \(G_2\) (Alto)  & 87 & \(18\,\text{k}\Omega + 68\,\text{k}\Omega\) & \(1\,\text{k}\Omega\) & 87,00 & 0,00\% \\
+        \midrule
+        \multirow{2}{*}{221035442} 
+             & \(G_1\) (Baixo) & 34 & \(33\,\text{k}\Omega\) & \(1\,\text{k}\Omega\) & 34,00 & 0,00\% \\
+             & \(G_2\) (Alto)  & 83 & \(82\,\text{k}\Omega\) & \(1\,\text{k}\Omega\) & 83,00 & 0,00\% \\
+        \midrule
+        \multirow{2}{*}{241039879} 
+             & \(G_1\) (Baixo) & 38 & \(10\,\text{k}\Omega + 27\,\text{k}\Omega\) & \(1\,\text{k}\Omega\) & 38,00 & 0,00\% \\
+             & \(G_2\) (Alto)  & 85 & \(2{,}7\,\text{k}\Omega + 82\,\text{k}\Omega\) & \(1\,\text{k}\Omega\) & 85,70 & 0,82\% \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
 
 \section{Metodologia}
 
@@ -135,105 +225,196 @@ parágrafo, ela provavelmente não precisa estar aqui.
 
 \subsection{Simulação de projeto, uma por integrante}
 
-teste
+\subsubsection{Tensão de offset}
 
-Cada integrante recebeu uma especificação diferente da própria matrícula, e portanto chegou
-a um dimensionamento diferente. Traga aqui \textbf{uma simulação por integrante}, cada uma
-com os componentes que aquela pessoa projetou. São elas que mostram se cada projeto cumpre
-o que foi pedido.
+\subsubsection{Corrente de polarização}
+
+\subsubsection{Resposta em frequência (211026486)}
+
+O arquivo \texttt{item\_3.asc} contém dois amplificadores não inversores com o LM741, alimentados pela mesma fonte de sinal, com os ganhos $G_1 = 25$ e $G_2 = 87$ da matrícula 211026486. O primeiro estágio usa $R_1 = \SI{22}{\kilo\ohm}$ e $R_2 = \SI{2,2}{\kilo\ohm}$ em série na realimentação, com $R_3 = \SI{1}{\kilo\ohm}$ no ramo inferior, o que dá $G_1 = 1 + 24{,}2/1 = 25{,}2$. O segundo usa $R_4 = \SI{68}{\kilo\ohm}$ e $R_5 = \SI{18}{\kilo\ohm}$ em série na realimentação, com $R_6 = \SI{1}{\kilo\ohm}$ no ramo inferior, o que dá $G_2 = 1 + 86/1 = 87{,}0$. A diretiva de análise é \texttt{.ac dec 50 10 10Meg}, conforme o roteiro. O esquemático está na Figura~\ref{fig:item3_esquema}, e as curvas de ganho e fase estão na Figura~\ref{fig:item3_ac}.
+
+No estágio de ganho baixo, o ganho em baixa frequência é de \SI{28}{\decibel}, que corresponde a $20 \log_{10}(25{,}2) = 28{,}03$~dB, e a curva começa a cair por volta de \SI{10}{\kilo\hertz}, com o cruzamento de $-3$~dB em relação ao valor de baixa frequência em torno de \SI{40}{\kilo\hertz}. No estágio de ganho alto, o ganho em baixa frequência é de \SI{39}{\decibel}, que corresponde a $20 \log_{10}(87) = 38{,}79$~dB, e o cruzamento de $-3$~dB ocorre em torno de \SI{12}{\kilo\hertz}. As fases acompanham: cada curva parte de $0^\circ$, passa por $-45^\circ$ na frequência de corte e tende a $-90^\circ$ uma década acima.
+
+O produto ganho por banda dos dois estágios é aproximadamente o mesmo: $25{,}2 \times 40~\text{kHz} \approx \SI{1,0}{\mega\hertz}$ e $87 \times 12~\text{kHz} \approx \SI{1,0}{\mega\hertz}$. Esse valor coincide com o GBW típico do LM741 segundo o datasheet, o que confirma que a frequência de corte do estágio realimentado segue a equação~\eqref{eq:fc} e que o produto ganho por banda é constante para o mesmo amplificador. Os valores exatos das frequências de corte, lidos no cursor do LTspice, estão na Tabela~\ref{tab:fc_sim}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{montagem_sim_3.png}
+\caption{Esquemático do \texttt{item\_3.asc}, com os dois amplificadores não inversores de ganhos $G_1 = 25{,}2$ e $G_2 = 87{,}0$.}
+\label{fig:item3_esquema}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{resultado_sim_3.png}
+\caption{Resposta em frequência do \texttt{item\_3.asc}: ganho (curvas superiores) e fase (curvas inferiores) dos dois estágios.}
+\label{fig:item3_ac}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\caption{Frequências de corte simuladas no \texttt{item\_3.asc}.}
+\label{tab:fc_sim}
+\begin{tabular}{lcccc}
+\hline
+Estágio & $G$ realizado & $f_c$ (simulado) & $G \cdot f_c$ & GBW datasheet \\
+\hline
+1 & 25,2 & \SI{40}{\kilo\hertz} & \SI{1,01}{\mega\hertz} & \SI{1}{\mega\hertz} \\
+2 & 87,0 & \SI{12}{\kilo\hertz} & \SI{1,04}{\mega\hertz} & \SI{1}{\mega\hertz} \\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{Montagem em bancada - Elementos usados}
 
-A equipe monta um circuito só. Diga \textbf{de quem} é a especificação que vocês montaram e
-por que escolheram essa. Informe os valores \textbf{medidos} de cada componente que vocês
-usaram, e não os valores nominais impressos no corpo da peça, porque a diferença entre os
-dois explica boa parte do que vocês vão observar.
-
+A equipe montou o circuito correspondente à especificação da equipe~2: ganho baixo $G_1 = 13$ e amplitude de pico $V_p = \SI{2,5}{\volt}$. O ganho alto é $G_2 = 101$ para todas as equipes, com $R_f = \SI{100}{\kilo\ohm}$ e $R_g = \SI{1}{\kilo\ohm}$, porque é também o ganho do ensaio de offset e a montagem é uma só. Antes de inserir cada resistor no protoboard, mediu-se o valor real com o multímetro; as tabelas abaixo registram esses valores, que são os usados nas contas do relatório. A alimentação seguiu a Seção~3.2 do roteiro: o par rastreado da fonte forneceu os \SI{\pm 15}{\volt}, com capacitores de desacoplamento de \SI{100}{\nano\farad} entre cada alimentação e o terra, junto aos pinos; as senoides vieram do gerador configurado para carga de alta impedância; e o comum do par rastreado, o terra do gerador e o da ponta do osciloscópio foram ligados ao mesmo ponto do protoboard. O multímetro, em tensão contínua, mediu as Seções~3.3 e~3.4, e o osciloscópio, com os dois canais, mediu as demais.
 
 \subsubsection{Tensao de offset}
 
+Montou-se o não inversor com $R_f = \SI{100}{\kilo\ohm}$ e $R_g = \SI{1}{\kilo\ohm}$, com a entrada não inversora ligada ao terra por um fio, e não deixada em aberto. Mediu-se a tensão contínua na saída com o multímetro e dividiu-se por 101 para obter a tensão de offset. Os valores dos componentes medidos estão na Tabela~\ref{tab:offset_comp}.
+
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
+\label{tab:offset_comp}
 \textbf{Grandeza} & \textbf{Nominal} & \textbf{Medido} & \textbf{Erro} \\
 \midrule
-  $R_f$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,62}{\kilo\ohm}$ & \\
-  $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{1}{\kilo\ohm}$ & \\
-  $C_{est}$ & $\SI{100}{\nano\farad}$ & $\SI{98}{\nano\farad}$ & \\
+  $R_f$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,62}{\kilo\ohm}$ & -1,38\% \\
+  $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{1}{\kilo\ohm}$ & 0,00\% \\
+  $C_{est}$ & $\SI{100}{\nano\farad}$ & $\SI{98}{\nano\farad}$ & -2,00\% \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\subsubsection{Corrente de polarizacao}
+\subsubsection{Corrente de polarização}
+
+Substituiu-se o fio da entrada não inversora por um resistor de \SI{100}{\kilo\ohm} ao terra e mediu-se de novo a saída. A diferença entre as duas leituras, dividida por 101 e por \SI{100}{\kilo\ohm}, é a corrente de polarização. O mesmo procedimento foi repetido com o TL064. Os valores dos componentes medidos estão na Tabela~\ref{tab:ib_comp}.
 
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
+\label{tab:ib_comp}
 \textbf{Grandeza} & \textbf{Nominal} & \textbf{Medido} & \textbf{Erro} \\
 \midrule
-  $R_f$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,62}{\kilo\ohm}$ & \\
-  $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{1}{\kilo\ohm}$ & \\
-  $R_{parasita} $ & $\SI{100}{\kilo\ohm}$ & $\SI{100,7}{\kilo\ohm}$ & \\
-  $C_{est}$ & $\SI{100}{\nano\farad}$ & $\SI{98}{\nano\farad}$ & \\
+  $R_f$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,62}{\kilo\ohm}$ & -1,38\% \\
+  $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{1}{\kilo\ohm}$ & 0,00\% \\
+  $R_{parasita} $ & $\SI{100}{\kilo\ohm}$ & $\SI{100,7}{\kilo\ohm}$ & +0,70\% \\
+  $C_{est}$ & $\SI{100}{\nano\farad}$ & $\SI{98}{\nano\farad}$ & -2,00\% \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\subsubsection{Resposta em frequencia}
+\subsubsection{Resposta em frequência}
+
+Montou-se o não inversor com o ganho baixo da equipe ($G_1 = 13$) e o não inversor com o ganho 101 ($G_2 = 101$). A senoide do gerador foi ajustada em \SI{100}{\hertz}, com amplitude tal que a saída tivesse \SI{200}{\milli\volt} de pico no ganho baixo e \SI{1}{\volt} de pico no ganho 101. Mantendo a entrada, subiu-se a frequência e mediu-se a amplitude da saída em seis a oito valores por curva. Os valores dos componentes medidos estão na Tabela~\ref{tab:fc_comp}.
 
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
+\label{tab:fc_comp}
 \textbf{Grandeza} & \textbf{Nominal} & \textbf{Medido} & \textbf{Erro} \\
 \midrule
-  $R_f$ & $\SI{12}{\kilo\ohm}$ & $\SI{11,74}{\kilo\ohm}$ & \\
-  $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,982}{\kilo\ohm}$ & \\
+  $R_f$ & $\SI{12}{\kilo\ohm}$ & $\SI{11,74}{\kilo\ohm}$ & -2,17\% \\
+  $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,982}{\kilo\ohm}$ & -1,80\% \\
 
-  $R_f$ & $\SI{10}{\kilo\ohm}$ & $\SI{10}{\kilo\ohm}$ & \\
+  $R_f$ & $\SI{10}{\kilo\ohm}$ & $\SI{10}{\kilo\ohm}$ & 0,00\% \\
 
-  $R_{f2}$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,60}{\kilo\ohm}$ & \\
-  $R_{g2}$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,985}{\kilo\ohm}$ & \\
+  $R_{f2}$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,60}{\kilo\ohm}$ & -1,40\% \\
+  $R_{g2}$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,985}{\kilo\ohm}$ & -1,50\% \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \subsubsection{Slew rate}
 
+Montou-se o seguidor de tensão com o LM741 e aplicou-se uma senoide de \SI{1}{\kilo\hertz} com amplitude $V_p = \SI{2,5}{\volt}$ da equipe. Subiu-se a frequência até que a saída deixasse de ser senoide e virasse triângulo, e registrou-se essa frequência. Com os cursores do osciloscópio, mediu-se a inclinação da rampa em volt por microssegundo. O procedimento foi repetido com o TL064, subindo a frequência de novo até o triângulo aparecer. Não há componentes para medição nesta etapa.
 
 \subsection{Simulação da montagem}
 
-Refaça a simulação usando os valores medidos dos componentes que estavam na bancada. Ela
-não substitui a simulação de projeto: é a comparação entre as duas que separa o efeito da
-tolerância dos componentes do restante.
+Refez-se a simulação com os valores de componente efetivamente usados na bancada, e não com os valores de projeto da Seção~4.1. O objetivo é separar duas causas de desvio que a medição sozinha não distingue: a tolerância dos componentes que a equipe pegou e o comportamento do circuito real que o modelo ideal não representa. Se a simulação da montagem se aproximar da medição, a diferença entre projeto e bancada vem quase toda da tolerância; se ela continuar distante, o que sobra aponta para algo fora do modelo, como a impedância da ponta de prova, a banda do amplificador ou a resistência de contato do protoboard. Os arquivos da Seção~4.1 foram reaproveitados, alterando apenas os valores dos resistores e, quando necessário, as amplitudes de entrada e eventuais erros na simulação inicial para coincidir com as ajustadas no gerador. Os valores medidos usados nesta seção estão nas Tabelas~\ref{tab:offset_comp}, \ref{tab:ib_comp} e \ref{tab:fc_comp}.
 
-\begin{nota}{Três comparações, três causas diferentes}
-Ao longo do relatório vocês vão confrontar três pares de resultados. Cada um responde a uma
-pergunta distinta, e vale mantê-los separados na hora de discutir.
+\subsubsection{Tensão de offset}
 
-\smallskip
-\textbf{Cálculo analítico contra simulação de projeto.} A conta está certa? Se aqui houver
-diferença, procure na álgebra ou no esquemático.
+Na bancada, o não inversor de ganho 101 foi montado com $R_f = \SI{98,62}{\kilo\ohm}$ e $R_g = \SI{1,000}{\kilo\ohm}$, com a entrada não inversora aterrada. Repetiu-se a análise \texttt{.op} do \texttt{item\_1.asc} com esses valores, e a tensão de offset do modelo foi obtida dividindo a saída por $G = 1 + 98{,}62/1{,}000 = 99{,}62$
 
-\smallskip
-\textbf{Simulação de projeto contra simulação da montagem.} Quanto custou a tolerância dos
-componentes? A diferença aqui é a distância entre o valor nominal e o valor real da peça
-que vocês pegaram.
+> **[INSERIR: com os valores medidos, o ganho não é mais 101. Recalcule $G = 1 + R_f/R_g$ com os valores medidos antes de dividir a saída para obter $V_{os}$. O valor de $V_{os}$ deve ser $V_o/G$, e não $V_o/101$.]**
 
-\smallskip
-\textbf{Simulação da montagem contra medição.} O modelo descreve o circuito real? Diferença
-aqui aponta algo que o modelo não representa, como a resistência série do indutor, a
-impedância da ponta de prova ou a banda do instrumento.
-\end{nota}
+Os resultados estão na Tabela~\ref{tab:offset_sim_bancada}.
 
-\begin{figure}[htb]
+\begin{table}[h]
 \centering
-% \includegraphics[width=0.8\linewidth]{arquivo.png}
-\fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
-  substitua por \texttt{\textbackslash includegraphics}}}
-\caption{Legenda descritiva. Diga o que a figura mostra e o que nela é relevante, e não
-apenas o nome do circuito.}
-\label{fig:exemplo}
-\end{figure}
+\caption{Simulação da montagem: tensão de offset.}
+\label{tab:offset_sim_bancada}
+\begin{tabular}{lccc}
+\hline
+Peça & $V_o$ simulado & $V_{os}$ simulado & $V_{os}$ datasheet \\
+\hline
+LM741 & \SI{94,0}{\milli\volt} & \SI{0,9}{\milli\volt} & \SI{1}{\milli\volt} a \SI{5}{\milli\volt} \\
+TL064 & \SI{2,7}{\milli\volt} & \SI{0,03}{\milli\volt} & \SI{3}{\milli\volt} a \SI{10}{\milli\volt} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Corrente de polarização}
+
+Na bancada, o resistor de entrada foi medido em \SI{100,7}{\kilo\ohm}, e os resistores de realimentação em \SI{98,62}{\kilo\ohm} e \SI{1,000}{\kilo\ohm}. Repetiu-se a análise \texttt{.op} do \texttt{item\_2.asc} (LM741) e do \texttt{item\_5.asc} (TL064) com esses valores, nas duas condições: com o resistor de entrada e com o fio. A corrente de polarização é obtida por
+
+\begin{equation}
+I_b = \frac{\Delta V_o}{G \, R_s} , \qquad G = 1 + \frac{R_f}{R_g} .
+\label{eq:ib_sim_bancada}
+\end{equation}
+
+Os resultados estão na Tabela~\ref{tab:ib_sim_bancada}.
+
+\begin{table}[h]
+\centering
+\caption{Simulação da montagem: corrente de polarização.}
+\label{tab:ib_sim_bancada}
+\begin{tabular}{lcccc}
+\hline
+Peça & $V_o$ sem $R_s$ & $V_o$ com $R_s$ & $\Delta V_o$ & $I_b$ \\
+\hline
+LM741 & \SI{0,09}{\volt} & \SI{1,12}{\volt} & \SI{1,03}{\volt} & \SI{10,4}{\milli\ampere} \\
+TL064 & \SI{2,67}{\milli\volt} & \SI{2,67}{\milli\volt} & \SI{0,00}{\volt} & \SI{0,00}{\milli\ampere} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Resposta em frequência}
+
+Na bancada, os resistores do ganho baixo foram medidos em $R_f = \SI{11,74}{\kilo\ohm}$ e $R_g = \SI{0,982}{\kilo\ohm}$ (ou $R_f = \SI{10,000}{\kilo\ohm}$ e $R_g = \SI{0,982}{\kilo\ohm}$, conforme o par efetivamente montado), e os do ganho alto em $R_{f2} = \SI{98,60}{\kilo\ohm}$ e $R_{g2} = \SI{0,985}{\kilo\ohm}$. Repetiu-se a análise \texttt{.ac} do \texttt{item\_3.asc} com esses valores. Os ganhos realizados são $G_1 = 1 + 11{,}74/0{,}982 = 12{,}96$ e $G_2 = 1 + 98{,}60/0{,}985 = 101{,}10$. As frequências de corte e os produtos ganho por banda estão na Tabela~\ref{tab:fc_sim_bancada}.
+
+\begin{table}[h]
+\centering
+\caption{Simulação da montagem: resposta em frequência.}
+\label{tab:fc_sim_bancada}
+\begin{tabular}{lcccc}
+\hline
+Estágio & $G$ realizado & $f_c$ simulado & $G \cdot f_c$ & GBW datasheet \\
+\hline
+Ganho baixo & 12,96 & \SI{74,49}{\kilo\hertz} & \SI{965,39}{\kilo\hertz} & \SI{1}{\mega\hertz} \\
+Ganho alto & 101,10 & \SI{10,83}{\kilo\hertz} & \SI{1,09}{\mega\hertz} & \SI{1}{\mega\hertz} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Slew rate}
+
+Na bancada, o seguidor foi montado com $V_p = \SI{2,5}{\volt}$. Repetiu-se a análise \texttt{.tran} do \texttt{item\_4.asc} (LM741) e do \texttt{item\_6.asc} (TL064) com essa amplitude. Para o LM741, usaram-se as frequências de [INSERIR] e [INSERIR]; para o TL064, as de [INSERIR] e [INSERIR]. A inclinação da rampa foi medida no cursor do LTspice. Os resultados estão na Tabela~\ref{tab:sr_sim_bancada}.
+
+\begin{table}[h]
+\centering
+\caption{Simulação da montagem: slew rate.}
+\label{tab:sr_sim_bancada}
+\begin{tabular}{lcccc}
+\hline
+Peça & $f$ da rampa & $SR$ simulado & $SR$ datasheet & $f_{\max}$ teórica \\
+\hline
+LM741 & \SI{30}{\kilo\hertz} & \SI{0,32}{\volt / \micro\second} & \SI{0,5}{\volt\per\micro\second} & \SI{31,8}{\kilo\hertz} \\
+TL064 & \SI{200}{\kilo\hertz} & \SI{3,37}{\volt\per\micro\second} & \SI{3,5}{\volt\per\micro\second} & \SI{222,8}{\kilo\hertz} \\
+\hline
+\end{tabular}
+\end{table}
 
 \section{Resultados}
 
