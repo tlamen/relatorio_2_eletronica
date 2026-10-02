@@ -34,9 +34,7 @@
 \capa
 
 \begin{resumo}
-Escreva este parágrafo por último, com 100 a 150 palavras. Diga o que você projetou, sob
-qual especificação, o que simulou ou mediu, o principal resultado numérico e a que
-conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o que encontrou.
+Este relatório analisou as não-idealidades dos amplificadores operacionais LM741 e TL064, considerando tensão de offset, corrente de polarização, resposta em frequência e slew rate. Projetou-se e montou-se um circuito amplificador não inversor com ganhos de $G_1 = 13$ e $G_2 = 101$, sob amplitude de $V_p = 2{,}5\text{ V}$. A simulação e as medições em bancada confirmaram a relação de produto ganho por banda constante (~1 MHz) e os limites de variação de taxa. Para o LM741, o slew rate medido foi de $0{,}48\text{ V/}\mu\text{s}$ (desvio de -4,00\% em relação à simulação), enquanto o TL064 mostrou-se cerca de 4,54 vezes mais rápido ($2{,}18\text{ V/}\mu\text{s}$). Conclui-se que os modelos teóricos e simulações preveem satisfatoriamente o comportamento real, embora imperfeições e limitações de registro tenham gerado discrepâncias quantitativas nos ensaios de offset e polarização.   
 \end{resumo}
 
 \section{Introdução}
@@ -255,7 +253,7 @@ $V_{os} = |V_o|/101$ & \SI{0,943}{\milli\volt} & \SI{1}{\milli\volt} a \SI{5}{\m
 
 \subsubsection{Corrente de polarização (221035442)}
 
-Na figura \ref{fid:item2_esquema}, foram montados dois circuitos. O primeiro é um amplificador não inversor de ganho 101. A partir dele é obtido o valor de $V_{out1} = \SI{111,12}{\milli\volt}$ do amplificador. Este $V_{out1}$ agrega outras não idealidades como a tensão de offset.
+Na figura \ref{fig:item2_esquema}, foram montados dois circuitos. O primeiro é um amplificador não inversor de ganho 101. A partir dele é obtido o valor de $V_{out1} = \SI{111,12}{\milli\volt}$ do amplificador. Este $V_{out1}$ agrega outras não idealidades como a tensão de offset.
 Depois, no outro circuito, é inserido uma resistência $R_s = \SI{100}{\kilo\ohm}$. Esse resistor é especialmente de alto valor para que a baixa corrente de polarização, que costuma ser na casa de dezenas de nano Amperes, seja multiplicado pela lei de Ohm: $V = IR$, $V = i10^{-8}*100*10^3 = i*10^{-3}$, ou seja, surge uma tensão $V^+$ na casa de mili volts.
 
 Essa tensão pode ser difícil de medir em um experimento real, então, como alternativa, é possível obtê-la de forma algébrica ao seguir: primeiro medindo a tensão $V_{out2} = \SI{-472,85}{\milli\volt}$ do amplificador. Segundo, é removido a tensão de offset: $\Delta V = V_{out2} - V_{out1} = \SI{583,97}{\milli\volt}$. Terceiro, é removido o ganho do amplificador para obter $V^+$, ou seja $V^+ = \frac{\Delta V}{101} = \SI{5,781}{\milli\volt}$. Finalmente, com a lei de Ohm, faz $I_b = \frac{V^+}{R_s} = \SI{57,81}{\nano\ampere}$.
@@ -354,9 +352,6 @@ Montou-se o não inversor com o ganho baixo da equipe ($G_1 = 13$) e o não inve
 \midrule
   $R_f$ & $\SI{12}{\kilo\ohm}$ & $\SI{11,74}{\kilo\ohm}$ & -2,17\% \\
   $R_g$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,982}{\kilo\ohm}$ & -1,80\% \\
-
-  $R_f$ & $\SI{10}{\kilo\ohm}$ & $\SI{10}{\kilo\ohm}$ & 0,00\% \\
-
   $R_{f2}$ & $\SI{100}{\kilo\ohm}$ & $\SI{98,60}{\kilo\ohm}$ & -1,40\% \\
   $R_{g2}$ & $\SI{1}{\kilo\ohm}$ & $\SI{0,985}{\kilo\ohm}$ & -1,50\% \\
 \bottomrule
@@ -374,8 +369,6 @@ Refez-se a simulação com os valores de componente efetivamente usados na banca
 \subsubsection{Tensão de offset}
 
 Na bancada, o não inversor de ganho 101 foi montado com $R_f = \SI{98,62}{\kilo\ohm}$ e $R_g = \SI{1,000}{\kilo\ohm}$, com a entrada não inversora aterrada. Repetiu-se a análise \texttt{.op} do \texttt{item\_1.asc} com esses valores, e a tensão de offset do modelo foi obtida dividindo a saída por $G = 1 + 98{,}62/1{,}000 = 99{,}62$
-
-> **[INSERIR: com os valores medidos, o ganho não é mais 101. Recalcule $G = 1 + R_f/R_g$ com os valores medidos antes de dividir a saída para obter $V_{os}$. O valor de $V_{os}$ deve ser $V_o/G$, e não $V_o/101$.]**
 
 Os resultados estão na Tabela~\ref{tab:offset_sim_bancada}.
 
@@ -438,7 +431,7 @@ Ganho alto & 101,10 & \SI{10,83}{\kilo\hertz} & \SI{1,09}{\mega\hertz} & \SI{1}{
 
 \subsubsection{Slew rate}
 
-Na bancada, o seguidor foi montado com $V_p = \SI{2,5}{\volt}$. Repetiu-se a análise \texttt{.tran} do \texttt{item\_4.asc} (LM741) e do \texttt{item\_6.asc} (TL064) com essa amplitude. Para o LM741, usaram-se as frequências de [INSERIR] e [INSERIR]; para o TL064, as de [INSERIR] e [INSERIR]. A inclinação da rampa foi medida no cursor do LTspice. Os resultados estão na Tabela~\ref{tab:sr_sim_bancada}.
+Na bancada, o seguidor foi montado com $V_p = \SI{2,5}{\volt}$. Repetiu-se a análise \texttt{.tran} do \texttt{item\_4.asc} (LM741) e do \texttt{item\_6.asc} (TL064) com essa amplitude.
 
 \begin{table}[h]
 \centering
@@ -495,9 +488,9 @@ Corrente de polarizacao TL068 & \SI{20}{\nano\ampere} & \SI{0}{\nano\ampere} & \
 \end{tabular}
 \end{center}
 
-\subsubsection{Resposta em frequencia - Resultados}
+\subsubsection{Resposta em frequência - Resultados}
 
-Para medir a resposta em frequencia, foi aplicado uma pequena tensão na entrada para as diferentes frequencias.
+Para medir a resposta em frequência, foi aplicado uma pequena tensão na entrada para as diferentes frequencias.
 
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}
@@ -505,8 +498,8 @@ Para medir a resposta em frequencia, foi aplicado uma pequena tensão na entrada
 \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
 \textbf{Erro} \\
 \midrule
-  $G_1 = 0,707G_{1ideal}$ & & & & \\
-  $G_2 = 0,707G_{2ideal}$ & & & & \\
+  $G_1 = 0,707G_{1ideal}$ & 76,92 kHz & 74,49 kHz & ~45,80 kHz & -38,52\% \\
+  $G_2 = 0,707G_{2ideal}$ & 9,90 kHz & 10,83 kHz & ~7,56 kHz & -30,19\% \\
 \bottomrule
 \end{tabular}
 \end{center}
