@@ -19,6 +19,7 @@
 % ===========================================================================
 \documentclass[11pt,a4paper]{article}
 \input{estilo-relatorio}
+\usepackage{multirow}
 
 % --------------------------- IDENTIFICACAO ---------------------------------
 \roteiro{3}{Amplificador Operacional: Não-idealidades}
@@ -252,7 +253,19 @@ $V_{os} = |V_o|/101$ & \SI{0,943}{\milli\volt} & \SI{1}{\milli\volt} a \SI{5}{\m
 \end{tabular}
 \end{table}
 
-\subsubsection{Corrente de polarização}
+\subsubsection{Corrente de polarização (221035442)}
+
+Na figura \ref{fid:item2_esquema}, foram montados dois circuitos. O primeiro é um amplificador não inversor de ganho 101. A partir dele é obtido o valor de $V_{out1} = \SI{111,12}{\milli\volt}$ do amplificador. Este $V_{out1}$ agrega outras não idealidades como a tensão de offset.
+Depois, no outro circuito, é inserido uma resistência $R_s = \SI{100}{\kilo\ohm}$. Esse resistor é especialmente de alto valor para que a baixa corrente de polarização, que costuma ser na casa de dezenas de nano Amperes, seja multiplicado pela lei de Ohm: $V = IR$, $V = i10^{-8}*100*10^3 = i*10^{-3}$, ou seja, surge uma tensão $V^+$ na casa de mili volts.
+
+Essa tensão pode ser difícil de medir em um experimento real, então, como alternativa, é possível obtê-la de forma algébrica ao seguir: primeiro medindo a tensão $V_{out2} = \SI{-472,85}{\milli\volt}$ do amplificador. Segundo, é removido a tensão de offset: $\Delta V = V_{out2} - V_{out1} = \SI{583,97}{\milli\volt}$. Terceiro, é removido o ganho do amplificador para obter $V^+$, ou seja $V^+ = \frac{\Delta V}{101} = \SI{5,781}{\milli\volt}$. Finalmente, com a lei de Ohm, faz $I_b = \frac{V^+}{R_s} = \SI{57,81}{\nano\ampere}$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{montagem_sim_2.png}
+\caption{Esquemático para obter a corrente de polarização}
+\label{fig:item2_esquema}
+\end{figure}
 
 \subsubsection{Resposta em frequência (211026486)}
 
