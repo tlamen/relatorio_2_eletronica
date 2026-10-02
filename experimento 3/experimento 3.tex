@@ -225,7 +225,32 @@ parágrafo, ela provavelmente não precisa estar aqui.
 
 \subsection{Simulação de projeto, uma por integrante}
 
-\subsubsection{Tensão de offset}
+\subsubsection{Tensão de offset (241039879)}
+
+O arquivo \texttt{item\_1.asc} contém o amplificador não inversor de ganho 101, com $R_f = \SI{100}{\kilo\ohm}$ e $R_g = \SI{1}{\kilo\ohm}$, e a entrada não inversora ligada ao terra. Esse ganho é fixo para todos os integrantes, porque o mesmo circuito é usado no ensaio de corrente de polarização da Seção~2.2 e a montagem é uma só. A análise é de ponto de operação (\texttt{.op}), conforme o roteiro. O esquemático está na Figura~\ref{fig:item1_esquema}.
+
+Com as duas entradas no mesmo potencial (ambas em zero), a saída de um amplificador real não é zero, porque a assimetria do par de entrada equivale a uma fonte contínua $V_{os}$ em série com uma das entradas. Essa fonte é amplificada pelo ganho do estágio, de modo que a tensão de offset do modelo é
+
+\begin{equation}
+V_{os} = \frac{|V_o|}{101} .
+\label{eq:offset_membro2}
+\end{equation}
+
+A saída simulada foi $V_o = \SI{-95,26}{\milli\volt}$, o que dá uma tensão de offset de $V_{os} = \SI{0,943}{\milli\volt}$. Esse valor está ligeiramente abaixo da faixa típica do datasheet do LM741, que é de \SI{1}{\milli\volt} a \SI{5}{\milli\volt}. A diferença de \SI{0,057}{\milli\volt} em relação ao limite inferior não indica erro de projeto: o datasheet dá valores típicos e máximos, e o modelo do LTspice foi ajustado para um valor de offset próximo de \SI{1}{\milli\volt} com sinal negativo. O módulo é o que interessa para a análise, e ele está dentro da ordem de grandeza esperada para o LM741. O sinal negativo indica apenas que a fonte de offset está com a polaridade invertida em relação à convenção adotada.
+
+\begin{table}[h]
+\centering
+\caption{Simulação de offset do integrante 241039879.}
+\label{tab:offset_membro2}
+\begin{tabular}{lcc}
+\hline
+Grandeza & Valor simulado & Faixa do datasheet \\
+\hline
+$V_o$ & \SI{95,26}{\milli\volt} & --- \\
+$V_{os} = |V_o|/101$ & \SI{0,943}{\milli\volt} & \SI{1}{\milli\volt} a \SI{5}{\milli\volt} \\
+\hline
+\end{tabular}
+\end{table}
 
 \subsubsection{Corrente de polarização}
 
