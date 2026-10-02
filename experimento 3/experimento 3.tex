@@ -533,30 +533,53 @@ Slew rate TL068 & \SI{3,5}{\volt/\micro\second} & \SI{3,50}{\volt/\micro\second}
 
 \section{Discussão}
 
-Percorra as três comparações na ordem em que aparecem no quadro da Seção~4: a conta contra
-a simulação de projeto, esta contra a simulação da montagem, e esta contra a medição. Cada
-passo isola uma causa, e a discussão fica bem mais curta quando eles não se misturam.
+\subsection{Projeto analítico e simulação de projeto}
 
-Compare também os projetos dos integrantes entre si. Como as especificações são diferentes,
-os resultados diferem, e mostrar que essa diferença é a que a teoria previa vale mais do
-que repetir três vezes a mesma análise.
+O modelo ideal prevê offset e corrente de polarização nulos, banda infinita e ausência de limitação por slew rate. As simulações incorporam essas não idealidades. Para a matrícula 211026486, os ganhos simulados de 25,2 e 87 resultaram em cortes de \SI{40}{\kilo\hertz} e \SI{12}{\kilo\hertz}, com produtos ganho por banda de \SI{1,01}{\mega\hertz} e \SI{1,04}{\mega\hertz}. A proximidade entre os produtos sustenta a aproximação $f_c \approx \mathrm{GBW}/G$, mas não comprova que o componente físico reproduza exatamente o modelo.
 
-Sempre que uma divergência for maior do que a incerteza esperada, aponte uma causa concreta
-e diga como ela poderia ser reduzida. Vale, por exemplo, a tolerância do componente, a
-resistência série do indutor, a impedância de entrada do osciloscópio, a banda do
-amplificador ou a resolução da varredura.
+Os projetos individuais também seguem essa relação: os ganhos baixos de 25, 34 e 38 devem produzir bandas progressivamente menores para o mesmo amplificador. Os ganhos altos de 87, 83 e 85,7 devem apresentar cortes próximos. Para a matrícula 241039879, o ganho realizado de 85,7 supera a especificação de 85 em 0,82\%, devido aos valores comerciais adotados. Já as amplitudes de 5,0, 3,0 e \SI{6,5}{\volt} implicam diferentes limites por slew rate: como $f_{\max} \propto 1/V_p$, a maior amplitude deve distorcer primeiro. O relatório apresenta resultados de resposta em frequência apenas para a matrícula 211026486; portanto, a comparação completa das simulações individuais permanece limitada.
 
-Quando previsto e obtido coincidirem, explique por que era esperado que coincidissem, e o
-que essa coincidência não permite concluir.
+\subsection{Simulação de projeto e simulação da montagem}
 
-Por fim, retome as hipóteses que vocês declararam na fundamentação e diga quais se
-confirmaram. Se algo observado contrariar a previsão, resolva a contradição aqui.
+A mudança das especificações individuais para os ganhos de bancada deve ser separada da tolerância dos resistores. Na montagem, os valores medidos resultaram em ganhos de 12,96 e 101,10, próximos dos nominais 13 e 101. Os cortes simulados de \SI{74,49}{\kilo\hertz} e \SI{10,83}{\kilo\hertz} mantiveram a redução da banda com o aumento do ganho. Os produtos correspondentes, \SI{0,965}{\mega\hertz} e \SI{1,095}{\mega\hertz}, ficaram próximos da referência de \SI{1}{\mega\hertz} adotada no relatório. A alteração dos resistores explica pequenas mudanças de ganho, mas não explica, sozinha, as maiores divergências de bancada.
+
+\subsection{Simulação da montagem e medição}
+
+A Tabela~\ref{tab:discussao_r3} resume as principais comparações da Seção~5. O componente identificado como TL068 nessas tabelas é tratado aqui como TL064, conforme o roteiro e a metodologia; essa identificação deve ser conferida.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparação dos resultados registrados na Seção~5.}
+\label{tab:discussao_r3}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Grandeza & Simulação & Medição & Desvio relativo \\
+\midrule
+$I_b$ do LM741 & \SI{57,7}{\nano\ampere} & \SI{32,4}{\nano\ampere} & $-43,85\%$ \\
+$V_{pp}$, $G_1$, \SI{100}{\hertz} & \SI{2,444}{\volt} & \SI{2,440}{\volt} & $-0,16\%$ \\
+$V_{pp}$, $G_2$, \SI{100}{\hertz} & \SI{2,020}{\volt} & \SI{2,120}{\volt} & $+4,95\%$ \\
+$SR$ do LM741 & \SI{0,50}{\volt\per\micro\second} & \SI{0,48}{\volt\per\micro\second} & $-4,00\%$ \\
+$SR$ do TL064 & \SI{3,50}{\volt\per\micro\second} & \SI{2,18}{\volt\per\micro\second} & $-37,71\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Offset e polarização.} O offset de \SI{148,49}{\milli\volt} registrado para o LM741 não é compatível com a faixa de 1 a \SI{5}{\milli\volt} citada no próprio relatório. Se essa leitura corresponder à saída, sua divisão pelo ganho medido de 99,62 forneceria aproximadamente \SI{1,49}{\milli\volt}; essa interpretação depende da conferência do registro original. Além disso, a Seção~4 informa \SI{0,9}{\milli\volt} na simulação, enquanto a Seção~5 informa \SI{1,09}{\milli\volt}. Assim, o erro percentual dessa medida não pode ser validado. Para o TL064, os \SI{2,663}{\milli\volt} medidos diferem dos \SI{26}{\micro\volt} simulados, mostrando que o offset do modelo não representa necessariamente o exemplar ensaiado.
+
+A corrente de \SI{32,4}{\nano\ampere} do LM741 ficou abaixo dos \SI{57,7}{\nano\ampere} simulados; o desvio recalculado é $-43,85\%$, e não $-56,14\%$. Há também inconsistência na Seção~4: $\Delta V_o = \SI{1,03}{\volt}$, $G = 99,62$ e $R_s = \SI{100,7}{\kilo\ohm}$ fornecem aproximadamente \SI{103}{\nano\ampere}, e não \SI{10,4}{\milli\ampere}. No TL064, a corrente simulada registrada como zero impede calcular um erro relativo; ela pode estar abaixo da resolução apresentada. As correntes medidas diferem por um fator de aproximadamente 1,89. Sem as duas leituras experimentais de saída e seu sinal, não é possível confirmar o sentido da corrente. A revisão das unidades, o uso do ganho medido e o registro das leituras brutas reduziriam essas ambiguidades.
+
+\textbf{Resposta em frequência.} Em \SI{100}{\hertz}, a proximidade entre simulação e medição confirma o ganho aproximadamente constante em baixa frequência. Para $G_1$, a referência medida de \SI{2,440}{\volt} implica nível de corte de aproximadamente \SI{1,725}{\volt}. Esse nível fica entre os pontos de \SI{43,33}{\kilo\hertz} e \SI{57,74}{\kilo\hertz}; uma interpolação linear local estima o corte em \SI{45,8}{\kilo\hertz}, cerca de 38,5\% abaixo da simulação. Para $G_2$, o corte fica entre \SI{100}{\hertz} e \SI{14,51}{\kilo\hertz}, mas faltam pontos próximos para determiná-lo com precisão e comparar os dois produtos ganho por banda medidos. Mais pontos ao redor dos cortes e a verificação simultânea da amplitude de entrada melhorariam essa comparação.
+
+A saída próxima de \SI{1}{\volt} de pico reduz a interferência do slew rate: com a referência de \SI{0,5}{\volt\per\micro\second}, o limite para essa amplitude é \SI{79,6}{\kilo\hertz}, enquanto para \SI{5}{\volt} cai a \SI{15,9}{\kilo\hertz}. No ganho baixo, a amplitude inicial efetivamente medida foi \SI{1,22}{\volt} de pico; usando o slew rate medido, o limite estimado é \SI{62,6}{\kilo\hertz}, acima do corte de \SI{45,8}{\kilo\hertz}. Isso indica que a atenuação por banda aparece primeiro, embora as leituras disponíveis não permitam excluir efeitos adicionais em frequências maiores.
+
+\textbf{Slew rate.} O LM741 apresentou boa concordância com a referência, enquanto o TL064 teve desvio de $-37,71\%$. Ainda assim, o TL064 foi aproximadamente 4,54 vezes mais rápido na medição. Para $V_p = \SI{2,5}{\volt}$, os slew rates medidos fornecem limites de \SI{30,6}{\kilo\hertz} e \SI{138,8}{\kilo\hertz}, inferiores às frequências de triângulo registradas, \SI{42}{\kilo\hertz} e \SI{150}{\kilo\hertz}. Isso é coerente com a diferença entre o início da distorção e uma forma já claramente triangular. Entretanto, as Seções~4 e~5 apresentam valores simulados distintos de slew rate, que precisam ser conciliados. Capturas com cursores, amplitude de saída e identificação do trecho da rampa permitiriam verificar essa diferença. A banda linear não depende da amplitude; o limite por slew rate depende e pode alterar o corte aparente de um ensaio com sinal elevado.
 
 \section{Conclusão}
 
-Retome o objetivo que vocês anunciaram na introdução e responda se ele foi atingido,
-apoiando a resposta em um número. Aponte a principal limitação do que foi feito e o que
-ela impede de afirmar. Evite trazer resultado novo nesta seção.
+O objetivo foi atingido parcialmente: os ensaios evidenciaram offset, corrente de polarização, redução de ganho com a frequência e limitação por slew rate. A simulação confirmou a relação inversa entre ganho e banda, com produtos de \SI{1,01}{\mega\hertz} e \SI{1,04}{\mega\hertz} no projeto individual apresentado. Na bancada, o slew rate do LM741 foi \SI{0,48}{\volt\per\micro\second}, com desvio de $-4,00\%$ em relação à simulação, e o TL064 foi aproximadamente 4,54 vezes mais rápido.
+
+A principal limitação é a inconsistência de alguns registros de offset, polarização e simulação de slew rate, somada à falta de pontos próximos do corte de ganho alto. Isso impede validar todos os erros percentuais e confirmar quantitativamente o produto ganho por banda medido. A revisão das leituras originais e das unidades, junto a uma varredura mais concentrada nos cortes, permitiria completar a comparação entre projeto, simulação e bancada.
 
 \section{Referências}
 
