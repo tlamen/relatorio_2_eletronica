@@ -21,9 +21,10 @@
 % ===========================================================================
 \documentclass[11pt,a4paper]{article}
 \input{estilo-relatorio}
+\DeclareSIUnit{\vpp}{\ensuremath{\mathrm{V_{pp}}}}
 
 % --------------------------- IDENTIFICACAO ---------------------------------
-\roteiro{4}{Amplificador Operacional: Nao-idealidades}
+\roteiro{4}{Condicionamento de Sinais: Eletrocardiograma}
 \aturma{01}
 
 \autorum{Bernardo Manciola Lobo}{21/1026486}
@@ -105,6 +106,7 @@ a simulação da montagem e a medição são confrontadas.
   \begin{tabular}{lc}
     \hline
     Grandeza & Valor \\
+    $R_g$ do INA118 & $\SI{10}{\kilo\ohm}$ \\
     $R_f$ e $R_g$ do ganho & $\SI{330}{\kilo\ohm}$ e $\SI{2,2}{\kilo\ohm}$ \\
     Passa baixas & $\SI{4,7}{\kilo\ohm}$ e $\SI{1}{\micro\farad}$ \\
     \hline
@@ -181,64 +183,29 @@ dois explica boa parte do que vocês vão observar.
 
 \subsubsection{Amplificador de instrumentação}
 
-Entrada foi $V_p = \SI{330,5}{\milli\volt}$
-
 \begin{center}
-  \begin{tabular}{@{}lrrrr@{}}
+  \begin{tabular}{@{}lrrr@{}}
     \toprule
-    \textbf{Grandeza} & \textbf{Nominal} & \textbf{Medido} & \textbf{Erro} \\
+    \textbf{Grandeza} & \textbf{Nominal} & \textbf{Medido} & \textbf{Erro (\%)} \\
     \midrule
-    $R_{gINA}$         & $\SI{10}{\kilo\ohm}$   & $\SI{9,892}{\kilo\ohm}$   & \\
+    $R_{gINA}$         & $\SI{10}{\kilo\ohm}$   & $\SI{9,892}{\kilo\ohm}$   & 1,08 \\
 
-    $R_{passa-altas}$  & $\SI{330}{\kilo\ohm}$  & $\SI{326,6}{\kilo\ohm}$   & \\
-    $C_{passa-altas}$  & $\SI{1}{\micro\farad}$ & $\SI{1,03}{\micro\farad}$ & \\
+    $R_{passa-altas}$  & $\SI{330}{\kilo\ohm}$  & $\SI{326,6}{\kilo\ohm}$   & 1,03 \\
+    $C_{passa-altas}$  & $\SI{1}{\micro\farad}$ & $\SI{1,03}{\micro\farad}$ & 3,00 \\
 
-    $R_{gGanho}$       & $\SI{330}{\kilo\ohm}$  & $\SI{326,7}{\kilo\ohm}$   & \\
-    $R_{fGanho}$       & $\SI{2,2}{\kilo\ohm}$  & $\SI{2,177}{\kilo\ohm}$   & \\
+    $R_{gGanho}$       & $\SI{330}{\kilo\ohm}$  & $\SI{326,7}{\kilo\ohm}$   & 1,00 \\
+    $R_{fGanho}$       & $\SI{2,2}{\kilo\ohm}$  & $\SI{2,177}{\kilo\ohm}$   & 1,05 \\
 
-    Ganho              & $\SI{151}{}$           & $\SI{150,7}{}$            & \\
+    Ganho              & $\SI{151}{}$           & $\SI{150,7}{}$            & 0,20 \\
 
-    $R_{passa-baixas}$ & $\SI{4,7}{\kilo\ohm}$  & $\SI{4,632}{\kilo\ohm}$   & \\
-    $C_{passa-baixas}$ & $\SI{1}{\micro\farad}$ & $\SI{1,03}{\micro\farad}$ & \\
+    $R_{passa-baixas}$ & $\SI{4,7}{\kilo\ohm}$  & $\SI{4,632}{\kilo\ohm}$   & 1,45 \\
+    $C_{passa-baixas}$ & $\SI{1}{\micro\farad}$ & $\SI{1,03}{\micro\farad}$ & 3,00 \\
 
-    Divisor $R_1$      & $\SI{820}{\ohm}$       & $\SI{824}{\ohm}$          & \\
-    Divisor $R_2$      & $\SI{100}{\kilo\ohm}$  & $\SI{100,8}{\kilo\ohm}$   & \\
+    Divisor $R_1$      & $\SI{820}{\ohm}$       & $\SI{824}{\ohm}$          & 0,49 \\
+    Divisor $R_2$      & $\SI{100}{\kilo\ohm}$  & $\SI{100,8}{\kilo\ohm}$   & 0,80 \\
     \bottomrule
   \end{tabular}
 \end{center}
-
-\subsection{Simulação da montagem}
-
-Refaça a simulação usando os valores medidos dos componentes que
-estavam na bancada. Ela
-não substitui a simulação de projeto: é a comparação entre as duas
-que separa o efeito da
-tolerância dos componentes do restante.
-
-\begin{nota}{Três comparações, três causas diferentes}
-  Ao longo do relatório vocês vão confrontar três pares de
-  resultados. Cada um responde a uma
-  pergunta distinta, e vale mantê-los separados na hora de discutir.
-
-  \smallskip
-  \textbf{Cálculo analítico contra simulação de projeto.} A conta
-  está certa? Se aqui houver
-  diferença, procure na álgebra ou no esquemático.
-
-  \smallskip
-  \textbf{Simulação de projeto contra simulação da montagem.} Quanto
-  custou a tolerância dos
-  componentes? A diferença aqui é a distância entre o valor nominal e
-  o valor real da peça
-  que vocês pegaram.
-
-  \smallskip
-  \textbf{Simulação da montagem contra medição.} O modelo descreve o
-  circuito real? Diferença
-  aqui aponta algo que o modelo não representa, como a resistência
-  série do indutor, a
-  impedância da ponta de prova ou a banda do instrumento.
-\end{nota}
 
 \begin{figure}[htb]
   \centering
@@ -253,123 +220,95 @@ tolerância dos componentes do restante.
 
 \section{Resultados}
 
-Apresente o que vocês obtiveram, em tabela sempre que houver mais de
-dois números. Use o
-número de algarismos significativos que a medição sustenta, e não
-todos os que o programa
-imprime. Para cada leitura de bancada, informe o instrumento e a incerteza.
-
-Guarde a interpretação para a seção seguinte: aqui vocês mostram o
-que encontraram.
-
-\subsection{Projeto de cada integrante}
-
-Uma tabela por integrante, ou uma tabela única com uma coluna por
-integrante, confrontando
-o valor analítico e o simulado para cada grandeza pedida no roteiro.
-
 \subsection{Circuito montado}
 
-Para cada grandeza, o que o projeto do integrante montado previa, o
-que a simulação com os
-valores medidos devolveu, e o que vocês mediram na bancada. É desta
-tabela que sai a
-discussão.
+Abaixo são apresentados os resultados numéricos obtidos no projeto analítico ideal, na simulação
+da montagem e nas medições efetuadas na bancada. Os erros percentuais foram calculados tomando como referência a simulação da montagem.
 
 \subsubsection{Amplificador de instrumentação}
+
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
-    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} &
-    \textbf{Medido} & \textbf{Erro} \\
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
     \midrule
-    Limite superior do ganho de modo comum & & & $\SI{0,6}{\milli\volt}$ & \\
+    Limite superior do ganho de modo comum & NA & $\SI{0,1}{\milli\volt}$ & $\SI{0,6}{\milli\volt}$ & 500 \\
     \bottomrule
   \end{tabular}
 \end{center}
 
-Em $\SI{0,6}{\hertz}$, a saída $V_p$ fica $0,707V_{10hz}$
 \subsubsection{Passa altas}
+
+Entrada foi $V_p = \SI{330,5}{\milli\volt}$
+
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
-    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} &
-    \textbf{Medido} & \textbf{Erro} \\
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
     \midrule
-    Frequência de corte                & $\SI{0,482}{\hertz}$ & &
-    $\SI{0,6}{\hertz}$ & \\
-    Saida $V_p$ em $\SI{10}{\hertz} $  &                      & &
-    $\SI{2}{\volt}$    & \\
-    Saida $V_p$ em $\SI{1}{\hertz}$    &                      & &
-    $\SI{1,7}{\volt}$  & \\
-    Saida $V_p$ em $\SI{0,8}{\hertz}$  &                      & &
-    $\SI{1,6}{\volt}$  & \\
-    Saida $V_p$ em $\SI{0,6}{\hertz}$  &                      & &
-    $\SI{1,4}{\volt}$  & \\
-    Saida $V_p$ em $\SI{0,45}{\hertz}$ &                      & &
-    $\SI{1,18}{\volt}$ & \\
+    Frequência de corte & $\SI{0,482}{\hertz}$ & $\SI{0,489}{\hertz}$ & $\SI{0,6}{\hertz}$ & 22,70 \\
+
+    Saída $V_p$ em $\SI{10}{\hertz}$   & $\SI{2}{\volt}$ & $\SI{1,98}{\volt}$ & $\SI{2}{\volt}$    & 1,01 \\
+    Saída $V_p$ em $\SI{1}{\hertz}$    & $\SI{2}{\volt}$ & $\SI{1,78}{\volt}$ & $\SI{1,7}{\volt}$  & 4,49 \\
+    Saída $V_p$ em $\SI{0,8}{\hertz}$  & $\SI{2}{\volt}$ & $\SI{1,69}{\volt}$ & $\SI{1,6}{\volt}$  & 5,33 \\
+    Saída $V_p$ em $\SI{0,6}{\hertz}$  & $\SI{2}{\volt}$ & $\SI{1,54}{\volt}$ & $\SI{1,4}{\volt}$  & 9,09 \\
+    Saída $V_p$ em $\SI{0,45}{\hertz}$ & $\SI{0}{\volt}$ & $\SI{1,35}{\volt}$ & $\SI{1,18}{\volt}$ & 12,59 \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \subsubsection{Ganho Adicional}
+
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
-    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} &
-    \textbf{Medido} &
-    \textbf{Erro} \\
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
     \midrule
-    Saída gerador & $\SI{1,35}{\volt}$ & & $\SI{1,35}{\volt}$ & \\
-    Saída amplificador & $\SI{5}{\volt}$ & & $\SI{5}{\volt}$ & \\
+    Saída gerador      & $\SI{1,35}{\volt}$ & $\SI{1,35}{\volt}$ & $\SI{1,35}{\volt}$ & 0,00 \\
+    Saída amplificador & $\SI{5}{\volt}$    & $\SI{5}{\volt}$    & $\SI{5}{\volt}$    & 0,00 \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \subsubsection{Passa baixas}
+
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
-    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} &
-    \textbf{Medido} &
-    \textbf{Erro} \\
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} & \textbf{Erro (\%)} \\
     \midrule
-    Saída gerador & $\SI{1,08}{\volt}$ & & $\SI{1,08}{\volt}$ & \\
-    Saída estágio final & $\SI{2}{\volt}$ & & $\SI{2}{\volt}$ & \\
+    Saída gerador & $\SI{1,08}{\vpp}$ & $\SI{1,08}{\vpp}$ & $\SI{1,08}{\vpp}$ & 0,00 \\
 
-    Saída em $\SI{10}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{2}{\volt}$ & \\
+    Saída estágio final & $\SI{2}{\volt}$ & $\SI{2}{\volt}$ & $\SI{2}{\volt}$ & 0,00 \\
 
-    vpp
-    Saída em $\SI{0,2}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{1,6}{\volt}$ & \\
-    Saída em $\SI{3,5}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,84}{\volt}$ & \\
-    Saída em $\SI{6,8}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,84}{\volt}$ & \\
-    Saída em $\SI{10,1}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,76}{\volt}$ & \\
-    Saída em $\SI{12,4}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,68}{\volt}$ & \\
-    Saída em $\SI{15,7}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,56}{\volt}$ & \\
-    Saída em $\SI{19,0}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,44}{\volt}$ & \\
-    Saída em $\SI{22,3}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,28}{\volt}$ & \\
-    Saída em $\SI{25,6}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{3,12}{\volt}$ & \\
-    Saída em $\SI{28,9}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{2,96}{\volt}$ & \\
-    Saída em $\SI{32,2}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{2,84}{\volt}$ & \\
-    Saída em $\SI{35,5}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{2,72}{\volt}$ & \\
-    Saída em $\SI{45,5}{\hertz} $ & $\SI{2}{\volt}$ & & $\SI{2,36}{\volt}$ & \\
+    Saída em $\SI{0,2}{\hertz}$  & $\SI{4}{\vpp}$ & $\SI{1,48}{\vpp}$ & $\SI{1,6}{\vpp}$  & 8,11 \\
+    Saída em $\SI{3,5}{\hertz}$  & $\SI{4}{\vpp}$ & $\SI{3,82}{\vpp}$ & $\SI{3,84}{\vpp}$ & 0,52 \\
+    Saída em $\SI{6,8}{\hertz}$  & $\SI{4}{\vpp}$ & $\SI{3,79}{\vpp}$ & $\SI{3,84}{\vpp}$ & 1,32 \\
+    Saída em $\SI{10,1}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{3,71}{\vpp}$ & $\SI{3,76}{\vpp}$ & 1,35 \\
+    Saída em $\SI{12,4}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{3,64}{\vpp}$ & $\SI{3,68}{\vpp}$ & 1,10 \\
+    Saída em $\SI{15,7}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{3,51}{\vpp}$ & $\SI{3,56}{\vpp}$ & 1,42 \\
+    Saída em $\SI{19,0}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{3,38}{\vpp}$ & $\SI{3,44}{\vpp}$ & 1,78 \\
+    Saída em $\SI{22,3}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{3,23}{\vpp}$ & $\SI{3,28}{\vpp}$ & 1,55 \\
+    Saída em $\SI{25,6}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{3,10}{\vpp}$ & $\SI{3,12}{\vpp}$ & 0,65 \\
+    Saída em $\SI{28,9}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{2,95}{\vpp}$ & $\SI{2,96}{\vpp}$ & 0,34 \\
+    Saída em $\SI{32,2}{\hertz}$ & $\SI{4}{\vpp}$ & $\SI{2,81}{\vpp}$ & $\SI{2,84}{\vpp}$ & 1,07 \\
+    Saída em $\SI{35,5}{\hertz}$ & $\SI{0}{\vpp}$ & $\SI{2,67}{\vpp}$ & $\SI{2,72}{\vpp}$ & 1,87 \\
+    Saída em $\SI{45,5}{\hertz}$ & $\SI{0}{\vpp}$ & $\SI{2,31}{\vpp}$ & $\SI{2,36}{\vpp}$ & 2,16 \\
 
-    Frequência de corte & $\SI{33,8}{\hertz} $ & & $\SI{33,3}{\hertz} $ \\
-
+    Frequência de corte & $\SI{33,8}{\hertz}$ & $\SI{34,7}{\hertz}$ & $\SI{33,3}{\hertz}$ & 4,03 \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \subsubsection{Eletrocardiograma}
+
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
     \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} &
-    \textbf{Medido} &
-    \textbf{Erro} \\
+    \textbf{Medido} & \textbf{Erro (\%)} \\
     \midrule
-    Intervalo entre picos R & NA & NA & $\SI{784}{\milli\second}$ & \\
-
+    Intervalo entre picos R & NA & NA & $\SI{784}{\milli\second}$ & NA \\
     \bottomrule
   \end{tabular}
 \end{center}
