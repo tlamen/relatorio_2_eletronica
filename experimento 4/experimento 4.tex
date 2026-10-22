@@ -21,6 +21,7 @@
 % ===========================================================================
 \documentclass[11pt,a4paper]{article}
 \input{estilo-relatorio}
+\usepackage{float}
 \DeclareSIUnit{\vpp}{\ensuremath{\mathrm{V_{pp}}}}
 
 % --------------------------- IDENTIFICACAO ---------------------------------
@@ -296,9 +297,9 @@ O circuito \textit{item\_1} é um amplificador de instrumentação usando 3 ampl
 foi escolhido uma duas entradas senoidais de \SI{0.5}{\milli\volt}, uma o inverso da outra, o que resulta numa
 entrada senoidal maior de \SI{8}{\milli\volt} de pico, já considerando o ganho $G_1 = 8$.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{item_1.png}
+\includegraphics[width=0.85\textwidth,height=0.72\textheight,keepaspectratio]{item_1.png}
 \caption{Esquemático do \texttt{item\_1.asc}.}
 \label{fig:item1_esquematico}
 \end{figure}
@@ -314,9 +315,9 @@ Tem-se o melhor valor para $R_g = \SI{2,7}{\kilo\ohm}$, o que resulta em $G_1 = 
 
 Na imagem \ref{fig:item1_simulacao} tem-se a saída do amplificador, que em seu pico é \SI{8.4}{\milli\volt}, conforme esperado.
 
-\begin{figure}[htb]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{item_1_simulacao.png}
+\includegraphics[width=0.85\textwidth,height=0.72\textheight,keepaspectratio]{item_1_simulacao.png}
 \caption{Simulação do \texttt{item\_1.asc}. É exibido a tensão em $V_o$. O cursor exibe a tensão de pico}
 \label{fig:item1_simulacao}
 \end{figure}
@@ -339,9 +340,9 @@ No segundo ramo (inferior), o filtro alimenta um amplificador **inversor** com $
 
 A diretiva \texttt{.ac dec 50 10m 1k} realiza uma varredura de \SI{10}{\milli\hertz} a \SI{1}{\kilo\hertz} para observar a magnitude e a fase de ambos os estágios. O esquemático é mostrado na Figura~\ref{fig:item3_esquematico}.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{item_3.png}
+\includegraphics[width=0.85\textwidth,height=0.72\textheight,keepaspectratio]{item_3.png}
 \caption{Esquemático do \texttt{item\_3.asc} comparando o filtro passa-altas alimentando um estágio não inversor (superior) e um inversor (inferior).}
 \label{fig:item3_esquematico}
 \end{figure}
@@ -365,21 +366,55 @@ f_{LP} = \frac{1}{2\pi \cdot 3,3 \cdot 10^3 \cdot 1 \cdot 10^{-6}} \approx \SI{4
 
 A diretiva \texttt{.ac dec 50 10m 10k} traça a resposta em frequência de \SI{10}{\milli\hertz} a \SI{10}{\kilo\hertz}. O ganho total em banda passante projetado para esta simulação é $G = G_1 \cdot G_2 = 16,15 \cdot 69 \approx 1114$, posicionando a curva para amplificar a diferença de potencial do eletrocardiograma (na ordem de \SI{1}{\milli\volt}) para a casa de \SI{1}{\volt} na saída, enquanto rejeita o contínuo (devido ao $f_{HP}$) e a rede elétrica de 60 Hz (devido ao $f_{LP}$). O esquemático completo está na Figura~\ref{fig:item4_esquematico}.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{item_4.png}
+\includegraphics[width=0.85\textwidth,height=0.72\textheight,keepaspectratio]{item_4.png}
 \caption{Esquemático do \texttt{item\_4.asc} exibindo a cadeia completa: INA118, passa-altas, ganho com TL064 e passa-baixas.}
 \label{fig:item4_esquematico}
 \end{figure}
 teste
 
-Cada integrante recebeu uma especificação diferente da própria
-matrícula, e portanto chegou
-a um dimensionamento diferente. Traga aqui \textbf{uma simulação por
-integrante}, cada uma
-com os componentes que aquela pessoa projetou. São elas que mostram
-se cada projeto cumpre
-o que foi pedido.
+\subsubsection{Cadeia completa ECG com eletrodos iguais}
+
+A Figura~\ref{fig:ecg_iguais_matheus} apresenta a resposta da cadeia aos arquivos dos dois braços, aplicados diretamente às entradas do INA118. O circuito utiliza $R_G=\SI{3,6}{\kilo\ohm}$, $R_{HP}=\SI{198}{\kilo\ohm}$, $R_f=\SI{66}{\kilo\ohm}$, $R_g=\SI{1}{\kilo\ohm}$ e $R_{LP}=\SI{1,2}{\kilo\ohm}$, com capacitores de \SI{1}{\micro\farad} nos dois filtros. Assim,
+\begin{equation}
+G_1=1+\frac{50}{3,6}\approx14,89,\qquad
+G_2=1+\frac{66}{1}=67,\qquad G_1G_2\approx997,56.
+\label{eq:ganho_ecg_matheus}
+\end{equation}
+Os cortes calculados são $f_{HP}\approx\SI{0,804}{\hertz}$ e $f_{LP}\approx\SI{132,63}{\hertz}$.
+
+O INA118 amplifica o ECG e a diferença entre os potenciais contínuos dos eletrodos, enquanto rejeita a rede de \SI{60}{\hertz} comum às entradas. O passa-altas bloqueia o contínuo após o transitório e atenua variações lentas da linha de base. O estágio não inversor eleva o sinal à faixa de volts sem carregar significativamente o filtro. O passa-baixas atenua as componentes de alta frequência, suavizando também os detalhes mais rápidos do ECG. Como seu corte está acima de \SI{60}{\hertz}, a rejeição da rede depende principalmente do INA118.
+
+O ganho calculado prevê aproximadamente \SI{0,998}{\volt} para um QRS de \SI{1}{\milli\volt} de pico. Na Figura~\ref{fig:ecg_iguais_matheus}, o pico R apresenta excursão da ordem de \SI{1}{\volt} em relação à linha de base local, compatível com essa previsão. A leitura é aproximada, pois os filtros alteram a forma de onda e a captura não apresenta cursores de amplitude.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth,height=0.65\textheight,keepaspectratio]{ECG_IGUAIS_sim.png}
+\caption{Cadeia completa com eletrodos iguais: circuito simulado e resposta transiente de \SI{3}{\second}.}
+\label{fig:ecg_iguais_matheus}
+\end{figure}
+
+\subsubsection{Cadeia completa ECG com eletrodos diferentes}
+
+Na Figura~\ref{fig:ecg_diferentes_matheus}, foram acrescentados \SI{100}{\kilo\ohm} em série com o braço esquerdo, \SI{1}{\kilo\ohm} com o direito e \SI{10}{\pico\farad} de cada entrada ao terra. Os demais componentes foram mantidos. O ECG permanece visível, mas apresenta interferência de \SI{60}{\hertz} sobreposta, com amplitude estimada visualmente em \SI{0,8}{\vpp}, ou \SI{0,4}{\volt} de pico, nos intervalos entre os complexos QRS.
+
+As resistências desiguais, associadas às capacitâncias dos cabos e das entradas, alteram de forma diferente a amplitude e a fase da rede em cada caminho. Parte do sinal comum torna-se diferencial e passa a ser amplificada junto com o ECG. Isso explica o aparecimento da interferência que era pouco visível com os caminhos iguais.
+
+A transmissão do passa-baixas em \SI{60}{\hertz} é
+\begin{equation}
+|H_{LP}(60)|=\frac{1}{\sqrt{1+(60/132,63)^2}}\approx0,911,
+\qquad 20\log_{10}|H_{LP}(60)|\approx-\SI{0,81}{\decibel}.
+\label{eq:atenuacao_rede_matheus}
+\end{equation}
+Portanto, o filtro reduz apenas \SI{8,9}{\percent} da amplitude dessa componente. A ondulação estimada de \SI{0,8}{\vpp} na saída corresponde a aproximadamente \SI{0,88}{\vpp} antes do filtro, redução de cerca de \SI{0,08}{\vpp}. Esses valores são estimativas para a componente de \SI{60}{\hertz}, sem separação espectral do ECG. Os máximos absolutos da curva incluem a interferência e não representam a amplitude isolada do QRS.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth,height=0.65\textheight,keepaspectratio]{ECG_FINAL_sim.png}
+\caption{Cadeia completa com eletrodos diferentes: circuito simulado e interferência residual sobreposta ao ECG.}
+\label{fig:ecg_diferentes_matheus}
+\end{figure}
 
 \subsection{Montagem em bancada}
 
@@ -436,9 +471,9 @@ Refez-se a simulação de todos os itens com os valores de componente efetivamen
 
 No ensaio de ganho diferencial, as entradas esquerda e direita recebem senoides de \SI{10}{\hertz} e \SI{0,5}{\milli\volt} de pico, defasadas de $180^\circ$, gerando uma diferença de \SI{1}{\milli\volt}. Substituindo os resistores nominais de \SI{10}{\kilo\ohm} pelos valores medidos, o ganho diferencial do primeiro par é $G_1 = 1 + (2 \cdot 9{,}892)/R_g$. Com o $R_G$ de \SI{9,892}{\kilo\ohm} da montagem, o ganho simulado para a montagem é ligeiramente diferente do teórico, mas o circuito deve manter a amplificação da diferença e a rejeição do modo comum do primeiro estágio.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{simulacao_de_montagem_1.png}
+\includegraphics[width=0.85\textwidth,height=0.72\textheight,keepaspectratio]{simulacao_de_montagem_1.png}
 \caption{Resposta da simulação do \texttt{item\_1.asc} com os valores utilizados em bancada.}
 \label{fig:simulacao_1}
 \end{figure}
@@ -447,9 +482,9 @@ No ensaio de ganho diferencial, as entradas esquerda e direita recebem senoides 
 
 No ensaio de modo comum, as duas entradas são ligadas juntas a uma senoide de \SI{60}{\hertz} e \SI{1}{\volt} de pico. Com os resistores perfeitamente casados (todos em \SI{9,892}{\kilo\ohm}), a saída de modo comum deve ser praticamente nula. No segundo circuito, onde $R_6$ foi descasado (para \SI{11,87}{\kilo\ohm}, equivalente ao $12\text{ k}\Omega$ nominal), o ganho de modo comum deixa de ser zero. A simulação com os valores medidos deve mostrar esse mesmo comportamento: a rejeição de modo comum cai drasticamente quando um dos resistores do estágio de diferença é descasado, o que comprova que a qualidade da rejeição depende exclusivamente do casamento dos resistores.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{simulacao_de_montagem_2.png}
+\includegraphics[width=0.85\textwidth,height=0.72\textheight,keepaspectratio]{simulacao_de_montagem_2.png}
 \caption{Resposta da simulação do \texttt{item\_2.asc} com os valores utilizados em bancada. Acima o circuito com os resistores iguais, abaixo com R6 = \SI{11,87}{\kilo\ohm}}
 \label{fig:simulacao_1}
 \end{figure}
@@ -465,9 +500,9 @@ f_{HP} = \frac{1}{2\pi \cdot 326{,}6 \cdot 10^3 \cdot 1{,}03 \cdot 10^{-6}} \app
 
 Espera-se que a curva do estágio não inversor mantenha o ganho e o corte em \SI{0,473}{\hertz}. A curva do estágio inversor deve apresentar um corte ligeiramente mais alto (em torno de \SI{0,6}{\hertz}) devido ao carregamento do resistor de entrada de \SI{1}{\kilo\ohm}. O desvio observado em relação ao teórico de \SI{0,482}{\hertz} é de apenas \SI{1,9}{\%}, decorrente da tolerância dos componentes.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{simulacao_de_montagem_2.png}
+\includegraphics[width=0.85\textwidth,height=0.72\textheight,keepaspectratio]{simulacao_de_montagem_2.png}
 \caption{Resposta da simulação do \texttt{item\_3.asc} com os valores utilizados em bancada.}
 \label{fig:simulacao_1}
 \end{figure}
@@ -511,6 +546,15 @@ No item 6, os eletrodos são intencionalmente descasados com resistores de \SI{1
 
 Abaixo são apresentados os resultados numéricos obtidos no projeto analítico ideal, na simulação
 da montagem e nas medições efetuadas na bancada. Os erros percentuais foram calculados tomando como referência a simulação da montagem.
+
+
+A Figura~\ref{fig:ecg_montado_lab} registra o circuito montado em protoboard, com as conexões de alimentação, os componentes da cadeia e o cabo amarelo trançado utilizado na montagem.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth,height=0.72\textheight,keepaspectratio]{ECG_montado_lab.jpeg}
+\caption{Circuito de aquisição do ECG montado em laboratório.}
+\label{fig:ecg_montado_lab}
+\end{figure}
 
 \subsubsection{Amplificador de instrumentação}
 
@@ -600,45 +644,45 @@ Entrada foi $V_p = \SI{330,5}{\milli\volt}$
   \end{tabular}
 \end{center}
 
+\subsection{Forma de onda medida}
+
+A Figura~\ref{fig:ecg_osciloscopio} apresenta o ECG observado no canal 2 do osciloscópio, com base de tempo de \SI{200}{\milli\second} por divisão e escala vertical de \SI{500}{\milli\volt} por divisão. Observam-se picos R bem definidos e ondas de menor amplitude entre eles, compatíveis com as ondas P e T, além de ondulação residual na linha de base. O equipamento indica aproximadamente \SI{3,00}{\vpp} para o traço completo; esse valor inclui a forma de onda e o ruído, não sendo a amplitude isolada do pico R.
+
+Os cursores delimitam dois picos R consecutivos, com $T_{RR}=\SI{784}{\milli\second}=\SI{0,784}{\second}$. A frequência dos batimentos é
+\begin{equation}
+f_{RR}=\frac{1}{T_{RR}}=\frac{1}{0,784}\approx\SI{1,276}{\hertz},
+\end{equation}
+e a frequência cardíaca correspondente é
+\begin{equation}
+\mathrm{FC}=\frac{60}{T_{RR}}=\frac{60}{0,784}\approx76,53\ \text{bpm}.
+\label{eq:bpm_medido}
+\end{equation}
+Esse resultado corresponde ao intervalo selecionado na captura, não a uma média de vários ciclos.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.67\textwidth,height=0.72\textheight,keepaspectratio]{medicao_lab.jpeg}
+\caption{ECG medido no laboratório; os cursores indicam intervalo R--R de \SI{784}{\milli\second}, equivalente a aproximadamente 76,53 bpm.}
+\label{fig:ecg_osciloscopio}
+\end{figure}
+
 \section{Discussão}
 
-Percorra as três comparações na ordem em que aparecem no quadro da
-Seção~4: a conta contra
-a simulação de projeto, esta contra a simulação da montagem, e esta
-contra a medição. Cada
-passo isola uma causa, e a discussão fica bem mais curta quando eles
-não se misturam.
+As simulações individuais apresentam ganhos da ordem de $10^3$, conforme o objetivo de elevar o ECG de milivolts para volts. As diferenças entre os projetos decorrem das especificações e dos componentes adotados. Nas Figuras~\ref{fig:ecg_iguais_matheus} e~\ref{fig:ecg_diferentes_matheus}, o ganho calculado de $997,56$ é compatível com o QRS da ordem de \SI{1}{\volt} observado com eletrodos iguais. Os cortes de \SI{0,804}{\hertz} e \SI{132,63}{\hertz} delimitam a faixa amplificada, atenuando o contínuo e as componentes de alta frequência.
 
-Compare também os projetos dos integrantes entre si. Como as
-especificações são diferentes,
-os resultados diferem, e mostrar que essa diferença é a que a teoria
-previa vale mais do
-que repetir três vezes a mesma análise.
+Na montagem, o ganho nominal é 906 e os cortes projetados são \SI{0,482}{\hertz} e \SI{33,9}{\hertz}. Com os componentes medidos, o ganho previsto passa para aproximadamente 914, aumento de \SI{0,9}{\percent}, compatível com as tolerâncias dos resistores. A banda mais estreita da montagem reduz mais as componentes rápidas do ECG e a interferência: o passa-baixas calculado de \SI{33,4}{\hertz} atenua a rede em cerca de \SI{6,26}{\decibel}, enquanto o filtro de \SI{132,63}{\hertz} das figuras atenua apenas \SI{0,81}{\decibel}.
 
-Sempre que uma divergência for maior do que a incerteza esperada,
-aponte uma causa concreta
-e diga como ela poderia ser reduzida. Vale, por exemplo, a tolerância
-do componente, a
-resistência série do indutor, a impedância de entrada do
-osciloscópio, a banda do
-amplificador ou a resolução da varredura.
+Na comparação entre simulação da montagem e bancada, o passa-altas apresentou corte de \SI{0,489}{\hertz} e \SI{0,6}{\hertz}, respectivamente, com desvio de \SI{22,70}{\percent}. O erro de amplitude foi de \SI{1,01}{\percent} em \SI{10}{\hertz} e aumentou próximo ao corte. A resolução da busca em frequência, o tempo de estabilização e o carregamento pela ponta de prova são possíveis causas desse comportamento. Uma varredura mais fina, com acoplamento DC e seguidor após o filtro, reduz essas fontes de desvio. No passa-baixas, o corte medido de \SI{33,3}{\hertz} diferiu \SI{4,03}{\percent} do simulado de \SI{34,7}{\hertz}; entre \SI{3,5}{\hertz} e \SI{45,5}{\hertz}, os erros de amplitude ficaram entre \SI{0,34}{\percent} e \SI{2,16}{\percent}. A saída de \SI{5}{\volt} no ensaio de ganho adicional coincidiu com o alvo ajustado, confirmando esse ponto de operação, sem determinar isoladamente o ganho.
 
-Quando previsto e obtido coincidirem, explique por que era esperado
-que coincidissem, e o
-que essa coincidência não permite concluir.
+A tensão residual no ensaio de modo comum foi de \SI{0,1}{\milli\volt} na simulação e \SI{0,6}{\milli\volt} na bancada. Apesar da diferença relativa elevada, ambas são pequenas e a leitura pode ser limitada pelo ruído e pela resolução do osciloscópio. Nas simulações de ECG, o descasamento dos eletrodos converte parte da rede comum em sinal diferencial, explicando a ondulação que aparece na Figura~\ref{fig:ecg_diferentes_matheus}. Cabos curtos, caminhos equilibrados e referência de terra bem definida ajudam a reduzir esse efeito. O passa-baixas atenua a parcela residual, mas não a elimina.
 
-Por fim, retome as hipóteses que vocês declararam na fundamentação e
-diga quais se
-confirmaram. Se algo observado contrariar a previsão, resolva a
-contradição aqui.
+A captura experimental permitiu identificar os complexos QRS e medir \SI{784}{\milli\second} entre picos R, equivalentes a 76,53 bpm. Os resultados sustentam a amplificação diferencial e a ação dos filtros previstas no modelo linear, com rejeição de modo comum finita e influência das impedâncias externas. A ondulação residual e a alteração da forma de onda pelos filtros limitam a fidelidade de amplitude; além disso, a captura de um único intervalo não representa uma média da frequência cardíaca.
 
 \section{Conclusão}
 
-Retome o objetivo que vocês anunciaram na introdução e responda se
-ele foi atingido,
-apoiando a resposta em um número. Aponte a principal limitação do que
-foi feito e o que
-ela impede de afirmar. Evite trazer resultado novo nesta seção.
+O objetivo de montar e caracterizar uma cadeia de aquisição de ECG foi atingido: a montagem permitiu observar complexos QRS e medir um intervalo R--R de \SI{784}{\milli\second}, correspondente a aproximadamente 76,53 bpm. O corte superior medido de \SI{33,3}{\hertz} ficou \SI{4,03}{\percent} abaixo do valor simulado registrado, enquanto o corte inferior apresentou desvio maior, de \SI{22,70}{\percent}. As simulações individuais mostraram ainda QRS da ordem de \SI{1}{\volt} e o reaparecimento da rede quando os caminhos dos eletrodos foram desequilibrados.
+
+A principal limitação é a interferência residual associada à rejeição finita e ao descasamento dos caminhos de entrada, somada à alteração da forma de onda pelos filtros. A captura de um único intervalo R--R e as inconsistências de parametrização identificadas na discussão impedem afirmar precisão global de amplitude, CMRR experimental ou fidelidade diagnóstica. O experimento demonstra a amplificação e a filtragem necessárias à visualização dos batimentos, dentro das condições ensaiadas.
 
 \section{Referências}
 
