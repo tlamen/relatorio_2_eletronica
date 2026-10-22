@@ -68,107 +68,276 @@ os sinais sem os interferir com sua resistência interna.
 Como objetivo final, o circuito será testado em um dos autores do relatório.
 O texto está organizado nas secções: Fundamentação teórica, Especificação e projeto, Metodologia, Simulação e Resultados.
 
-\section{Fundamentação teórica}
+\section{Fundamentação Teórica}
 
-Deduza as expressões que você vai usar mais adiante, partindo das
-leis de circuito.
-Numere as equações que forem retomadas no restante do texto.
+A cadeia de medição do eletrocardiograma precisa extrair um sinal diferencial de cerca de \SI{1}{\milli\volt}, com conteúdo entre \SI{0,05}{\hertz} e \SI{150}{\hertz}, de um ambiente em que o mesmo corpo capta a rede elétrica como antena (dezenas de milivolts a \SI{60}{\hertz}) e em que cada eletrodo desenvolve um potencial contínuo próprio, de centenas de milivolts. Cada estágio da cadeia resolve uma dessas parcelas: o amplificador de instrumentação amplifica a diferença e descarta o que é comum; o passa-altas remove o contínuo do eletrodo; o ganho adicional leva o sinal à faixa de volts; e o passa-baixas fecha a banda e atenua a rede. As hipóteses adotadas nesta dedução são as de amplificador operacional ideal e de componentes lineares; quando alguma delas não se sustentar no experimento, ela será retomada na Seção~6.
+
+\subsection{Amplificador de instrumentação de três amplificadores}
+
+O amplificador de instrumentação de três amplificadores é formado por dois estágios não inversores de entrada que compartilham o resistor $R_g$ e por um amplificador de diferença na saída. Os dois primeiros amplificam apenas a diferença entre as entradas, porque a tensão no nó comum de $R_g$ é fixada pelas duas entradas e o que é comum a ambas não gera corrente em $R_g$. A saída do primeiro par é
 
 \begin{equation}
-  H(j\omega) = \frac{1}{1+j\omega RC}
-  \label{eq:exemplo}
+v_{o1} - v_{o2} = \left( 1 + \frac{R_1 + R_2}{R_g} \right) (v_1 - v_2) ,
+\label{eq:inamp_ganho}
 \end{equation}
 
-Toda grandeza que aparecer nos resultados precisa ter sido
-apresentada aqui. Explique o que
-cada termo significa fisicamente, não apenas o que a letra
-representa. Registre as hipóteses
-que você está assumindo, como linearidade ou idealidade dos
-componentes: se alguma delas
-não se sustentar no experimento, você vai retomá-la na discussão.
+em que $v_1$ e $v_2$ são as tensões nas duas entradas. O ganho diferencial do primeiro par é, portanto,
 
-Se o circuito tiver regimes de funcionamento distintos, apresente
-cada um e diga o que os
-separa.
+\begin{equation}
+G_1 = 1 + \frac{R_1 + R_2}{R_g} .
+\label{eq:g1}
+\end{equation}
 
-\section{Especificação e projeto}
+No roteiro, $R_1 = R_2 = \SI{10}{\kilo\ohm}$, de modo que a expressão se reduz a $G_1 = 1 + 20~\text{k}\Omega / R_g$. O terceiro amplificador, com os quatro resistores iguais, converte a diferença em uma saída referida ao terra e rejeita o que é comum aos dois nós de entrada. O ganho de modo comum do primeiro par é unitário, e é o casamento dos quatro resistores do estágio de diferença que determina a rejeição final: com os quatro iguais, o ganho de modo comum ideal é zero e a rejeição vai a infinito; com um deles desigual, aparece um ganho de modo comum residual que pode ser calculado a partir do descasamento.
 
-Esta seção transcreve a especificação numérica de cada integrante,
-calculada a partir dos nove dígitos da matrícula conforme as
-Seções~2.2 a~2.5 do roteiro, e leva cada parâmetro até o valor de
-componente na série E12. A Seção~3.1 reúne a especificação da equipe,
-usada na bancada; a Seção~3.2 apresenta o projeto individual; e a
-Seção~3.3 registra os valores medidos dos resistores efetivamente montados.
+\subsection{O amplificador integrado INA118}
 
-\subsection{Especificação da equipe}
+O INA118 integra os três amplificadores e os resistores casados em um único encapsulamento de oito pinos. Para fora, sobra apenas o resistor de ganho $R_G$, ligado entre os dois terminais de ganho. A equação do ganho é a mesma da Equação~\eqref{eq:g1}, com a soma dos resistores internos fixada em \SI{50}{\kilo\ohm}:
 
-A equipe~2 adotou, para a montagem em bancada, a especificação da
-Tabela~\ref{tab:equipe}. Esses valores foram usados no projeto do
-circuito único que a equipe montou, e são a referência contra a qual
-a simulação da montagem e a medição são confrontadas.
+\begin{equation}
+G_1 = 1 + \frac{50~\text{k}\Omega}{R_G} .
+\label{eq:ina118}
+\end{equation}
+
+O terminal de referência define o zero da saída e vai ao terra. A ordem dos terminais não é a de nenhum amplificador operacional comum, e o símbolo precisa ser construído com os oito terminais na ordem do cabeçalho do modelo na biblioteca.
+
+\subsection{Passa-altas e o estágio seguinte}
+
+O potencial contínuo do eletrodo é removido por um capacitor em série com a entrada do estágio seguinte. Com o capacitor $C$ e o resistor $R$ ao terra, a função de transferência é a de um passa-altas de primeira ordem:
+
+\begin{equation}
+H_{HP}(j\omega) = \frac{j\omega R C}{1 + j\omega R C} ,
+\label{eq:hp}
+\end{equation}
+
+e a frequência de corte, onde o ganho cai a $1/\sqrt{2}$ do valor de banda passante, é
+
+\begin{equation}
+f_{HP} = \frac{1}{2\pi R C} .
+\label{eq:fhp}
+\end{equation}
+
+Com corte abaixo de \SI{1}{\hertz} e capacitor de \SI{1}{\micro\farad}, o resistor fica em centenas de quilo-ohms. Essa impedância alta é o motivo pelo qual o estágio seguinte não pode ser um inversor de baixa impedância de entrada: o inversor, com resistor de entrada de \SI{1}{\kilo\ohm}, carrega o nó do filtro e desloca o corte. O estágio não inversor, com impedância de entrada muito alta, não carrega o filtro e preserva o corte projetado. É essa a razão da escolha do não inversor no roteiro.
+
+\subsection{Ganho adicional e passa-baixas}
+
+O ganho adicional é feito por um amplificador não inversor com o TL064, cujo ganho é
+
+\begin{equation}
+G_2 = 1 + \frac{R_f}{R_g} ,
+\label{eq:g2}
+\end{equation}
+
+com $R_g = \SI{1}{\kilo\ohm}$ no roteiro. O passa-baixas é um RC de primeira ordem com o capacitor em paralelo com a saída, e a função de transferência é
+
+\begin{equation}
+H_{LP}(j\omega) = \frac{1}{1 + j\omega R C} ,
+\label{eq:lp}
+\end{equation}
+
+com frequência de corte
+
+\begin{equation}
+f_{LP} = \frac{1}{2\pi R C} .
+\label{eq:flp}
+\end{equation}
+
+O passa-baixas fecha a banda do eletrocardiograma em torno de \SI{150}{\hertz} e atenua a rede de \SI{60}{\hertz} na medida em que o corte se aproxima dessa frequência.
+
+\subsection{Resposta da cadeia completa}
+
+A cadeia completa é o produto das respostas de cada estágio. Em banda passante, o ganho total é
+
+\begin{equation}
+G = G_1 \, G_2 ,
+\label{eq:g_total}
+\end{equation}
+
+e a resposta em frequência é
+
+\begin{equation}
+H(j\omega) = G \, H_{HP}(j\omega) \, H_{LP}(j\omega) .
+\label{eq:cadeia}
+\end{equation}
+
+Os dois cortes delimitam a banda útil: abaixo de $f_{HP}$ o contínuo do eletrodo é atenuado; acima de $f_{LP}$ a rede e o ruído de alta frequência são atenuados. A escolha de $G_1$ e $G_2$ no roteiro busca $G_1 G_2$ o mais próximo possível de 1000, de modo que o sinal de \SI{1}{\milli\volt} na entrada chegue à saída na faixa de \SI{1}{\volt}.
+
+\section{Especificação e Projeto}
+
+Esta seção transcreve os parâmetros determinados pela matrícula de cada integrante na simulação e pelo número da equipe na bancada, e leva cada um até o valor de componente na série E12. A Seção~3.1 trata da especificação da equipe~2; a Seção~3.2, da especificação individual; e a Seção~3.3, dos componentes medidos da montagem.
+
+\subsection{Especificação da equipe 2 (bancada)}
+
+A equipe~2 montou o circuito da cadeia de eletrocardiograma com a especificação da Tabela~\ref{tab:equipe_r4}. O passa-altas é o mesmo para todas as equipes ($C = \SI{1}{\micro\farad}$ e $R = \SI{330}{\kilo\ohm}$). A especificação particular da equipe~2 está no resistor de ganho do INA118, nos resistores do estágio de ganho adicional e no filtro passa-baixas.
 
 \begin{table}[h]
-  \centering
-  \caption{Especificação da equipe~2, conforme a Seção~3.1 do roteiro.}
-  \label{tab:equipe}
-  \begin{tabular}{lc}
-    \hline
-    Grandeza & Valor \\
-    $R_g$ do INA118 & $\SI{10}{\kilo\ohm}$ \\
-    $R_f$ e $R_g$ do ganho & $\SI{330}{\kilo\ohm}$ e $\SI{2,2}{\kilo\ohm}$ \\
-    Passa baixas & $\SI{4,7}{\kilo\ohm}$ e $\SI{1}{\micro\farad}$ \\
-    \hline
-  \end{tabular}
+\centering
+\caption{Especificação da equipe~2 para a bancada.}
+\label{tab:equipe_r4}
+\begin{tabular}{lc}
+\hline
+Grandeza & Valor \\
+\hline
+$R_G$ do INA118 & \SI{10}{\kilo\ohm} \\
+Ganho $G_1$ do INA118 & $1 + 50~\text{k}\Omega / 10~\text{k}\Omega = 6{,}00$ \\
+Passa-altas & \SI{1}{\micro\farad} e \SI{330}{\kilo\ohm} \\
+Frequência de corte $f_{HP}$ & \SI{0,482}{\hertz} \\
+Ganho adicional $G_2$ ($R_f$ e $R_g$) & \SI{330}{\kilo\ohm} e \SI{2,2}{\kilo\ohm} \\
+Ganho $G_2$ realizado & $1 + 330~\text{k}\Omega / 2{,}2~\text{k}\Omega = 151$ \\
+Passa-baixas & \SI{4,7}{\kilo\ohm} e \SI{1}{\micro\farad} \\
+Frequência de corte $f_{LP}$ & \SI{33,9}{\hertz} \\
+\hline
+\end{tabular}
 \end{table}
 
-Transcreva os parâmetros que a sua matrícula determina, mostrando a
-conta a partir dos
-dígitos.
+O ganho do INA118 é obtido invertendo a Equação~\eqref{eq:ina118} para $R_G$:
+\begin{equation}
+R_G = \frac{50~\text{k}\Omega}{G_1 - 1} = \frac{50~\text{k}\Omega}{6 - 1} = \SI{10}{\kilo\ohm} .
+\label{eq:rg_equipe}
+\end{equation}
 
-\begin{espec}
-  Matrícula \mat{00/0000000}. \\
-  Preencha aqui os parâmetros calculados a partir dos dígitos,
-  conforme o roteiro.
-\end{espec}
+O passa-altas tem corte de:
+\begin{equation}
+f_{HP} = \frac{1}{2\pi \cdot 330 \cdot 10^3 \cdot 1 \cdot 10^{-6}} = \SI{0,482}{\hertz} ,
+\label{eq:fhp_equipe}
+\end{equation}
 
-Leve cada parâmetro até o valor de componente, deixando visível a
-expressão que você
-inverteu para chegar lá. Depois escolha o valor na série comercial e
-calcule o quanto essa
-escolha afasta você do valor ideal. A tabela abaixo organiza isso, e
-é ela que depois
-permite separar o que veio do projeto do que veio da montagem.
+O ganho adicional $G_2$ foi realizado com um amplificador não inversor (TL064). O ganho é calculado puramente pela razão dos resistores $R_f$ e $R_g$:
+\begin{equation}
+G_2 = 1 + \frac{R_f}{R_g} = 1 + \frac{330~\text{k}\Omega}{2{,}2~\text{k}\Omega} = 151 .
+\label{eq:g2_equipe}
+\end{equation}
 
-\begin{center}
-  \begin{tabular}{@{}lrrr@{}}
-    \toprule
-    \textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
-    \midrule
-    & & & \\
-    \bottomrule
-  \end{tabular}
-\end{center}
+O passa-baixas da equipe~2, com \SI{4,7}{\kilo\ohm} e \SI{1}{\micro\farad}, tem corte de:
+\begin{equation}
+f_{LP} = \frac{1}{2\pi \cdot 4{,}7 \cdot 10^3 \cdot 1 \cdot 10^{-6}} = \SI{33,9}{\hertz} .
+\label{eq:flp_equipe}
+\end{equation}
 
-Se mais de uma combinação atender à especificação, diga por que
-escolheu esta, mostrando
-que as outras ficavam mais distantes.
+O ganho total em banda passante da cadeia é $G = G_1 \cdot G_2 = 6 \cdot 151 = 906$, o que leva o sinal de \SI{1}{\milli\volt} a \SI{0,906}{\volt} na saída.
+
+\subsection{Especificação individual}
+
+Cada integrante recebeu uma especificação distinta, derivada dos nove dígitos da própria matrícula na forma $ABCDEFGHI$. As equações do roteiro são $G_1 = 5 + (EF \bmod 16)$, $f_{HP} = (1 + GH \bmod 10)/10$~Hz, $G_2$ tal que $G_1 G_2$ fique o mais próximo possível de 1000, e $f_{LP} = 40 + 10$~Hz (ou seja, \SI{50}{\hertz} para todos). A Tabela~\ref{tab:individual_r4} reúne os resultados.
+
+\begin{table}[h]
+\centering
+\caption{Especificação individual calculada a partir da matrícula.}
+\label{tab:individual_r4}
+\begin{tabular}{lccc}
+\hline
+Grandeza & 211026486 & 221035442 & 241039879 \\
+\hline
+$EF$ & 26 & 35 & 39 \\
+$GH$ & 48 & 44 & 87 \\
+$G_1$ & $5 + (26 \bmod 16) = 15$ & $5 + (35 \bmod 16) = 8$ & $5 + (39 \bmod 16) = 12$ \\
+$f_{HP}$ (\si{\hertz}) & $(1 + 48 \bmod 10)/10 = 0{,}9$ & $(1 + 44 \bmod 10)/10 = 0{,}5$ & $(1 + 87 \bmod 10)/10 = 0{,}8$ \\
+$G_2$ (arredondado) & $1000/15 \approx 67$ & $1000/8 = 125$ & $1000/12 \approx 83$ \\
+$f_{LP}$ (\si{\hertz}) & 50 & 50 & 50 \\
+\hline
+\end{tabular}
+\end{table}
+
+Para o integrante de matrícula 211026486, o ganho do INA118 é $G_1 = 5 + (26 \bmod 16) = 5 + 10 = 15$, e o resistor de ganho é
+
+\begin{equation}
+R_G = \frac{50~\text{k}\Omega}{15 - 1} = \SI{3,571}{\kilo\ohm} \quad \Rightarrow \quad \text{E12: } \SI{3,6}{\kilo\ohm} ,
+\label{eq:rg_211026486}
+\end{equation}
+
+o que dá um ganho realizado de $G_1 = 1 + 50/3{,}6 = 14{,}89$. O corte do passa-altas é $f_{HP} = 0{,}9$~Hz, o que exige $R = 1/(2\pi \cdot 0{,}9 \cdot 1~\mu\text{F}) = \SI{176,8}{\kilo\ohm}$, arredondado para \SI{180}{\kilo\ohm} (E12), com corte realizado de $f_{HP} = 0{,}884$~Hz. O ganho adicional é $G_2 = 1000/14{,}89 = 67{,}2$, o que exige $R_f = (G_2 - 1) \cdot 1~\text{k}\Omega = \SI{66,2}{\kilo\ohm}$, arredondado para \SI{68}{\kilo\ohm} (E12), com $G_2 = 69$. O ganho total é $G = 14{,}89 \cdot 69 = 1027$.
+
+Para o integrante de matrícula 221035442, o ganho do INA118 é $G_1 = 5 + (35 \bmod 16) = 5 + 3 = 8$, e o resistor de ganho é
+
+\begin{equation}
+R_G = \frac{50~\text{k}\Omega}{8 - 1} = \SI{7,143}{\kilo\ohm} \quad \Rightarrow \quad \text{E12: } \SI{7,5}{\kilo\ohm} ,
+\label{eq:rg_221035442}
+\end{equation}
+
+o que dá $G_1 = 1 + 50/7{,}5 = 7{,}67$. O corte do passa-altas é $f_{HP} = 0{,}5$~Hz, o que exige $R = \SI{318,3}{\kilo\ohm}$, arredondado para \SI{330}{\kilo\ohm} (E12), com $f_{HP} = 0{,}482$~Hz. O ganho adicional é $G_2 = 1000/7{,}67 = 130{,}4$, o que exige $R_f = \SI{129,4}{\kilo\ohm}$, arredondado para \SI{130}{\kilo\ohm} (não-E12; usar \SI{120}{\kilo\ohm} ou \SI{150}{\kilo\ohm}) ou \SI{100}{\kilo\ohm} + \SI{33}{\kilo\ohm} em série = \SI{133}{\kilo\ohm}, com $G_2 = 134$. O ganho total é $G = 7{,}67 \cdot 134 = 1028$.
+
+Para o integrante de matrícula 241039879, o ganho do INA118 é $G_1 = 5 + (39 \bmod 16) = 5 + 7 = 12$, e o resistor de ganho é
+
+\begin{equation}
+R_G = \frac{50~\text{k}\Omega}{12 - 1} = \SI{4,545}{\kilo\ohm} \quad \Rightarrow \quad \text{E12: } \SI{4,7}{\kilo\ohm} ,
+\label{eq:rg_241039879}
+\end{equation}
+
+o que dá $G_1 = 1 + 50/4{,}7 = 11{,}64$. O corte do passa-altas é $f_{HP} = 0{,}8$~Hz, o que exige $R = \SI{198,9}{\kilo\ohm}$, arredondado para \SI{200}{\kilo\ohm} (ou \SI{220}{\kilo\ohm}, E12), com $f_{HP} = 0{,}723$~Hz (ou $0{,}72$~Hz). O ganho adicional é $G_2 = 1000/11{,}64 = 85{,}9$, o que exige $R_f = \SI{84,9}{\kilo\ohm}$, arredondado para \SI{82}{\kilo\ohm} (E12) ou \SI{100}{\kilo\ohm}, com $G_2 = 83$ (com \SI{82}{\kilo\ohm}). O ganho total é $G = 11{,}64 \cdot 83 = 966$.
+
+A Tabela~\ref{tab:projeto_individual} resume os valores adotados e os ganhos realizados.
+
+\begin{table}[h]
+\centering
+\caption{Projeto individual dos componentes (E12).}
+\label{tab:projeto_individual}
+\begin{tabular}{lccccccc}
+\hline
+Integrante & $G_1$ & $R_G$ & $f_{HP}$ & $R_{HP}$ & $G_2$ & $R_f$ & $G$ total \\
+\hline
+211026486 & 15 & \SI{3,6}{\kilo\ohm} & 0,9 & \SI{180}{\kilo\ohm} & 67 & \SI{68}{\kilo\ohm} & 1027 \\
+221035442 & 8 & \SI{7,5}{\kilo\ohm} & 0,5 & \SI{330}{\kilo\ohm} & 125 & \SI{133}{\kilo\ohm} & 1028 \\
+241039879 & 12 & \SI{4,7}{\kilo\ohm} & 0,8 & \SI{200}{\kilo\ohm} & 83 & \SI{82}{\kilo\ohm} & 966 \\
+\hline
+\end{tabular}
+\end{table}
 
 \section{Metodologia}
 
-Conte o que você fez e com quais parâmetros, de modo que um colega
-consiga repetir sem
-precisar perguntar nada. Explique as escolhas que não são evidentes:
-por que essa faixa de
-varredura, por que esse passo de integração, por que esse intervalo de gravação.
-
-Inclua a figura do esquemático, com legenda que descreva o que ela
-mostra, e cite-a no
-texto, como na Figura~\ref{fig:exemplo}. Se uma figura não for
-mencionada em nenhum
-parágrafo, ela provavelmente não precisa estar aqui.
+Esta seção descreve os procedimentos adotados na simulação e na bancada, com os parâmetros que permitem repetir cada medida. A Seção~4.1 apresenta a simulação de projeto de cada integrante; a Seção~4.2 descreve a montagem em bancada; e a Seção~4.3 trata da simulação da montagem com os valores medidos.
 
 \subsection{Simulação de projeto, uma por integrante}
 
+Esta subseção descreve as simulações individuais de cada integrante. Todas as simulações utilizaram o modelo do INA118 e o amplificador TL064 fornecidos pela biblioteca \texttt{ene0046.lib}, com alimentação simétrica de \SI{\pm 15}{\volt}.
+
+\subsubsection{Passa-altas seguido de estágios não inversor e inversor (\texttt{item\_3.asc})}
+
+O arquivo \texttt{item\_3.asc} (primeira imagem) foi montado para avaliar o impacto de um filtro passa-altas quando conectado a diferentes topologias de estágio seguinte. O objetivo é verificar a justificativa do roteiro de se utilizar um amplificador não inversor após o filtro.
+
+O circuito contém uma fonte senoidal (\texttt{V3} e \texttt{V4}) com diretiva de pequeno sinal \texttt{AC 1}. O filtro passa-altas é formado por $C_1 = \SI{1}{\micro\farad}$ e $R_1 = \SI{180}{\kilo\ohm}$, o que resulta em uma frequência de corte teórica de:
+\begin{equation}
+f_{HP} = \frac{1}{2\pi \cdot 180 \cdot 10^3 \cdot 1 \cdot 10^{-6}} \approx \SI{0,884}{\hertz}.
+\label{eq:fhp_item3}
+\end{equation}
+
+A partir do nó \texttt{hp1}, o sinal é dividido em dois ramos paralelos. 
+No primeiro ramo (superior), o filtro alimenta um amplificador **não inversor** configurado com $R_{f1} = \SI{68}{\kilo\ohm}$ e $R_{g1} = \SI{1}{\kilo\ohm}$, fornecendo um ganho de tensão de $A_{v} = 1 + (68/1) = 69$. Como a impedância de entrada do não inversor é altíssima, o filtro não é carregado e a frequência de corte é preservada.
+No segundo ramo (inferior), o filtro alimenta um amplificador **inversor** com $R_{in2} = \SI{1}{\kilo\ohm}$ e $R_{f2} = \SI{68}{\kilo\ohm}$, fornecendo um ganho de $-68$. Neste caso, o resistor de entrada de \SI{1}{\kilo\ohm} atua como uma carga significativa em paralelo com $R_1$ para o filtro passa-altas, alterando a frequência de corte real do conjunto.
+
+A diretiva \texttt{.ac dec 50 10m 1k} realiza uma varredura de \SI{10}{\milli\hertz} a \SI{1}{\kilo\hertz} para observar a magnitude e a fase de ambos os estágios. O esquemático é mostrado na Figura~\ref{fig:item3_esquematico}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{item_3.png}
+\caption{Esquemático do \texttt{item\_3.asc} comparando o filtro passa-altas alimentando um estágio não inversor (superior) e um inversor (inferior).}
+\label{fig:item3_esquematico}
+\end{figure}
+
+\subsubsection{Resposta em frequência da cadeia completa (\texttt{item\_4.asc})}
+
+O arquivo \texttt{item\_4.asc} (segunda imagem) simula a cadeia completa do eletrocardiograma, desde a entrada até o filtro passa-baixas de saída.
+
+A entrada utiliza o amplificador de instrumentação INA118. O resistor de ganho foi configurado como $R_G = \SI{3,3}{\kilo\ohm}$, resultando em um ganho diferencial de:
+\begin{equation}
+G_1 = 1 + \frac{50\text{ k}\Omega}{3,3\text{ k}\Omega} \approx 16,15.
+\label{eq:g1_item4}
+\end{equation}
+A saída do INA118 (\texttt{saida\_ina}) passa pelo filtro passa-altas ($C_1 = \SI{1}{\micro\farad}$ e $R_1 = \SI{180}{\kilo\ohm}$). O nó \texttt{hp} é então conectado a um estágio de ganho adicional não inversor com o TL064, usando $R_{f1} = \SI{68}{\kilo\ohm}$ e $R_{g1} = \SI{1}{\kilo\ohm}$, o que fornece $G_2 = 69$. 
+
+Por fim, a saída do estágio de ganho passa por um filtro passa-baixas de primeira ordem formado por $R_2 = \SI{3,3}{\kilo\ohm}$ e $C_2 = \SI{1}{\micro\farad}$. A frequência de corte desse filtro é:
+\begin{equation}
+f_{LP} = \frac{1}{2\pi \cdot 3,3 \cdot 10^3 \cdot 1 \cdot 10^{-6}} \approx \SI{48,2}{\hertz}.
+\label{eq:flp_item4}
+\end{equation}
+
+A diretiva \texttt{.ac dec 50 10m 10k} traça a resposta em frequência de \SI{10}{\milli\hertz} a \SI{10}{\kilo\hertz}. O ganho total em banda passante projetado para esta simulação é $G = G_1 \cdot G_2 = 16,15 \cdot 69 \approx 1114$, posicionando a curva para amplificar a diferença de potencial do eletrocardiograma (na ordem de \SI{1}{\milli\volt}) para a casa de \SI{1}{\volt} na saída, enquanto rejeita o contínuo (devido ao $f_{HP}$) e a rede elétrica de 60 Hz (devido ao $f_{LP}$). O esquemático completo está na Figura~\ref{fig:item4_esquematico}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{item_4.png}
+\caption{Esquemático do \texttt{item\_4.asc} exibindo a cadeia completa: INA118, passa-altas, ganho com TL064 e passa-baixas.}
+\label{fig:item4_esquematico}
+\end{figure}
 teste
 
 Cada integrante recebeu uma especificação diferente da própria
@@ -179,19 +348,30 @@ com os componentes que aquela pessoa projetou. São elas que mostram
 se cada projeto cumpre
 o que foi pedido.
 
-\subsection{Montagem em bancada - Elementos usados}
+\subsection{Montagem em bancada}
 
-A equipe monta um circuito só. Diga \textbf{de quem} é a
-especificação que vocês montaram e
-por que escolheram essa. Informe os valores \textbf{medidos} de cada
-componente que vocês
-usaram, e não os valores nominais impressos no corpo da peça, porque
-a diferença entre os
-dois explica boa parte do que vocês vão observar.
+A equipe montou a cadeia completa de aquisição do eletrocardiograma, conforme a especificação da equipe~2. A montagem foi dividida em três etapas lógicas: a geração do sinal de teste de \SI{1}{\milli\volt}, a montagem do amplificador de instrumentação (INA118) com os filtros, e a caracterização da cadeia. Todos os componentes foram medidos com o multímetro antes de serem inseridos no protoboard, e os resultados estão consolidados na Tabela~\ref{tab:componentes_bancada}.
 
-\subsubsection{Amplificador de instrumentação}
+\subsubsection{Geração do sinal de teste e alimentação}
 
-\begin{center}
+Para testar a cadeia com o sinal esperado (na ordem de \SI{1}{\milli\volt}), utilizou-se o gerador de funções configurado para uma senoide de \SI{123}{\milli\volt} de pico e carga de alta impedância. Este sinal foi aplicado a um divisor resistivo formado por $R_1 = \SI{820}{\ohm}$ e $R_2 = \SI{100}{\kilo\ohm}$. A relação de divisão é de aproximadamente $1/123$, de modo que a tensão no ponto central do divisor é de exatamente \SI{1}{\milli\volt} de pico, que alimenta uma das entradas do INA118, enquanto a outra entrada é ligada ao terra de referência. Os resistores do divisor também foram medidos, apresentando erros inferiores a \SI{1}{\%}.
+
+A alimentação do INA118 e do amplificador operacional TL064 foi feita utilizando o par rastreado da fonte de bancada, ajustado para \SI{\pm 15}{\volt}. Foram instalados capacitores de desacoplamento de \SI{1}{\micro\farad} entre cada pino de alimentação e o terra, posicionados o mais próximo possível dos encapsulamentos. O terra do circuito, o terra do gerador e a garra de referência do osciloscópio foram interligados em um único ponto do protoboard para evitar laços de terra.
+
+\subsubsection{Montagem do INA118 e dos Filtros}
+
+O amplificador de instrumentação INA118 foi montado com o resistor de ganho $R_{gINA} = \SI{10}{\kilo\ohm}$, resultando em um ganho diferencial teórico de $G_1 = 1 + (50\text{k}/10\text{k}) = 6$. Em seguida, acoplou-se o filtro passa-altas composto pelo capacitor $C_{passa-altas} = \SI{1}{\micro\farad}$ e o resistor $R_{passa-altas} = \SI{330}{\kilo\ohm}$, cujo corte teórico é de aproximadamente \SI{0,48}{\hertz}.
+
+Após o passa-altas, montou-se o estágio de ganho adicional com o TL064. Nesta etapa, a equipe utilizou $R_{fGanho} = \SI{330}{\kilo\ohm}$ e $R_{gGanho} = \SI{2,2}{\kilo\ohm}$. A relação entre esses resistores fornece um ganho de tensão de $G_2 = 1 + (330\text{k}/2,2\text{k}) = 151$. O ganho total em banda passante da cadeia montada foi de $G = 6 \times 151 = 906$, valor que foi registrado na tabela. Por fim, a saída do TL064 passou pelo filtro passa-baixas RC de primeira ordem, formado por $R_{passa-baixas} = \SI{4,7}{\kilo\ohm}$ e $C_{passa-baixas} = \SI{1}{\micro\farad}$, resultando em um corte de aproximadamente \SI{33,9}{\hertz}.
+
+\subsubsection{Valores medidos dos componentes}
+
+A Tabela~\ref{tab:componentes_bancada} apresenta os valores nominais dos componentes utilizados na montagem, os valores efetivamente medidos com o multímetro e o erro percentual calculado. Os desvios foram muito baixos (todos abaixo de \SI{3}{\%}), o que justifica a proximidade entre os resultados teóricos e as medições realizadas.
+
+\begin{table}
+\centering
+\caption{Valores medidos dos componentes da montagem da equipe~2.}
+\label{tab:componentes_bancada}
   \begin{tabular}{@{}lrrr@{}}
     \toprule
     \textbf{Grandeza} & \textbf{Nominal} & \textbf{Medido} & \textbf{Erro (\%)} \\
@@ -213,18 +393,84 @@ dois explica boa parte do que vocês vão observar.
     Divisor $R_2$      & $\SI{100}{\kilo\ohm}$  & $\SI{100,8}{\kilo\ohm}$   & 0,80 \\
     \bottomrule
   \end{tabular}
-\end{center}
+\end{table}
 
-\begin{figure}[htb]
-  \centering
-  % \includegraphics[width=0.8\linewidth]{arquivo.png}
-  \fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
-  substitua por \texttt{\textbackslash includegraphics}}}
-  \caption{Legenda descritiva. Diga o que a figura mostra e o que
-    nela é relevante, e não
-  apenas o nome do circuito.}
-  \label{fig:exemplo}
+\subsection{Simulação da montagem}
+
+Refez-se a simulação de todos os itens com os valores de componente efetivamente usados na bancada, e não com os valores de projeto. O objetivo é separar duas causas de desvio que a medição sozinha não distingue: a tolerância dos componentes e o comportamento do circuito real que o modelo ideal não representa. Os mesmos arquivos da Seção~4.1 foram reaproveitados, alterando apenas os valores dos componentes para os medidos na Tabela~\ref{tab:componentes_bancada}.
+
+\subsubsection{Ganho diferencial do amplificador de instrumentação (\texttt{item\_1.asc})}
+
+No ensaio de ganho diferencial, as entradas esquerda e direita recebem senoides de \SI{10}{\hertz} e \SI{0,5}{\milli\volt} de pico, defasadas de $180^\circ$, gerando uma diferença de \SI{1}{\milli\volt}. Substituindo os resistores nominais de \SI{10}{\kilo\ohm} pelos valores medidos, o ganho diferencial do primeiro par é $G_1 = 1 + (2 \cdot 9{,}892)/R_g$. Com o $R_G$ de \SI{9,892}{\kilo\ohm} da montagem, o ganho simulado para a montagem é ligeiramente diferente do teórico, mas o circuito deve manter a amplificação da diferença e a rejeição do modo comum do primeiro estágio.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{simulacao_de_montagem_1.png}
+\caption{Resposta da simulação do \texttt{item\_1.asc} com os valores utilizados em bancada.}
+\label{fig:simulacao_1}
 \end{figure}
+
+\subsubsection{Modo comum e descasamento (\texttt{item\_2.asc})}
+
+No ensaio de modo comum, as duas entradas são ligadas juntas a uma senoide de \SI{60}{\hertz} e \SI{1}{\volt} de pico. Com os resistores perfeitamente casados (todos em \SI{9,892}{\kilo\ohm}), a saída de modo comum deve ser praticamente nula. No segundo circuito, onde $R_6$ foi descasado (para \SI{11,87}{\kilo\ohm}, equivalente ao $12\text{ k}\Omega$ nominal), o ganho de modo comum deixa de ser zero. A simulação com os valores medidos deve mostrar esse mesmo comportamento: a rejeição de modo comum cai drasticamente quando um dos resistores do estágio de diferença é descasado, o que comprova que a qualidade da rejeição depende exclusivamente do casamento dos resistores.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{simulacao_de_montagem_2.png}
+\caption{Resposta da simulação do \texttt{item\_2.asc} com os valores utilizados em bancada. Acima o circuito com os resistores iguais, abaixo com R6 = \SI{11,87}{\kilo\ohm}}
+\label{fig:simulacao_1}
+\end{figure}
+
+\subsubsection{Passa-altas e o estágio seguinte (\texttt{item\_3.asc})}
+
+Substituindo os valores do filtro passa-altas pelos medidos ($R = \SI{326,6}{\kilo\ohm}$ e $C = \SI{1,03}{\micro\farad}$), a frequência de corte simulada é:
+
+\begin{equation}
+f_{HP} = \frac{1}{2\pi \cdot 326{,}6 \cdot 10^3 \cdot 1{,}03 \cdot 10^{-6}} \approx \SI{0,473}{\hertz} .
+\label{eq:fhp_montagem}
+\end{equation}
+
+Espera-se que a curva do estágio não inversor mantenha o ganho e o corte em \SI{0,473}{\hertz}. A curva do estágio inversor deve apresentar um corte ligeiramente mais alto (em torno de \SI{0,6}{\hertz}) devido ao carregamento do resistor de entrada de \SI{1}{\kilo\ohm}. O desvio observado em relação ao teórico de \SI{0,482}{\hertz} é de apenas \SI{1,9}{\%}, decorrente da tolerância dos componentes.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{simulacao_de_montagem_2.png}
+\caption{Resposta da simulação do \texttt{item\_3.asc} com os valores utilizados em bancada.}
+\label{fig:simulacao_1}
+\end{figure}
+
+\subsubsection{Resposta em frequência da cadeia completa (\texttt{item\_4.asc})}
+
+Para simular a cadeia completa montada pela equipe, substituiu-se o $R_G$ do INA118 por \SI{9,892}{\kilo\ohm}, os resistores do passa-altas por \SI{326,6}{\kilo\ohm}, os capacitores por \SI{1,03}{\micro\farad}, os resistores de ganho por \SI{326,7}{\kilo\ohm} e \SI{2,177}{\kilo\ohm}, e os componentes do passa-baixas por \SI{4,632}{\kilo\ohm} e \SI{1,03}{\micro\farad}.
+
+Com esses valores, o ganho do INA118 é $G_1 = 1 + 50~\text{k}\Omega / 9{,}892~\text{k}\Omega = 6{,}05$. O ganho do estágio adicional é $G_2 = 1 + 326{,}7~\text{k}\Omega / 2{,}177~\text{k}\Omega = 151{,}1$. O ganho total da cadeia em banda passante esperado é:
+
+\begin{equation}
+G = G_1 \cdot G_2 = 6{,}05 \cdot 151{,}1 = 914 .
+\label{eq:g_montagem}
+\end{equation}
+
+As frequências de corte simuladas com os valores medidos são:
+
+\begin{equation}
+f_{HP} = \frac{1}{2\pi \cdot 326{,}6 \cdot 10^3 \cdot 1{,}03 \cdot 10^{-6}} \approx \SI{0,473}{\hertz} ,
+\label{eq:fhp_cadeia_montagem}
+\end{equation}
+
+\begin{equation}
+f_{LP} = \frac{1}{2\pi \cdot 4{,}632 \cdot 10^3 \cdot 1{,}03 \cdot 10^{-6}} \approx \SI{33,4}{\hertz} .
+\label{eq:flp_cadeia_montagem}
+\end{equation}
+
+O ganho total simulado de $914$ é ligeiramente diferente do teórico de $906$ calculado na Seção~3.1, o que mostra que a tolerância dos componentes (que alterou $G_1$ de $6,00$ para $6,05$ e $G_2$ de $151,0$ para $151,1$) teve um impacto mínimo no resultado final.
+
+\subsubsection{Eletrodos pela cadeia (\texttt{item\_5.asc})}
+
+No item 5, os arquivos \texttt{braco\_esquerdo.txt} e \texttt{braco\_direito.txt} são aplicados diretamente nas entradas do INA118, substituindo as fontes senoidais. Esses arquivos contêm o sinal real do eletrocardiograma (QRS de \SI{1}{\milli\volt}), somado à rede elétrica de \SI{60}{\hertz} (centenas de milivolts) e a um potencial contínuo de eletrodo diferente em cada braço. Com os componentes medidos, espera-se que o INA118 amplifique a diferença entre os braços (o ECG) e rejeite o que é comum (a rede). O passa-altas remove o contínuo, o estágio de ganho eleva o sinal para a faixa de volts, e o passa-baixas atenua a rede de \SI{60}{\hertz}. A amplitude do QRS na saída deve ser próxima de $914 \cdot \SI{1}{\milli\volt} \approx \SI{0,914}{\volt}$.
+
+\subsubsection{Eletrodos desiguais (\texttt{item\_6.asc})}
+
+No item 6, os eletrodos são intencionalmente descasados com resistores de \SI{100}{\kilo\ohm} em série com o esquerdo e \SI{1}{\kilo\ohm} com o direito, e cada entrada do INA118 recebe \SI{10}{\pico\farad} ao terra (simulando o cabo). Esse descasamento converte parte da tensão de modo comum (\SI{60}{\hertz}) em tensão diferencial, que o INA118 amplifica. A simulação com os valores medidos deve mostrar o aparecimento da rede de \SI{60}{\hertz} na saída. O passa-baixas de \SI{33,4}{\hertz} atenua essa componente, mas não a elimina por completo, porque a frequência da rede está próxima do corte.
 
 \section{Resultados}
 
