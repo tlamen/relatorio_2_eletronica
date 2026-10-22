@@ -668,15 +668,79 @@ Esse resultado corresponde ao intervalo selecionado na captura, não a uma médi
 
 \section{Discussão}
 
-As simulações individuais apresentam ganhos da ordem de $10^3$, conforme o objetivo de elevar o ECG de milivolts para volts. As diferenças entre os projetos decorrem das especificações e dos componentes adotados. Nas Figuras~\ref{fig:ecg_iguais_matheus} e~\ref{fig:ecg_diferentes_matheus}, o ganho calculado de $997,56$ é compatível com o QRS da ordem de \SI{1}{\volt} observado com eletrodos iguais. Os cortes de \SI{0,804}{\hertz} e \SI{132,63}{\hertz} delimitam a faixa amplificada, atenuando o contínuo e as componentes de alta frequência.
+\subsection{Projeto analítico e simulações individuais}
 
-Na montagem, o ganho nominal é 906 e os cortes projetados são \SI{0,482}{\hertz} e \SI{33,9}{\hertz}. Com os componentes medidos, o ganho previsto passa para aproximadamente 914, aumento de \SI{0,9}{\percent}, compatível com as tolerâncias dos resistores. A banda mais estreita da montagem reduz mais as componentes rápidas do ECG e a interferência: o passa-baixas calculado de \SI{33,4}{\hertz} atenua a rede em cerca de \SI{6,26}{\decibel}, enquanto o filtro de \SI{132,63}{\hertz} das figuras atenua apenas \SI{0,81}{\decibel}.
+Nas Figuras~\ref{fig:ecg_iguais_matheus} e~\ref{fig:ecg_diferentes_matheus}, o ganho calculado de $997,56$ prevê aproximadamente \SI{0,998}{\volt} para uma entrada de \SI{1}{\milli\volt}. A excursão do pico R da ordem de \SI{1}{\volt}, com eletrodos iguais, é compatível com essa previsão. A leitura é aproximada e inclui o efeito dos filtros sobre a forma de onda; por isso, não se atribui um erro percentual a essa estimativa visual. As diferentes razões resistivas dos projetos individuais alteram a distribuição do ganho entre os estágios, enquanto seus cortes definem quais componentes do ECG são preservadas.
 
-Na comparação entre simulação da montagem e bancada, o passa-altas apresentou corte de \SI{0,489}{\hertz} e \SI{0,6}{\hertz}, respectivamente, com desvio de \SI{22,70}{\percent}. O erro de amplitude foi de \SI{1,01}{\percent} em \SI{10}{\hertz} e aumentou próximo ao corte. A resolução da busca em frequência, o tempo de estabilização e o carregamento pela ponta de prova são possíveis causas desse comportamento. Uma varredura mais fina, com acoplamento DC e seguidor após o filtro, reduz essas fontes de desvio. No passa-baixas, o corte medido de \SI{33,3}{\hertz} diferiu \SI{4,03}{\percent} do simulado de \SI{34,7}{\hertz}; entre \SI{3,5}{\hertz} e \SI{45,5}{\hertz}, os erros de amplitude ficaram entre \SI{0,34}{\percent} e \SI{2,16}{\percent}. A saída de \SI{5}{\volt} no ensaio de ganho adicional coincidiu com o alvo ajustado, confirmando esse ponto de operação, sem determinar isoladamente o ganho.
+\subsection{Projeto e simulação da montagem}
 
-A tensão residual no ensaio de modo comum foi de \SI{0,1}{\milli\volt} na simulação e \SI{0,6}{\milli\volt} na bancada. Apesar da diferença relativa elevada, ambas são pequenas e a leitura pode ser limitada pelo ruído e pela resolução do osciloscópio. Nas simulações de ECG, o descasamento dos eletrodos converte parte da rede comum em sinal diferencial, explicando a ondulação que aparece na Figura~\ref{fig:ecg_diferentes_matheus}. Cabos curtos, caminhos equilibrados e referência de terra bem definida ajudam a reduzir esse efeito. O passa-baixas atenua a parcela residual, mas não a elimina.
+A Tabela~\ref{tab:discussao_tolerancias_r4} resume o efeito dos componentes medidos sobre os parâmetros calculados da montagem. As referências são as expressões da Seção~4.3; os valores dessa tabela são previsões pelos componentes, distintos dos cortes lidos nas curvas e registrados na Seção~5. O desvio foi calculado em relação ao projeto nominal.
 
-A captura experimental permitiu identificar os complexos QRS e medir \SI{784}{\milli\second} entre picos R, equivalentes a 76,53 bpm. Os resultados sustentam a amplificação diferencial e a ação dos filtros previstas no modelo linear, com rejeição de modo comum finita e influência das impedâncias externas. A ondulação residual e a alteração da forma de onda pelos filtros limitam a fidelidade de amplitude; além disso, a captura de um único intervalo não representa uma média da frequência cardíaca.
+\begin{table}[H]
+\centering
+\caption{Efeito das tolerâncias nos parâmetros previstos da montagem.}
+\label{tab:discussao_tolerancias_r4}
+\begingroup
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}p{0.36\linewidth}rrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Nominal} & \textbf{Comp. medidos} & \textbf{Desvio (\%)} \\
+\midrule
+Ganho $G_1$ do INA118 & $6,00$ & $6,05$ & $0,83$ \\
+Ganho adicional $G_2$ & $151,0$ & $151,1$ & $0,07$ \\
+Produto $G_1G_2$ & $906$ & $914$ & $0,88$ \\
+Corte $f_{HP}$ (Hz) & $0,482$ & $0,473$ & $1,87$ \\
+Corte $f_{LP}$ (Hz) & $33,9$ & $33,4$ & $1,47$ \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+{\footnotesize Desvios calculados com os valores arredondados apresentados.}
+\endgroup
+\end{table}
+
+As tolerâncias produzem alterações pequenas no ganho e nos cortes. A diferença maior em relação às simulações individuais decorre da especificação de bancada: o ganho nominal é 906 e a banda é mais estreita. O passa-baixas calculado de \SI{33,4}{\hertz} atenua a rede de \SI{60}{\hertz} em aproximadamente \SI{6,26}{\decibel}, contra \SI{0,81}{\decibel} no circuito da Figura~\ref{fig:ecg_diferentes_matheus}. Essa maior atenuação também reduz as componentes rápidas do ECG.
+
+\subsection{Simulação da montagem e medição}
+
+A Tabela~\ref{tab:discussao_bancada_r4} reúne os principais resultados da Seção~5. Os erros absolutos relativos foram recalculados por
+\begin{equation}
+\varepsilon=\frac{|x_{\mathrm{med}}-x_{\mathrm{sim}}|}{|x_{\mathrm{sim}}|}\,100\%.
+\label{eq:erro_discussao_r4}
+\end{equation}
+
+\begin{table}[H]
+\centering
+\caption{Comparação entre a simulação da montagem e as medições de bancada.}
+\label{tab:discussao_bancada_r4}
+\begingroup
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}p{0.43\linewidth}rrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Simulação} & \textbf{Medição} & \textbf{Erro (\%)} \\
+\midrule
+Tensão residual de modo comum (mV) & $0,1$ & $0,6$ & $500,00$ \\
+Corte do passa-altas (Hz) & $0,489$ & $0,600$ & $22,70$ \\
+$V_p$ após passa-altas, 10 Hz (V) & $1,98$ & $2,00$ & $1,01$ \\
+$V_p$ após passa-altas, 1 Hz (V) & $1,78$ & $1,70$ & $4,49$ \\
+$V_p$ após passa-altas, 0,45 Hz (V) & $1,35$ & $1,18$ & $12,59$ \\
+$V_p$ do ganho adicional, alvo ajustado (V) & $5,00$ & $5,00$ & $0,00$ \\
+Corte superior da cadeia (Hz) & $34,7$ & $33,3$ & $4,03$ \\
+$V_{pp}$ final, 0,2 Hz (V) & $1,48$ & $1,60$ & $8,11$ \\
+$V_{pp}$ final, 10,1 Hz (V) & $3,71$ & $3,76$ & $1,35$ \\
+$V_{pp}$ final, 32,2 Hz (V) & $2,81$ & $2,84$ & $1,07$ \\
+$V_{pp}$ final, 45,5 Hz (V) & $2,31$ & $2,36$ & $2,16$ \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+O maior desvio dos cortes ocorre no passa-altas, com aumento do erro de amplitude próximo à sua frequência de transição. A resolução da busca em frequência, a estabilização após os ajustes e o carregamento pela ponta são possíveis causas. Uma busca mais fina, com acoplamento DC e seguidor após o filtro, reduz esses efeitos. Na resposta final, entre \SI{3,5}{\hertz} e \SI{45,5}{\hertz}, os erros de amplitude ficaram entre \SI{0,34}{\percent} e \SI{2,16}{\percent}, indicando boa proximidade entre simulação e bancada. A coincidência em \SI{5}{\volt} confirma o alvo ajustado, mas não determina isoladamente o ganho.
+
+No modo comum, a diferença absoluta é de apenas \SI{0,5}{\milli\volt}; o erro relativo elevado resulta da pequena referência simulada. Ruído captado e resolução do osciloscópio podem limitar essa leitura. Nas simulações com eletrodos diferentes, a rede aparece porque o descasamento dos caminhos converte parte do modo comum em diferencial. Cabos curtos e equilibrados e uma referência de terra bem definida ajudam a reduzir a interferência, que o passa-baixas atenua sem eliminar.
+
+A forma de onda medida permitiu identificar os complexos QRS e obter 76,53 bpm a partir de \SI{784}{\milli\second} entre picos R. Os resultados sustentam a amplificação diferencial e a ação seletiva dos filtros na região linear. A ondulação residual e as alterações de forma impostas pela banda limitam a fidelidade de amplitude, e um único intervalo R--R não representa uma média da frequência cardíaca.
 
 \section{Conclusão}
 
