@@ -45,20 +45,28 @@
 
 \section{Introdução}
 
-Comece pelo problema, e não pelo circuito. Que necessidade de
-engenharia deu origem a esta
-topologia, onde você a encontraria em um equipamento real e o que
-aconteceria sem ela. Duas
-ou três referências ajudam aqui.
+Desde o século 19, estudos demostraram que o copro humano gera sinais elétricos enquanto realiza
+diversas funções, especialmente durante o batimento cardíaco. A invenção do osciloscópio para o final
+do século apenas intensificou os estudos, permitindo que os sinais sejam facilmente visualizados e
+registrados. Assim, logo foi observado que uma alteração nos sinais elétricos de uma pessoa pode
+significar uma alteração na saúde dessa pessoa.
 
-Depois estreite o foco: que aspecto você vai investigar, sob quais
-condições, e por que
-vale a pena verificá-lo. Se o roteiro impõe alguma restrição de
-projeto que parece
-arbitrária, aproveite para explicar a razão dela.
+Com base nisso, surgiu o eletrocardiograma, um gráfico da atividade elétrica do coração de uma pessoa.
+É usado para assessorar o diagnóstioco de doenças cardíacas, permitindo ao médico analisar as chamadas
+ondas PQRST, e deduzir, com base nos períodos e formatos dos eventos, a saúde do pasciente.
 
-No último parágrafo, diga qual é o objetivo deste relatório e como o texto está
-organizado, seção a seção.
+Por causa disso, este relatório propôe implmentar o circuito do eletrocardiograma, que apenas é possível
+graças aos experimentos anteriomente realizados de eletrônica. Isso acontece, pois os sinais eletricos
+gerados pelo coração são muito fracos, em torno de millivolts. Assim, os conhecimentos obtidos anteriomente
+servirão para implmentar os mecanismos de aplificação e filtros necessários para se obter um resultado bom.
+
+A abordagem adotada divide o circutio em quatro estágios principais:
+amplificador de instrumentação (circuito integrado INA118), filtro passa-altas, amplificador não inversor e,
+por último um filtro passa-baixas. Ao fim, um seguidor de tensão permite o uso do osciloscópio para observar
+os sinais sem os interferir com sua resistência interna.
+
+Como objetivo final, o circuito será testado em um dos autores do relatório.
+O texto está organizado nas secções: Fundamentação teórica, Especificação e projeto, Metodologia, Simulação e Resultados.
 
 \section{Fundamentação teórica}
 
