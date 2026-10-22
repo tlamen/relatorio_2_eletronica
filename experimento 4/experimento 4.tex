@@ -290,9 +290,42 @@ Esta seção descreve os procedimentos adotados na simulação e na bancada, com
 
 Esta subseção descreve as simulações individuais de cada integrante. Todas as simulações utilizaram o modelo do INA118 e o amplificador TL064 fornecidos pela biblioteca \texttt{ene0046.lib}, com alimentação simétrica de \SI{\pm 15}{\volt}.
 
+\subsubsection{Amplificador de Instrumentação (\texttt{item\_1.asc})}
+
+O circuito \textit{item\_1} é um amplificador de instrumentação usando 3 amplificador TL064. Para teste,
+foi escolhido uma duas entradas senoidais de \SI{0.5}{\milli\volt}, uma o inverso da outra, o que resulta numa
+entrada senoidal maior de \SI{8}{\milli\volt} de pico, já considerando o ganho $G_1 = 8$.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{item_1.png}
+\caption{Esquemático do \texttt{item\_1.asc}.}
+\label{fig:item1_esquematico}
+\end{figure}
+
+Todos os resistores internos escolhidos possuem o mesmo valor de \SI{10}{\kilo\ohm}, facilitando os cálculos.
+Com base na expressão:
+
+\begin{equation}
+	G_1 = 1 + \frac{R_1 + R_2}{R_g}
+\end{equation}
+
+Tem-se o melhor valor para $R_g = \SI{2,7}{\kilo\ohm}$, o que resulta em $G_1 = 8,4$. 
+
+Na imagem \ref{fig:item1_simulacao} tem-se a saída do amplificador, que em seu pico é \SI{8.4}{\milli\volt}, conforme esperado.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.85\textwidth]{item_1_simulacao.png}
+\caption{Simulação do \texttt{item\_1.asc}. É exibido a tensão em $V_o$. O cursor exibe a tensão de pico}
+\label{fig:item1_simulacao}
+\end{figure}
+
+Isso mostra que seria possível a implementação de um amplificador de instrumentação usando apenas amplificadores operacionais, pelo menos para simulações.
+
 \subsubsection{Passa-altas seguido de estágios não inversor e inversor (\texttt{item\_3.asc})}
 
-O arquivo \texttt{item\_3.asc} (primeira imagem) foi montado para avaliar o impacto de um filtro passa-altas quando conectado a diferentes topologias de estágio seguinte. O objetivo é verificar a justificativa do roteiro de se utilizar um amplificador não inversor após o filtro.
+O arquivo \texttt{item\_3.asc} (imagem \ref{fig:item3_esquematico}) foi montado para avaliar o impacto de um filtro passa-altas quando conectado a diferentes topologias de estágio seguinte. O objetivo é verificar a justificativa do roteiro de se utilizar um amplificador não inversor após o filtro.
 
 O circuito contém uma fonte senoidal (\texttt{V3} e \texttt{V4}) com diretiva de pequeno sinal \texttt{AC 1}. O filtro passa-altas é formado por $C_1 = \SI{1}{\micro\farad}$ e $R_1 = \SI{180}{\kilo\ohm}$, o que resulta em uma frequência de corte teórica de:
 \begin{equation}
