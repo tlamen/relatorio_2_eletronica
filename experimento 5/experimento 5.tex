@@ -196,24 +196,12 @@ tolerância dos componentes do restante.
 
 \section{Resultados}
 
-Apresente o que vocês obtiveram, em tabela sempre que houver mais de dois números. Use o
-número de algarismos significativos que a medição sustenta, e não todos os que o programa
-imprime. Para cada leitura de bancada, informe o instrumento e a incerteza.
-
-Guarde a interpretação para a seção seguinte: aqui vocês mostram o que encontraram.
-
-\subsection{Projeto de cada integrante}
-
-Uma tabela por integrante, ou uma tabela única com uma coluna por integrante, confrontando
-o valor analítico e o simulado para cada grandeza pedida no roteiro.
-
 \subsection{Circuito montado}
 
-Para cada grandeza, o que o projeto do integrante montado previa, o que a simulação com os
-valores medidos devolveu, e o que vocês mediram na bancada. É desta tabela que sai a
-discussão.
+Abaixo são apresentados os resultados numéricos obtidos no projeto analítico ideal, na simulação
+da montagem e nas medições efetuadas na bancada. Os erros percentuais foram calculados tomando como referência a simulação da montagem.
 
-\subsection{Retificador de meia onda}
+\subsubsection{Retificador de meia onda}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
@@ -225,14 +213,14 @@ discussão.
   \end{tabular}
 \end{center}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_meia_onda.jpg}
   \caption{Leitura do osciloscópio do retificador de meia onda.}
   \label{fig:ocl_meia_onda.jpg}
 \end{figure}
 
-\subsection{Retificador de meia onda com filtro}
+\subsubsection{Retificador de meia onda com filtro}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
@@ -245,35 +233,37 @@ discussão.
   \end{tabular}
 \end{center}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_47_dc.jpg}
   \caption{Leitura do osciloscópio com acoplamento DC na saída do filtro com um capacitor de \SI{47}{\micro\farad}} (meia onda)
   \label{fig:ocl_filtro_47_dc.jpg}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_47_ac.jpg}
   \caption{Leitura do osciloscópio com acoplamento AC na saída do filtro com um capacitor de \SI{47}{\micro\farad}} (meia onda)
   \label{fig:ocl_filtro_47_ac.jpg}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_4,7_dc.jpg}
-  \caption{Leitura do osciloscópio com acoplamento DC na saída do filtro com um capacitor de \SI{4.7}{\micro\farad}} (meia onda)
+  \caption{Leitura do osciloscópio com acoplamento DC na saída do filtro com um capacitor de \SI{4.7}{\micro\farad}} (meia onda).
+  Esta imagem em particular foi registrada no meio da atualização de quadro do osciloscópio, fazendo a leitura da onda do gerador
+  (amarela) aparecer duplicada.
   \label{fig:ocl_filtro_4.7_dc.jpg}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_4,7_ac.jpg}
   \caption{Leitura do osciloscópio com acoplamento AC na saída do filtro com um capacitor de \SI{4.7}{\micro\farad} (meia onda)}
   \label{fig:ocl_filtro_4.7_ac.jpg}
 \end{figure}
 
-\subsection{Ponte retificadora}
+\subsubsection{Ponte retificadora}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
@@ -286,7 +276,7 @@ discussão.
   \end{tabular}
 \end{center}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_onda_completa.jpg}
   \caption{Leitura do osciloscópio da saída da ponte. É importante notar que não é possível medir a saída da ponte
@@ -295,7 +285,7 @@ discussão.
   \label{fig:ocl_onda_completa.jpg}
 \end{figure}
 
-\subsection{Ponte com filtro}
+\subsubsection{Ponte com filtro}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
@@ -308,21 +298,21 @@ discussão.
   \end{tabular}
 \end{center}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_ponte_filtro_ac.jpg}
   \caption{Leitura do osciloscópio com acoplamento AC na saída do filtro com um capacitor de \SI{47}{\micro\farad} (onda completa)}
   \label{fig:ocl_ponte_filtro_ac.jpg}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_ponte_filtro_dc.jpg}
   \caption{Leitura do osciloscópio com acoplamento DC na saída do filtro com um capacitor de \SI{47}{\micro\farad} (onda completa)}
   \label{fig:ocl_ponte_filtro_dc.jpg}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_frequencia_ponte.jpg}
   \caption{Leitura do osciloscópio da saída do filtro da ponte usando cursores para medir a frequencia. A resolução
@@ -330,7 +320,7 @@ discussão.
   \label{fig:ocl_frequencia_ponte.jpg}
 \end{figure}
 
-\subsection{Regulacao com zenner}
+\subsubsection{Regulacao com zenner}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
@@ -343,7 +333,7 @@ discussão.
   \end{tabular}
 \end{center}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_saida_zenner.jpg}
   \caption{Leitura do osciloscópio da saída do regulador com zenner}
