@@ -19,6 +19,7 @@
 % ===========================================================================
 \documentclass[11pt,a4paper]{article}
 \input{estilo-relatorio}
+\usepackage{float}
 
 % --------------------------- IDENTIFICACAO ---------------------------------
 \roteiro{5}{Fontes de Alimentação: Retificação e Regulação}
@@ -33,9 +34,9 @@
 \capa
 
 \begin{resumo}
-Escreva este parágrafo por último, com 100 a 150 palavras. Diga o que você projetou, sob
-qual especificação, o que simulou ou mediu, o principal resultado numérico e a que
-conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o que encontrou.
+  Escreva este parágrafo por último, com 100 a 150 palavras. Diga o que você projetou, sob
+  qual especificação, o que simulou ou mediu, o principal resultado numérico e a que
+  conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o que encontrou.
 \end{resumo}
 
 \section{Introdução}
@@ -77,8 +78,8 @@ Deduza as expressões que você vai usar mais adiante, partindo das leis de circ
 Numere as equações que forem retomadas no restante do texto.
 
 \begin{equation}
-H(j\omega) = \frac{1}{1+j\omega RC}
-\label{eq:exemplo}
+  H(j\omega) = \frac{1}{1+j\omega RC}
+  \label{eq:exemplo}
 \end{equation}
 
 Toda grandeza que aparecer nos resultados precisa ter sido apresentada aqui. Explique o que
@@ -99,8 +100,8 @@ separa.
     \hline
     Grandeza & Valor \\
     \hline
-    Carga $R_L$ & \SI{4,7}{\kilo\ohm}
-    $I_L$ em \SI{6,8}{\volt} & \SI{1,4}{\milli\ampere}
+    Carga $R_L$ & \SI{4,7}{\kilo\ohm} \\
+    $I_L$ em \SI{6,8}{\volt} & \SI{1,4}{\milli\ampere} \\
     \hline
   \end{tabular}
 \end{table}
@@ -109,8 +110,8 @@ Transcreva os parâmetros que a sua matrícula determina, mostrando a conta a pa
 dígitos.
 
 \begin{espec}
-Matrícula \mat{00/0000000}. \\
-Preencha aqui os parâmetros calculados a partir dos dígitos, conforme o roteiro.
+  Matrícula \mat{00/0000000}. \\
+  Preencha aqui os parâmetros calculados a partir dos dígitos, conforme o roteiro.
 \end{espec}
 
 Leve cada parâmetro até o valor de componente, deixando visível a expressão que você
@@ -126,7 +127,7 @@ permite separar o que veio do projeto do que veio da montagem.
     Carga $R_L$ & \SI{4,7}{\kilo\ohm} & & \\
     Capacitor & \SI{4,7}{\micro\farad} & \SI{4,7}{\micro\farad} & \\
     Capacitor & \SI{47}{\micro\farad} & \SI{47}{\micro\farad} & \\
-    $R_s$ do regulador & \SI{470}{\ohm} & \SI{462}{\ohm} &
+    $R_s$ do regulador & \SI{470}{\ohm} & \SI{462}{\ohm} & \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -165,32 +166,32 @@ não substitui a simulação de projeto: é a comparação entre as duas que sep
 tolerância dos componentes do restante.
 
 \begin{nota}{Três comparações, três causas diferentes}
-Ao longo do relatório vocês vão confrontar três pares de resultados. Cada um responde a uma
-pergunta distinta, e vale mantê-los separados na hora de discutir.
+  Ao longo do relatório vocês vão confrontar três pares de resultados. Cada um responde a uma
+  pergunta distinta, e vale mantê-los separados na hora de discutir.
 
-\smallskip
-\textbf{Cálculo analítico contra simulação de projeto.} A conta está certa? Se aqui houver
-diferença, procure na álgebra ou no esquemático.
+  \smallskip
+  \textbf{Cálculo analítico contra simulação de projeto.} A conta está certa? Se aqui houver
+  diferença, procure na álgebra ou no esquemático.
 
-\smallskip
-\textbf{Simulação de projeto contra simulação da montagem.} Quanto custou a tolerância dos
-componentes? A diferença aqui é a distância entre o valor nominal e o valor real da peça
-que vocês pegaram.
+  \smallskip
+  \textbf{Simulação de projeto contra simulação da montagem.} Quanto custou a tolerância dos
+  componentes? A diferença aqui é a distância entre o valor nominal e o valor real da peça
+  que vocês pegaram.
 
-\smallskip
-\textbf{Simulação da montagem contra medição.} O modelo descreve o circuito real? Diferença
-aqui aponta algo que o modelo não representa, como a resistência série do indutor, a
-impedância da ponta de prova ou a banda do instrumento.
+  \smallskip
+  \textbf{Simulação da montagem contra medição.} O modelo descreve o circuito real? Diferença
+  aqui aponta algo que o modelo não representa, como a resistência série do indutor, a
+  impedância da ponta de prova ou a banda do instrumento.
 \end{nota}
 
 \begin{figure}[htb]
-\centering
-% \includegraphics[width=0.8\linewidth]{arquivo.png}
-\fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
+  \centering
+  % \includegraphics[width=0.8\linewidth]{arquivo.png}
+  \fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
   substitua por \texttt{\textbackslash includegraphics}}}
-\caption{Legenda descritiva. Diga o que a figura mostra e o que nela é relevante, e não
-apenas o nome do circuito.}
-\label{fig:exemplo}
+  \caption{Legenda descritiva. Diga o que a figura mostra e o que nela é relevante, e não
+  apenas o nome do circuito.}
+  \label{fig:exemplo}
 \end{figure}
 
 \section{Resultados}
@@ -212,7 +213,7 @@ Para cada grandeza, o que o projeto do integrante montado previa, o que a simula
 valores medidos devolveu, e o que vocês mediram na bancada. É desta tabela que sai a
 discussão.
 
-\subsection{Retificador de meia}
+\subsection{Retificador de meia onda}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
@@ -224,7 +225,14 @@ discussão.
   \end{tabular}
 \end{center}
 
-\subsection{Retificador de meia onda Meia Onda com filtro}
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_meia_onda.jpg}
+  \caption{Leitura do osciloscópio do retificador de meia onda.}
+  \label{fig:ocl_meia_onda.jpg}
+\end{figure}
+
+\subsection{Retificador de meia onda com filtro}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
@@ -236,6 +244,34 @@ discussão.
     \bottomrule
   \end{tabular}
 \end{center}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_47_dc.jpg}
+  \caption{Leitura do osciloscópio com acoplamento DC na saída do filtro com um capacitor de \SI{47}{\micro\farad}} (meia onda)
+  \label{fig:ocl_filtro_47_dc.jpg}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_47_ac.jpg}
+  \caption{Leitura do osciloscópio com acoplamento AC na saída do filtro com um capacitor de \SI{47}{\micro\farad}} (meia onda)
+  \label{fig:ocl_filtro_47_ac.jpg}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_4,7_dc.jpg}
+  \caption{Leitura do osciloscópio com acoplamento DC na saída do filtro com um capacitor de \SI{4.7}{\micro\farad}} (meia onda)
+  \label{fig:ocl_filtro_4.7_dc.jpg}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_filtro_4,7_ac.jpg}
+  \caption{Leitura do osciloscópio com acoplamento AC na saída do filtro com um capacitor de \SI{4.7}{\micro\farad} (meia onda)}
+  \label{fig:ocl_filtro_4.7_ac.jpg}
+\end{figure}
 
 \subsection{Ponte retificadora}
 \begin{center}
@@ -250,6 +286,15 @@ discussão.
   \end{tabular}
 \end{center}
 
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_onda_completa.jpg}
+  \caption{Leitura do osciloscópio da saída da ponte. É importante notar que não é possível medir a saída da ponte
+    e a saída do gerador ao mesmo tempo devido ao fato que o referencial do osciloscópio causar um curto quando
+  conectado desta forma.}
+  \label{fig:ocl_onda_completa.jpg}
+\end{figure}
+
 \subsection{Ponte com filtro}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
@@ -263,6 +308,28 @@ discussão.
   \end{tabular}
 \end{center}
 
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_ponte_filtro_ac.jpg}
+  \caption{Leitura do osciloscópio com acoplamento AC na saída do filtro com um capacitor de \SI{47}{\micro\farad} (onda completa)}
+  \label{fig:ocl_ponte_filtro_ac.jpg}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_ponte_filtro_dc.jpg}
+  \caption{Leitura do osciloscópio com acoplamento DC na saída do filtro com um capacitor de \SI{47}{\micro\farad} (onda completa)}
+  \label{fig:ocl_ponte_filtro_dc.jpg}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_frequencia_ponte.jpg}
+  \caption{Leitura do osciloscópio da saída do filtro da ponte usando cursores para medir a frequencia. A resolução
+  dos cursores do osciloscópio não contempla a frequencia exata esperada de \SI{120}{\hertz}, porém chega aos \SI{119}{\hertz}}
+  \label{fig:ocl_frequencia_ponte.jpg}
+\end{figure}
+
 \subsection{Regulacao com zenner}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
@@ -275,6 +342,13 @@ discussão.
     \bottomrule
   \end{tabular}
 \end{center}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/ocl_saida_zenner.jpg}
+  \caption{Leitura do osciloscópio da saída do regulador com zenner}
+  \label{fig:ocl_saida_zenner.jpg}
+\end{figure}
 
 \section{Discussão}
 
@@ -307,9 +381,9 @@ ela impede de afirmar. Evite trazer resultado novo nesta seção.
 
 \begin{referencias}
 \item SEDRA, A.~S.; SMITH, K.~C. \emph{Microeletrônica}. 5.~ed. São Paulo: Pearson
-      Prentice Hall, 2007.
+  Prentice Hall, 2007.
 \item BOYLESTAD, R.~L.; NASHELSKY, L. \emph{Dispositivos Eletrônicos e Teoria de
-      Circuitos}. 11.~ed. São Paulo: Pearson Education do Brasil, 2013.
+  Circuitos}. 11.~ed. São Paulo: Pearson Education do Brasil, 2013.
 \end{referencias}
 
 \end{document}
