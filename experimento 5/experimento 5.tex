@@ -92,17 +92,17 @@ separa.
 \section{Especificação e projeto}
 
 \begin{table}[h]
-\centering
-\caption{Especificação da equipe~2 para a bancada.}
-\label{tab:equipe_r5}
-\begin{tabular}{lc}
-\hline
-Grandeza & Valor \\
-\hline
-	Carga $R_L$ & \SI{4,7}{\kilo\ohm}
-	$I_L$ em \SI{6,8}{\volt} & \SI{1,4}{\milli\ampere}
-\hline
-\end{tabular}
+  \centering
+  \caption{Especificação da equipe~2 para a bancada.}
+  \label{tab:equipe_r5}
+  \begin{tabular}{lc}
+    \hline
+    Grandeza & Valor \\
+    \hline
+    Carga $R_L$ & \SI{4,7}{\kilo\ohm}
+    $I_L$ em \SI{6,8}{\volt} & \SI{1,4}{\milli\ampere}
+    \hline
+  \end{tabular}
 \end{table}
 
 Transcreva os parâmetros que a sua matrícula determina, mostrando a conta a partir dos
@@ -119,13 +119,16 @@ escolha afasta você do valor ideal. A tabela abaixo organiza isso, e é ela que
 permite separar o que veio do projeto do que veio da montagem.
 
 \begin{center}
-\begin{tabular}{@{}lrrr@{}}
-\toprule
-\textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
-\midrule
-& & & \\
-\bottomrule
-\end{tabular}
+  \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    \textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
+    \midrule
+    Carga $R_L$ & \SI{4,7}{\kilo\ohm} & & \\
+    Capacitor & \SI{4,7}{\micro\farad} & \SI{4,7}{\micro\farad} & \\
+    Capacitor & \SI{47}{\micro\farad} & \SI{47}{\micro\farad} & \\
+    $R_s$ do regulador & \SI{470}{\ohm} & \SI{462}{\ohm} &
+    \bottomrule
+  \end{tabular}
 \end{center}
 
 Se mais de uma combinação atender à especificação, diga por que escolheu esta, mostrando
@@ -209,15 +212,68 @@ Para cada grandeza, o que o projeto do integrante montado previa, o que a simula
 valores medidos devolveu, e o que vocês mediram na bancada. É desta tabela que sai a
 discussão.
 
+\subsection{Retificador de meia}
 \begin{center}
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-\textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
-\textbf{Erro} \\
-\midrule
-& & & & \\
-\bottomrule
-\end{tabular}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+    \textbf{Erro} \\
+    \midrule
+    $V_{d1}$ & & & \SI{0,606}{\volt} & \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\subsection{Retificador de meia onda Meia Onda com filtro}
+\begin{center}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+    \textbf{Erro} \\
+    \midrule
+    $V_{d1}$ & & & \SI{0,606}{\volt} & \\
+    Frequencia da onda & & & \SI{119}{\hertz} & \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\subsection{Ponte retificadora}
+\begin{center}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+    \textbf{Erro} \\
+    \midrule
+    Saida $V_{p}$ da ponte & & & \SI{8,8}{\volt} & \\
+    $2V_{p}$ da ponte & & & \SI{1,025}{\volt} & \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\subsection{Ponte com filtro}
+\begin{center}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+    \textbf{Erro} \\
+    \midrule
+    Ripple da ponte com capacitor de \SI{47}{\micro\farad} & & & \SI{320}{\milli\volt} & \\
+    $V_{min}$ & & & \SI{7,96}{\volt} & \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\subsection{Regulacao com zenner}
+\begin{center}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
+    \textbf{Erro} \\
+    \midrule
+    Ripple da ponte com capacitor de \SI{47}{\micro\farad} & & & \SI{320}{\milli\volt} & \\
+    $V_{min}$ & & & \SI{7,96}{\volt} & \\
+    \bottomrule
+  \end{tabular}
 \end{center}
 
 \section{Discussão}
