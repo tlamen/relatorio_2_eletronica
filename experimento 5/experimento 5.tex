@@ -40,16 +40,36 @@ conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o q
 
 \section{Introdução}
 
-Comece pelo problema, e não pelo circuito. Que necessidade de engenharia deu origem a esta
-topologia, onde você a encontraria em um equipamento real e o que aconteceria sem ela. Duas
-ou três referências ajudam aqui.
+Um dos grande problemas encontrados durante o desenvolvimento do sistema elétrico foi
+como diminuir as perdas energéticas devido a distribuição de energia. Em resumo, a história
+mostrou que a distribuição por corrente alternada desperdiça menos energia, se tornando
+predominante no mundo. Assim, surgiu um problema: a maioria das aplicações da eletricidade
+precisam de corrente contínua para funcionar. Além disso, pode ser necessário um potencial
+estável.
 
-Depois estreite o foco: que aspecto você vai investigar, sob quais condições, e por que
-vale a pena verificá-lo. Se o roteiro impõe alguma restrição de projeto que parece
-arbitrária, aproveite para explicar a razão dela.
+Nesse contexto, técnicas de conversão de energia foram desenvolvidas parar resolver este problema,
+permitindo a criação de fontes de corrente contínua. Para implementar uma fonte, um pode seguir
+vários passos.
 
-No último parágrafo, diga qual é o objetivo deste relatório e como o texto está
-organizado, seção a seção.
+Primeiramente, é feito a retificação da onda com o uso de diodos, com isso, a
+corrente passa a seguir por uma direção só. Com um diodo só, apenas é possível aproveitar
+metade da onda de entrada, porém, com 4 diodos, é possível fazer um retificador de onda completa,
+que será implementado neste experimento.
+
+Em segundo, um filtro capacitivo diminui a variação da tensão entre os picos da entrada.
+Dessa forma, surge uma grandeza chamada tensão de ripple $V_r$, que é proporcional à capacitância
+do capacitor. Assim, a tensão mínima do filtro fica limitada a saída do retificador - $V_r$ e,
+simplificadamente, a saída do filtro se assemelha a uma onda de serra.
+
+Por último, para transformar essa onda de serra em uma tensão constante, é usando um circuito de
+regulação usando um diodo zenner. O regulador tem como alvo uma tensão menor que a saída do filtro
+e consome, propositalmente, toda a tensão que excede este alvo. Isto é possível devido ao funcionamento
+do zenner, ele possui uma chamada tensão de ruptura $V_z$. Com ela, a tensão entre os terminais do
+zenner fica limitada a $V_z$, pois qualquer tentativa de excedê-la essencialmente faz o zenner
+comportar como um circuito aberto.
+
+Com todos esses estágios é possível construir uma fonte de alimentação DC, que é o objetivo deste relatório.
+O texto está organizado nas secções: Fundamentação teórica, Especificação e projeto, Metodologia, Simulação e Resultados.
 
 \section{Fundamentação teórica}
 
