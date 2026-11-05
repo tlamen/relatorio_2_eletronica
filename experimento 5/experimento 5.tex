@@ -283,13 +283,43 @@ o que foi pedido.
 
 \subsection{Montagem em bancada}
  
-A equipe montou o circuito correspondente à especificação da equipe~2: carga $R_L = \SI{4,7}{\kilo\ohm}$, corrente $I_L = \SI{1,4}{\milli\ampere}$ na tensão regulada de \SI{6,8}{\volt}, zener 1N754 e capacitores de \SI{4,7}{\micro\farad} e \SI{47}{\micro\farad}. Antes de inserir cada componente no protoboard, mediu-se o valor real com o multímetro; a Tabela~\ref{tab:medidos_r5} registra os valores adotados, que são utilizados nas contas do relatório. A montagem foi feita em etapas, reaproveitando a montagem anterior, na ordem do roteiro: primeiro o retificador de meia onda sem filtro, depois com o capacitor de \SI{47}{\micro\farad}, depois com o capacitor de \SI{4,7}{\micro\farad}, depois a ponte sem filtro, depois a ponte com filtro, e por fim a regulação com zener.
+A equipe montou a fonte linear completa, conforme a especificação da equipe~2. A montagem foi dividida em três etapas lógicas, seguindo a sequência do roteiro: a retificação de meia onda, a retificação em ponte e a regulação com zener. Todos os componentes foram medidos com o multímetro antes de serem inseridos no protoboard para garantir a precisão das equações de projeto, e os resultados estão consolidados na Tabela~\ref{tab:medidos_r5}.
  
-O gerador foi ajustado para uma senoide de \SI{60}{\hertz} e \SI{20}{\volt} de pico a pico, com o gerador configurado para carga de alta impedância. A tensão de entrada foi confirmada no osciloscópio antes de conectar qualquer diodo, para evitar que a carga do gerador reduzisse a amplitude pela metade. O terra do gerador, o terra das pontas do osciloscópio e o terra do circuito foram ligados ao mesmo ponto do protoboard.
+\subsubsection{Alimentação e configuração do sinal}
  
-Na montagem de meia onda, um dos terminais do gerador é o próprio terra, a carga retorna a ele, e os dois canais do osciloscópio medem a entrada e a saída simultaneamente. Na ponte, o terminal de referência da carga não coincide com nenhum terminal do gerador, e por isso a garra de terra de uma ponta não pode ser ligada a essa referência sem curto-circuitar um diodo a cada semiciclo. Por esse motivo, nas montagens da ponte, mediu-se apenas a saída, com a garra de terra na referência da carga e nenhuma ponta ligada ao gerador. A tensão de entrada foi a ajustada no painel e confirmada na etapa de meia onda.
+Como o roteiro não utiliza fonte de bancada para o circuito de potência, o gerador de funções foi configurado para fornecer uma senoide de \SI{60}{\hertz} com \SI{20}{\volt} de pico a pico (\SI{10}{\volt} de pico). O gerador foi ajustado para carga de alta impedância, e a tensão de entrada foi confirmada no osciloscópio antes de qualquer conexão com os diodos, para evitar que a impedância do circuito reduzisse a amplitude pela metade. O terra do gerador, o terra das pontas do osciloscópio e o ponto de referência do circuito foram interligados em um único ponto do protoboard.
  
-O ripple foi medido com o canal do osciloscópio em acoplamento AC e os cursores. A tensão contínua foi medida com o multímetro, que fornece o valor médio. Para a regulação com zener, o resistor série $R_S$ foi calculado pela Equação~\eqref{eq:rs} com $V_{\min}$ medido na saída do filtro (pico menos ripple) e $I_{Z,\min} = \SI{1}{\milli\ampere}$, e adotou-se o resistor do laboratório de valor imediatamente inferior. O zener 1N754 foi inserido em paralelo com a carga, com o catodo (identificado pela faixa) no terminal positivo. A carga foi retirada por último, para medir a tensão contínua e estimar a potência no zener no pior caso.
+\subsubsection{Retificador de meia onda e filtro capacitivo}
+ 
+Montou-se o retificador de meia onda utilizando um diodo 1N4007 em série com a carga $R_L = \SI{4,7}{\kilo\ohm}$. Com o canal 1 do osciloscópio no gerador e o canal 2 na carga, registrou-se a forma de onda sem filtro para verificar a queda do diodo e o recorte do semiciclo negativo. Em seguida, adicionou-se o capacitor eletrolítico de \SI{47}{\micro\farad} em paralelo com a carga (terminal negativo ao terra) e mediu-se o ripple de pico a pico no canal 2 em acoplamento AC, além da tensão contínua com o multímetro. Para atender à Seção 3.2 do roteiro, o capacitor foi substituído pelo de \SI{4,7}{\micro\farad} e as mesmas leituras foram realizadas, permitindo comparar o efeito da variação de capacitância no ripple e no pico de corrente do diodo.
+ 
+\subsubsection{Ponte retificadora e filtro}
+ 
+Desmontou-se a configuração anterior e montou-se a ponte retificadora com quatro diodos 1N4007, observando atentamente a polaridade de cada um. Como o terminal de referência da carga na ponte não coincide com o terra do gerador, a garra de terra da ponta do osciloscópio foi conectada exclusivamente à referência da carga, e a entrada foi medida apenas pelo painel do gerador. Mediu-se a saída sem capacitor para verificar a frequência de repetição dos picos (\SI{120}{\hertz}) e a queda dupla dos diodos. Em seguida, inseriu-se o capacitor de \SI{47}{\micro\farad} em paralelo com a carga, medindo-se o novo ripple, a tensão contínua e a tensão mínima da saída do filtro ($V_{\min}$), que seria necessária para o cálculo do resistor série.
+ 
+\subsubsection{Regulação com zener}
+ 
+Com o valor de $V_{\min}$ medido na etapa anterior, calculou-se o resistor série $R_S$ pela Equação~\eqref{eq:rs} do roteiro e adotou-se o resistor comercial de \SI{470}{\ohm} (cujo valor medido foi \SI{462}{\ohm}). O resistor foi inserido entre a saída do filtro e a carga, e o diodo zener 1N754 (\SI{6,8}{\volt}) foi conectado em paralelo com a carga, com o catodo (faixa) voltado para o terminal positivo. Mediu-se a tensão contínua na carga e o ripple com o osciloscópio para verificar a ação reguladora. Por fim, a carga $R_L$ foi retirada do circuito para medir a tensão contínua a vazio e estimar a corrente e a potência dissipada no zener no pior caso.
+ 
+\subsubsection{Valores medidos dos componentes}
+ 
+A Tabela~\ref{tab:medidos_r5} apresenta os valores nominais (ou teóricos) dos componentes utilizados na montagem, os valores efetivamente medidos com o multímetro e o erro percentual calculado. Os desvios foram muito baixos (todos abaixo de \SI{2}{\%}), o que justifica a proximidade entre os resultados teóricos e as medições realizadas.
+ 
+\begin{table}[h]
+\centering
+\caption{Valores teóricos, adotados e medidos dos componentes da montagem da equipe~2.}
+\label{tab:medidos_r5}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio (\%)} \\
+\midrule
+Carga $R_L$ & \SI{4,7}{\kilo\ohm} & \SI{4,7}{\kilo\ohm} & 0,0 \\
+Capacitor & \SI{4,7}{\micro\farad} & \SI{4,7}{\micro\farad} & 0,0 \\
+Capacitor & \SI{47}{\micro\farad} & \SI{47}{\micro\farad} & 0,0 \\
+$R_s$ do regulador & \SI{470}{\ohm} & \SI{462}{\ohm} & -1,7 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Simulação da montagem}
 
