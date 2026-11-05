@@ -102,6 +102,8 @@ separa.
     \hline
     Carga $R_L$ & \SI{4,7}{\kilo\ohm} \\
     $I_L$ em \SI{6,8}{\volt} & \SI{1,4}{\milli\ampere} \\
+		$V_{pp}$ gerador & \SI{20}{\volt} \\
+		Frequência gerador & \SI{60}{\hertz} \\
     \hline
   \end{tabular}
 \end{table}
@@ -124,13 +126,20 @@ permite separar o que veio do projeto do que veio da montagem.
     \toprule
     \textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
     \midrule
-    Carga $R_L$ & \SI{4,7}{\kilo\ohm} & & \\
-    Capacitor & \SI{4,7}{\micro\farad} & \SI{4,7}{\micro\farad} & \\
-    Capacitor & \SI{47}{\micro\farad} & \SI{47}{\micro\farad} & \\
-    $R_s$ do regulador & \SI{470}{\ohm} & \SI{462}{\ohm} & \\
+		Carga $R_L$        & \SI{4,7}{\kilo\ohm}    & \SI{4,68}{\kilo\ohm}   & 0,4\% \\
+    Capacitor          & \SI{4,7}{\micro\farad} & \SI{4,7}{\micro\farad} & 0\%   \\
+    Capacitor          & \SI{47}{\micro\farad}  & \SI{47}{\micro\farad}  & 0\%   \\
+    $R_s$ do regulador & \SI{470}{\ohm}         & \SI{462}{\ohm}         & 1,7\% \\
     \bottomrule
   \end{tabular}
 \end{center}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/circuito_completo.jpeg}
+  \caption{Montagem completa do circuito.}
+  \label{fig:circuito_completo.jpeg}
+\end{figure}
 
 Se mais de uma combinação atender à especificação, diga por que escolheu esta, mostrando
 que as outras ficavam mais distantes.
@@ -208,7 +217,8 @@ da montagem e nas medições efetuadas na bancada. Os erros percentuais foram ca
     \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
     \textbf{Erro} \\
     \midrule
-    $V_{d1}$ & & & \SI{0,606}{\volt} & \\
+		$V_{d1}$ & \SI{1}{\volt} max & \SI{0,6}{\volt} & \SI{0,606}{\volt} & 1\% \\
+		$V_p$    & \SI{9,4}{\volt}   & \SI{9,4}{\volt} & \SI{9,2}{\volt}   & 2\% \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -227,8 +237,8 @@ da montagem e nas medições efetuadas na bancada. Os erros percentuais foram ca
     \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
     \textbf{Erro} \\
     \midrule
-    $V_{d1}$ & & & \SI{0,606}{\volt} & \\
-    Frequencia da onda & & & \SI{119}{\hertz} & \\
+		$V_{ripple}$ com capacitor de \SI{47}{\micro\farad}  & \SI{630}{\milli\volt} & \SI{630}{\milli\volt} & \SI{640}{\milli\volt} & 1,5\% \\
+		$V_{ripple}$ com capacitor de \SI{4,7}{\micro\farad} & \SI{4,4}{\volt}       & \SI{4,4}{\volt}       & \SI{4,4}{\volt}       & 0\% \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -270,8 +280,10 @@ da montagem e nas medições efetuadas na bancada. Os erros percentuais foram ca
     \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
     \textbf{Erro} \\
     \midrule
-    Saida $V_{p}$ da ponte & & & \SI{8,8}{\volt} & \\
-    $2V_{p}$ da ponte & & & \SI{1,025}{\volt} & \\
+		Saída $V_{p}$ da ponte & \SI{8,8}{\volt}  & \SI{8,8}{\volt}  & \SI{8,8}{\volt}   & 0\% \\
+    % o que é isso?:
+		% $2V_{p}$ da ponte      &                  &                  & \SI{1,025}{\volt} & \\
+		Frequência da onda     & \SI{120}{\hertz} & \SI{120}{\hertz} & \SI{119}{\hertz}  & 0,8\% \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -292,8 +304,8 @@ da montagem e nas medições efetuadas na bancada. Os erros percentuais foram ca
     \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
     \textbf{Erro} \\
     \midrule
-    Ripple da ponte com capacitor de \SI{47}{\micro\farad} & & & \SI{320}{\milli\volt} & \\
-    $V_{min}$ & & & \SI{7,96}{\volt} & \\
+		Ripple da ponte com capacitor de \SI{47}{\micro\farad} & \SI{270}{\milli\volt} & \SI{270}{\milli\volt} & \SI{320}{\milli\volt} & 18,5\% \\
+		$V_{min}$ & \SI{8,4}{\volt} & \SI{8,4}{\volt} & \SI{7,96}{\volt} & 5,2\% \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -315,20 +327,19 @@ da montagem e nas medições efetuadas na bancada. Os erros percentuais foram ca
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_frequencia_ponte.jpg}
-  \caption{Leitura do osciloscópio da saída do filtro da ponte usando cursores para medir a frequencia. A resolução
-  dos cursores do osciloscópio não contempla a frequencia exata esperada de \SI{120}{\hertz}, porém chega aos \SI{119}{\hertz}}
+  \caption{Leitura do osciloscópio da saída do filtro da ponte usando cursores para medir a frequência. A resolução
+  dos cursores do osciloscópio não contempla a frequência exata esperada de \SI{120}{\hertz}, porém chega aos \SI{119}{\hertz}}
   \label{fig:ocl_frequencia_ponte.jpg}
 \end{figure}
 
-\subsubsection{Regulacao com zenner}
+\subsubsection{Regulação com Zenner}
 \begin{center}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
     \textbf{Grandeza} & \textbf{Projeto} & \textbf{Sim. montagem} & \textbf{Medido} &
     \textbf{Erro} \\
     \midrule
-    Ripple da ponte com capacitor de \SI{47}{\micro\farad} & & & \SI{320}{\milli\volt} & \\
-    $V_{min}$ & & & \SI{7,96}{\volt} & \\
+		Saída após regulação & \SI{7,4}{\volt} & \SI{7,4}{\volt} & entre \SI{7,6}{\volt} e \SI{7,2}{\volt} & 2\% \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -336,7 +347,7 @@ da montagem e nas medições efetuadas na bancada. Os erros percentuais foram ca
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/ocl_saida_zenner.jpg}
-  \caption{Leitura do osciloscópio da saída do regulador com zenner}
+  \caption{Leitura do osciloscópio da saída do regulador com Zenner.}
   \label{fig:ocl_saida_zenner.jpg}
 \end{figure}
 
