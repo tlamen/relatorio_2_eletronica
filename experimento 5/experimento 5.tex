@@ -74,85 +74,205 @@ O texto está organizado nas secções: Fundamentação teórica, Especificaçã
 
 \section{Fundamentação teórica}
 
-Deduza as expressões que você vai usar mais adiante, partindo das leis de circuito.
-Numere as equações que forem retomadas no restante do texto.
-
+Esta seção deduz as expressões usadas no projeto e na análise dos quatro estágios da fonte linear. As hipóteses adotadas são as de diodo ideal, com tensão de condução nula na análise inicial e corrigida depois para a queda real de \SI{0,7}{\volt} do 1N4007, e de capacitor em regime permanente após o primeiro período da rede. Essas hipóteses serão retomadas na Seção~6, onde se verifica em que medida elas se sustentam no circuito real.
+ 
+\subsection{Retificador de meia onda}
+ 
+No retificador de meia onda, o diodo conduz apenas no semiciclo positivo da fonte, quando a tensão da fonte excede a tensão de condução do diodo. A carga recebe um semiciclo da senoide e tensão nula no semiciclo seguinte. O pico da tensão na carga é, portanto,
+ 
 \begin{equation}
-  H(j\omega) = \frac{1}{1+j\omega RC}
-  \label{eq:exemplo}
+V_{o,\text{pico}} = V_p - V_D ,
+\label{eq:meia_onda_pico}
 \end{equation}
+ 
+em que \(V_p\) é o pico da fonte e \(V_D\) é a queda direta do diodo, da ordem de \SI{0,7}{\volt} para o 1N4007. A diferença entre o pico da fonte e o pico da carga é a queda no diodo, e é ela que explica por que a carga não recebe a tensão plena da fonte.
+ 
+O valor médio da tensão na carga, para meia onda, é a integral do semiciclo positivo dividida pelo período completo:
+ 
+\begin{equation}
+V_{o,\text{médio}} = \frac{1}{T} \int_0^{T/2} V_p \sin(\omega t) \, dt = \frac{V_p}{\pi} .
+\label{eq:meia_onda_medio}
+\end{equation}
+ 
+Esse valor é aproximadamente \(0{,}318 \, V_p\), ou seja, cerca de um terço do pico da fonte.
+ 
+\subsection{Meia onda com filtro capacitivo}
+ 
+Com o capacitor em paralelo com a carga, o diodo conduz apenas nas proximidades do pico, repondo a carga que a carga drenou ao longo do restante do período. Entre picos consecutivos, a tensão decresce de forma aproximadamente linear, e essa queda é o ripple. Quando a descarga é lenta em relação ao período, a corrente na carga é aproximadamente constante e igual a \(I_L\), e o ripple de pico a pico é
+ 
+\begin{equation}
+V_r \approx \frac{I_L}{f C} ,
+\label{eq:ripple}
+\end{equation}
+ 
+em que \(f\) é a frequência de repetição dos picos: \SI{60}{\hertz} em meia onda e \SI{120}{\hertz} em onda completa. Essa expressão é a base do projeto do capacitor: dado um ripple máximo admissível, o capacitor é
+ 
+\begin{equation}
+C \geq \frac{I_L}{f \, V_{r,\max}} ,
+\label{eq:capacitor}
+\end{equation}
+ 
+arredondado para o valor E12 imediatamente superior.
+ 
+A fração do período em que o diodo conduz é pequena quando o capacitor é grande, e o pico da corrente no diodo é muito maior que a corrente média na carga, porque toda a carga drenada ao longo do período é reposta em um intervalo curto. O efeito de aumentar o capacitor em dez vezes é reduzir o ripple na mesma proporção, mas aumentar o pico de corrente no diodo, porque a reposição ocorre em um intervalo ainda menor.
+ 
+\subsection{Ponte retificadora}
+ 
+Na ponte retificadora, nos semiciclos positivos conduzem \(D_1\) e \(D_2\), e nos negativos \(D_3\) e \(D_4\), de modo que a corrente na carga mantém sempre o mesmo sentido. Os picos se repetem a \SI{120}{\hertz}, e o caminho da corrente atravessa dois diodos em série. O pico da tensão na carga é, portanto,
+ 
+\begin{equation}
+V_{o,\text{pico}} = V_p - 2 V_D .
+\label{eq:ponte_pico}
+\end{equation}
+ 
+A diferença entre o pico da fonte e o pico da carga é o dobro da observada na Seção~3.1, porque dois diodos estão em série no caminho da corrente. O valor médio da tensão na carga, para onda completa, é
+ 
+\begin{equation}
+V_{o,\text{médio}} = \frac{2 V_p}{\pi} ,
+\label{eq:ponte_medio}
+\end{equation}
+ 
+que é o dobro do valor médio da meia onda, como esperado, porque a carga recebe um semiciclo a cada meio período, e não a cada período completo.
+ 
+\subsection{Ponte com filtro}
+ 
+Com o capacitor em paralelo com a carga, o ripple é dado pela mesma Equação~\eqref{eq:ripple}, mas com \(f = \SI{120}{\hertz}\), porque os picos se repetem duas vezes por período da rede. O ripple cai à metade em relação à meia onda com o mesmo capacitor, o que é uma das vantagens da ponte. A tensão mínima na saída do filtro, que será usada no projeto do regulador, é
+ 
+\begin{equation}
+V_{\min} = V_{o,\text{pico}} - V_r .
+\label{eq:vmin}
+\end{equation}
+ 
+\subsection{Regulação com zener}
+ 
+Polarizado reversamente além da tensão de ruptura, o zener mantém a tensão entre os seus terminais em \(V_Z\) enquanto houver corrente reversa suficiente. O resistor \(R_S\) absorve a diferença entre a saída do filtro e \(V_Z\), e a corrente que o atravessa se divide entre a carga e o zener. A regulação é perdida quando a saída do filtro cai a ponto de anular a corrente no zener, o que ocorre primeiro no vale do ripple.
+ 
+O projeto de \(R_S\) parte da condição de que, no vale do ripple, ainda circule a corrente mínima no zener \(I_{Z,\min}\):
+ 
+\begin{equation}
+R_S = \frac{V_{\min} - V_Z}{I_L + I_{Z,\min}} ,
+\label{eq:rs}
+\end{equation}
+ 
+arredondado para o valor E12 imediatamente inferior, para garantir que a corrente no zener não fique abaixo do mínimo. A potência dissipada no zener, no pior caso — pico da saída do filtro e carga retirada —, é
+ 
+\begin{equation}
+P_Z = V_Z \frac{V_{\max} - V_Z}{R_S} ,
+\label{eq:pz}
+\end{equation}
+ 
+em que \(V_{\max}\) é o pico da saída do filtro. Essa potência precisa ser comparada com a potência máxima do zener: \SI{250}{\milli\watt} para o BZX84C na simulação e \SI{500}{\milli\watt} para o 1N754 na bancada.
+ 
+O ripple na saída do regulador é atenuado pela ação do zener, que fixa a tensão em \(V_Z\) enquanto conduz. A razão entre o ripple de entrada e o de saída é a rejeição do regulador, que depende da resistência dinâmica do zener e da corrente que o atravessa. Quanto maior a corrente no zener, menor a resistência dinâmica e maior a rejeição, mas maior a potência dissipada. Quando a corrente no zener se anula no vale do ripple, o zener deixa de conduzir e a regulação é perdida naquele trecho do períod
 
-Toda grandeza que aparecer nos resultados precisa ter sido apresentada aqui. Explique o que
-cada termo significa fisicamente, não apenas o que a letra representa. Registre as hipóteses
-que você está assumindo, como linearidade ou idealidade dos componentes: se alguma delas
-não se sustentar no experimento, você vai retomá-la na discussão.
-
-Se o circuito tiver regimes de funcionamento distintos, apresente cada um e diga o que os
-separa.
-
-\section{Especificação e projeto}
-
+\section{Especificação e Projeto}
+ 
+Esta seção transcreve a especificação da equipe~2 para a montagem em bancada e leva cada parâmetro até o valor de componente comercial. A Seção~3.1 apresenta a especificação da equipe; a Seção~3.2 detalha o projeto do capacitor e do resistor série; e a Seção~3.3 registra os valores medidos dos componentes efetivamente usados na montagem.
+ 
+\subsection{Especificação da equipe 2}
+ 
+A equipe~2 montou a fonte linear com a especificação da Tabela~\ref{tab:equipe_r5}. A fonte é a mesma para todas as equipes: senoide do gerador de \SI{20}{\volt} de pico a pico (\SI{10}{\volt} de pico) em \SI{60}{\hertz}, com o gerador configurado para carga de alta impedância. A tensão regulada é a do zener 1N754, de \SI{6,8}{\volt}, e a carga é o que varia entre as equipes.
+ 
 \begin{table}[h]
-  \centering
-  \caption{Especificação da equipe~2 para a bancada.}
-  \label{tab:equipe_r5}
-  \begin{tabular}{lc}
-    \hline
-    Grandeza & Valor \\
-    \hline
-    Carga $R_L$ & \SI{4,7}{\kilo\ohm} \\
-    $I_L$ em \SI{6,8}{\volt} & \SI{1,4}{\milli\ampere} \\
-		$V_{pp}$ gerador & \SI{20}{\volt} \\
-		Frequência gerador & \SI{60}{\hertz} \\
-    \hline
-  \end{tabular}
+\centering
+\caption{Especificação da equipe~2 para a bancada.}
+\label{tab:equipe_r5}
+\begin{tabular}{lc}
+\hline
+Grandeza & Valor \\
+\hline
+Carga $R_L$ & \SI{4,7}{\kilo\ohm} \\
+$I_L$ em \SI{6,8}{\volt} & \SI{1,4}{\milli\ampere} \\
+\hline
+\end{tabular}
 \end{table}
-
-Transcreva os parâmetros que a sua matrícula determina, mostrando a conta a partir dos
-dígitos.
-
-\begin{espec}
-  Matrícula \mat{00/0000000}. \\
-  Preencha aqui os parâmetros calculados a partir dos dígitos, conforme o roteiro.
-\end{espec}
-
-Leve cada parâmetro até o valor de componente, deixando visível a expressão que você
-inverteu para chegar lá. Depois escolha o valor na série comercial e calcule o quanto essa
-escolha afasta você do valor ideal. A tabela abaixo organiza isso, e é ela que depois
-permite separar o que veio do projeto do que veio da montagem.
-
-\begin{center}
-  \begin{tabular}{@{}lrrr@{}}
-    \toprule
-    \textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
-    \midrule
-		Carga $R_L$        & \SI{4,7}{\kilo\ohm}    & \SI{4,68}{\kilo\ohm}   & 0,4\% \\
-    Capacitor          & \SI{4,7}{\micro\farad} & \SI{4,7}{\micro\farad} & 0\%   \\
-    Capacitor          & \SI{47}{\micro\farad}  & \SI{47}{\micro\farad}  & 0\%   \\
-    $R_s$ do regulador & \SI{470}{\ohm}         & \SI{462}{\ohm}         & 1,7\% \\
-    \bottomrule
-  \end{tabular}
-\end{center}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\linewidth]{imagens/circuito_completo.jpeg}
-  \caption{Montagem completa do circuito.}
-  \label{fig:circuito_completo.jpeg}
-\end{figure}
-
-Se mais de uma combinação atender à especificação, diga por que escolheu esta, mostrando
-que as outras ficavam mais distantes.
+ 
+A corrente de carga é calculada a partir da tensão regulada e da carga:
+ 
+\begin{equation}
+I_L = \frac{V_Z}{R_L} = \frac{6{,}8}{4{,}7 \times 10^3} = \SI{1,45}{\milli\ampere} .
+\label{eq:il_equipe}
+\end{equation}
+ 
+O valor de \SI{1,4}{\milli\ampere} da Tabela~\ref{tab:equipe_r5} é o valor aproximado adotado pela equipe, e é o que será usado nas contas seguintes.
+ 
+\subsection{Projeto dos componentes}
+ 
+\subsubsection{Capacitor de filtro}
+ 
+O capacitor de filtro é calculado pela Equação~\eqref{eq:capacitor} do roteiro, com $f = \SI{60}{\hertz}$ e ripple máximo de \SI{1,5}{\volt} de pico a pico, para a meia onda:
+ 
+\begin{equation}
+C \geq \frac{I_L}{f \, V_{r,\max}} = \frac{1{,}4 \times 10^{-3}}{60 \cdot 1{,}5} = \SI{15,6}{\micro\farad} .
+\label{eq:capacitor_equipe}
+\end{equation}
+ 
+O valor E12 imediatamente superior é \SI{22}{\micro\farad}, mas por limitações de disponibilidade no laboratório, adota-se o \SI{47}{\micro\farad}. Com esse capacitor, o ripple previsto cai para
+ 
+\begin{equation}
+V_r = \frac{I_L}{f C} = \frac{1{,}4 \times 10^{-3}}{60 \cdot 47 \times 10^{-6}} = \SI{0,496}{\volt} ,
+\label{eq:ripple_equipe}
+\end{equation}
+ 
+bem abaixo do máximo de \SI{1,5}{\volt}. O capacitor de \SI{4,7}{\micro\farad} também foi usado, na comparação da Seção~3.2 do roteiro, para verificar o efeito de um capacitor dez vezes menor sobre o ripple e sobre o pico de corrente no diodo.
+ 
+\subsubsection{Resistor série do regulador}
+ 
+O resistor série $R_S$ é calculado pela Equação~\eqref{eq:rs} do roteiro, com $I_{Z,\min} = \SI{1}{\milli\ampere}$ e $V_{\min}$ medido na saída do filtro (pico menos ripple). O valor de $V_{\min}$ depende do capacitor adotado e da queda dos diodos da ponte, e precisa ser medido antes de calcular $R_S$. Com o capacitor de \SI{47}{\micro\farad} e a ponte, o pico da saída do filtro é aproximadamente
+ 
+\begin{equation}
+V_{o,\text{pico}} = V_p - 2 V_D = 10 - 2 \cdot 0{,}7 = \SI{8,6}{\volt} ,
+\label{eq:pico_ponte_equipe}
+\end{equation}
+ 
+e a tensão mínima é $V_{\min} = 8{,}6 - 0{,}496 = \SI{8,1}{\volt}$. O resistor série é, então,
+ 
+\begin{equation}
+R_S = \frac{V_{\min} - V_Z}{I_L + I_{Z,\min}} = \frac{8{,}1 - 6{,}8}{1{,}4 \times 10^{-3} + 1 \times 10^{-3}} = \frac{1{,}3}{2{,}4 \times 10^{-3}} = \SI{542}{\ohm} .
+\label{eq:rs_equipe}
+\end{equation}
+ 
+O valor E12 imediatamente inferior é \SI{470}{\ohm}, mas o valor adotado pela equipe foi \SI{462}{\ohm}, que é o valor medido do resistor de \SI{470}{\ohm} usado na montagem. A diferença entre o calculado e o adotado é de \SI{15}{\%}.
+ 
+A potência dissipada no zener, no pior caso (pico da saída do filtro e carga retirada), é
+ 
+\begin{equation}
+P_Z = V_Z \frac{V_{\max} - V_Z}{R_S} = 6{,}8 \cdot \frac{8{,}6 - 6{,}8}{462} = 6{,}8 \cdot \frac{1{,}8}{462} = \SI{26,5}{\milli\watt} ,
+\label{eq:pz_equipe}
+\end{equation}
+ 
+muito abaixo dos \SI{500}{\milli\watt} do 1N754, o que garante que o zener não será danificado mesmo com a carga retirada.
+ 
+\subsection{Componentes medidos da montagem}
+ 
+Antes de inserir cada componente no protoboard, a equipe~2 mediu o valor real com o multímetro. A Tabela~\ref{tab:medidos_r5} registra os valores teóricos, os adotados e o desvio percentual. O desvio é calculado como
+ 
+\begin{equation}
+\text{Desvio} = \frac{\text{adotado} - \text{teórico}}{\text{teórico}} \times 100\% .
+\label{eq:desvio}
+\end{equation}
+ 
+\begin{table}[h]
+\centering
+\caption{Valores teóricos, adotados e medidos dos componentes da montagem da equipe~2.}
+\label{tab:medidos_r5}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
+\midrule
+Carga $R_L$ & \SI{4,7}{\kilo\ohm} & \SI{4,7}{\kilo\ohm} & 0,0\% \\
+Capacitor & \SI{4,7}{\micro\farad} & \SI{4,7}{\micro\farad} & 0,0\% \\
+Capacitor & \SI{47}{\micro\farad} & \SI{47}{\micro\farad} & 0,0\% \\
+$R_s$ do regulador & \SI{470}{\ohm} & \SI{462}{\ohm} & $-1,7\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+ 
+A carga $R_L$ de \SI{4,7}{\kilo\ohm} foi adotada sem desvio porque o valor nominal do resistor já é o valor comercial da série E12. Os capacitores de \SI{4,7}{\micro\farad} e \SI{47}{\micro\farad} também foram adotados sem desvio, porque são os valores disponíveis no laboratório e o projeto já os considera. O resistor série de \SI{470}{\ohm} apresentou um valor medido de \SI{462}{\ohm}, o que corresponde a um desvio de \SI{-1,7}{\%}, compatível com a tolerância típica dos resistores de filme de carbono (\SI{5}{\%}). A escolha do \SI{470}{\ohm} como valor comercial, em vez dos \SI{542}{\ohm} calculados, reduz a corrente no zener, mas mantém a regulação dentro da faixa de operação.
 
 \section{Metodologia}
-
-Conte o que você fez e com quais parâmetros, de modo que um colega consiga repetir sem
-precisar perguntar nada. Explique as escolhas que não são evidentes: por que essa faixa de
-varredura, por que esse passo de integração, por que esse intervalo de gravação.
-
-Inclua a figura do esquemático, com legenda que descreva o que ela mostra, e cite-a no
-texto, como na Figura~\ref{fig:exemplo}. Se uma figura não for mencionada em nenhum
-parágrafo, ela provavelmente não precisa estar aqui.
+ 
+Esta seção descreve os procedimentos adotados na simulação e na bancada, com os parâmetros que permitem repetir cada medida. A Seção~4.1 apresentará a simulação de projeto de cada integrante; a Seção~4.2 descreve a montagem em bancada; e a Seção~4.3 tratará da simulação da montagem com os valores medidos. Todas as medidas de bancada foram feitas com o gerador de funções, o osciloscópio e o multímetro, e o ripple foi lido no canal do osciloscópio em acoplamento AC, com os cursores.
 
 \subsection{Simulação de projeto, uma por integrante}
 
@@ -162,11 +282,14 @@ com os componentes que aquela pessoa projetou. São elas que mostram se cada pro
 o que foi pedido.
 
 \subsection{Montagem em bancada}
-
-A equipe monta um circuito só. Diga \textbf{de quem} é a especificação que vocês montaram e
-por que escolheram essa. Informe os valores \textbf{medidos} de cada componente que vocês
-usaram, e não os valores nominais impressos no corpo da peça, porque a diferença entre os
-dois explica boa parte do que vocês vão observar.
+ 
+A equipe montou o circuito correspondente à especificação da equipe~2: carga $R_L = \SI{4,7}{\kilo\ohm}$, corrente $I_L = \SI{1,4}{\milli\ampere}$ na tensão regulada de \SI{6,8}{\volt}, zener 1N754 e capacitores de \SI{4,7}{\micro\farad} e \SI{47}{\micro\farad}. Antes de inserir cada componente no protoboard, mediu-se o valor real com o multímetro; a Tabela~\ref{tab:medidos_r5} registra os valores adotados, que são utilizados nas contas do relatório. A montagem foi feita em etapas, reaproveitando a montagem anterior, na ordem do roteiro: primeiro o retificador de meia onda sem filtro, depois com o capacitor de \SI{47}{\micro\farad}, depois com o capacitor de \SI{4,7}{\micro\farad}, depois a ponte sem filtro, depois a ponte com filtro, e por fim a regulação com zener.
+ 
+O gerador foi ajustado para uma senoide de \SI{60}{\hertz} e \SI{20}{\volt} de pico a pico, com o gerador configurado para carga de alta impedância. A tensão de entrada foi confirmada no osciloscópio antes de conectar qualquer diodo, para evitar que a carga do gerador reduzisse a amplitude pela metade. O terra do gerador, o terra das pontas do osciloscópio e o terra do circuito foram ligados ao mesmo ponto do protoboard.
+ 
+Na montagem de meia onda, um dos terminais do gerador é o próprio terra, a carga retorna a ele, e os dois canais do osciloscópio medem a entrada e a saída simultaneamente. Na ponte, o terminal de referência da carga não coincide com nenhum terminal do gerador, e por isso a garra de terra de uma ponta não pode ser ligada a essa referência sem curto-circuitar um diodo a cada semiciclo. Por esse motivo, nas montagens da ponte, mediu-se apenas a saída, com a garra de terra na referência da carga e nenhuma ponta ligada ao gerador. A tensão de entrada foi a ajustada no painel e confirmada na etapa de meia onda.
+ 
+O ripple foi medido com o canal do osciloscópio em acoplamento AC e os cursores. A tensão contínua foi medida com o multímetro, que fornece o valor médio. Para a regulação com zener, o resistor série $R_S$ foi calculado pela Equação~\eqref{eq:rs} com $V_{\min}$ medido na saída do filtro (pico menos ripple) e $I_{Z,\min} = \SI{1}{\milli\ampere}$, e adotou-se o resistor do laboratório de valor imediatamente inferior. O zener 1N754 foi inserido em paralelo com a carga, com o catodo (identificado pela faixa) no terminal positivo. A carga foi retirada por último, para medir a tensão contínua e estimar a potência no zener no pior caso.
 
 \subsection{Simulação da montagem}
 
