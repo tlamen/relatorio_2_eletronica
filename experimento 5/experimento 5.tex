@@ -281,6 +281,125 @@ a um dimensionamento diferente. Traga aqui \textbf{uma simulação por integrant
 com os componentes que aquela pessoa projetou. São elas que mostram se cada projeto cumpre
 o que foi pedido.
 
+\subsubsection{Retificador de meia onda}
+
+O primeiro circuito simulado utiliza uma fonte senoidal de \SI{60}{\hertz}, um diodo
+retificador 1N4007 e um resistor de carga $R_L$. Durante o semiciclo positivo,
+o diodo conduz quando a tensão de entrada supera sua queda direta, permitindo
+a circulação de corrente pela carga. No semiciclo negativo, o diodo permanece
+reversamente polarizado e a tensão de saída é aproximadamente nula. Como não
+há capacitor de filtro nesta etapa, a saída é uma senoide retificada de meia
+onda, conforme a Figura~\ref{fig:sim_retificador_meia_onda}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{imagens/ret_meia_onda_simulacao.png}
+  \caption{Circuito de retificação de meia onda e tensão de saída no LTspice,
+  na simulação inicial com $R_L=\SI{9,1}{\kilo\ohm}$.}
+  \label{fig:sim_retificador_meia_onda}
+\end{figure}
+
+\textbf{Especificação individual e dimensionamento da carga.}
+Para a matrícula 241039879, os algarismos especificados no roteiro são
+$AB=24$ e $I=9$. Assim, a amplitude de pico da fonte e a corrente de carga
+especificada são
+\begin{equation}
+V_p=\frac{V_{pp}}{2}=\frac{24}{2}=\SI{12}{\volt},\qquad
+I_L=I\cdot\SI{100}{\micro\ampere}=\SI{900}{\micro\ampere}.
+\end{equation}
+
+Embora o zener não faça parte do retificador desta seção, sua tensão nominal
+serve de referência para definir $R_L$, que será mantido nas etapas seguintes.
+De acordo com o critério do roteiro, a tensão de referência é
+\begin{equation}
+V_{Z,\mathrm{ref}}=\frac{V_p}{\sqrt{2}}=\frac{12}{\sqrt{2}}
+=\SI{8,485}{\volt}.
+\end{equation}
+O modelo disponível mais próximo é o BZX84C8V2, de tensão nominal
+$V_Z=\SI{8,2}{\volt}$, cujo desvio em relação à referência é
+\begin{equation}
+\varepsilon_{V_Z}=\frac{8,2-8,485}{8,485}\cdot100\%
+\approx-3,36\%.
+\end{equation}
+A resistência correspondente à corrente especificada, na tensão nominal
+selecionada, resulta em
+\begin{equation}
+R_{L,\mathrm{teo}}=\frac{V_Z}{I_L}
+=\frac{8,2}{900\times10^{-6}}=\SI{9,111}{\kilo\ohm}.
+\end{equation}
+Como o roteiro exige resistores da série E12, adota-se o valor comercial
+mais próximo, $R_L=\SI{10}{\kilo\ohm}$, com desvio
+\begin{equation}
+\varepsilon_{R_L}=\frac{10-9,111}{9,111}\cdot100\%
+\approx+9,76\%.
+\end{equation}
+Nesse valor nominal de carga, a corrente na tensão regulada será
+$I_L=8,2/(10\times10^3)=\SI{0,82}{\milli\ampere}$, ou seja, aproximadamente
+\SI{8,89}{\percent} abaixo da corrente especificada. A imagem registra uma
+simulação anterior com $R_L=\SI{9,1}{\kilo\ohm}$, valor pertencente à série
+E24, e não à E12. Portanto, para atender ao roteiro, esse resistor deve ser
+alterado para \SI{10}{\kilo\ohm} no esquema de entrega. O zener não é
+inserido neste circuito: sua tensão nominal foi utilizada somente no
+projeto de $R_L$.
+
+\textbf{Tensão de pico na carga.}
+Admitindo a queda direta aproximada de $V_D=\SI{0,7}{\volt}$ no 1N4007,
+a tensão máxima sobre a carga é
+\begin{equation}
+V_{o,\mathrm{pico}}\approx V_p-V_D=12-0,7=\SI{11,3}{\volt}.
+\end{equation}
+O pico é, portanto, \SI{0,7}{\volt} inferior ao da fonte (diferença
+relativa de $0,7/12\cdot100\%\approx5,83\%$), devido à queda de tensão
+do diodo em condução. No modelo do LTspice, essa queda pode variar com a
+corrente instantânea, e o valor simulado não precisa coincidir exatamente
+com a aproximação de \SI{0,7}{\volt}.
+
+\textbf{Valor médio da tensão na carga.}
+Para um diodo ideal, a saída segue a senoide no semiciclo positivo e se
+anula no negativo. Calculando a média em um período, com
+$\theta=\omega t$, obtém-se
+\begin{equation}
+\overline{V_o}=\frac{1}{2\pi}\int_0^\pi
+V_p\sin\theta\,\mathrm{d}\theta
+=\frac{V_p}{\pi}=\frac{12}{\pi}
+\approx\SI{3,820}{\volt}.
+\end{equation}
+Para considerar uma queda direta constante de \SI{0,7}{\volt}, o diodo
+só conduz quando $V_p\sin\theta>V_D$. Definindo
+$\theta_0=\arcsin(V_D/V_p)=\arcsin(0,7/12)$, a média corrigida é
+\begin{equation}
+\begin{aligned}
+\overline{V_o}&\approx\frac{1}{2\pi}
+\int_{\theta_0}^{\pi-\theta_0}
+\left(12\sin\theta-0,7\right)\,\mathrm{d}\theta\\
+&=\frac{24\cos\theta_0-0,7(\pi-2\theta_0)}{2\pi}
+\approx\SI{3,476}{\volt}.
+\end{aligned}
+\end{equation}
+O valor de \SI{3,820}{\volt} é a previsão ideal solicitada no roteiro;
+\SI{3,476}{\volt} é uma estimativa mais próxima do comportamento real do
+diodo sob a hipótese de queda direta constante. A diferença em relação à
+simulação deve ser avaliada a partir da leitura da média efetiva da curva no
+LTspice.
+
+\begin{table}[H]
+\centering
+\caption{Resultados analíticos do retificador de meia onda (simulação individual).}
+\label{tab:meia_onda_individual}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Valor calculado}\\
+\midrule
+Pico da fonte, $V_p$ & \SI{12}{\volt}\\
+Pico na carga, $V_{o,\mathrm{pico}}$ & \SI{11,3}{\volt} (aproximado)\\
+Diferença entre picos, $V_D$ & \SI{0,7}{\volt} (aproximada)\\
+Média ideal, $\overline{V_o}$ & \SI{3,820}{\volt}\\
+Média com queda direta constante & \SI{3,476}{\volt}\\
+Carga E12 escolhida, $R_L$ & \SI{10}{\kilo\ohm}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Montagem em bancada}
  
 A equipe montou a fonte linear completa, conforme a especificação da equipe~2. A montagem foi dividida em três etapas lógicas, seguindo a sequência do roteiro: a retificação de meia onda, a retificação em ponte e a regulação com zener. Todos os componentes foram medidos com o multímetro antes de serem inseridos no protoboard para garantir a precisão das equações de projeto, e os resultados estão consolidados na Tabela~\ref{tab:medidos_r5}.
