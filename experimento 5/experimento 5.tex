@@ -400,6 +400,63 @@ Carga E12 escolhida, $R_L$ & \SI{10}{\kilo\ohm}\\
 \end{tabular}
 \end{table}
 
+\subsubsection{Ponte com filtro (\texttt{item\_5.asc})}
+
+O item~5 simula a ponte retificadora com o capacitor de \SI{10}{\micro\farad} em paralelo com a carga de \SI{12}{\kilo\ohm}, alimentada por uma senoide de \SI{60}{\hertz} e \SI{10,5}{\volt} de pico. A Figura~\ref{fig:montagem_5_ind} mostra o esquemático, e a Figura~\ref{fig:onda_5_ind} mostra a tensão na carga e a corrente em um dos diodos. O pico da tensão na carga é \(V_p - 2V_D = 10{,}5 - 1{,}4 = \SI{9,1}{\volt}\), e o ripple previsto pela Equação~\eqref{eq:ripple} com \(f = \SI{120}{\hertz}\) e \(C = \SI{10}{\micro\farad}\) é
+
+\begin{equation}
+V_r = \frac{I_L}{f C} = \frac{0{,}6 \times 10^{-3}}{120 \cdot 10 \times 10^{-6}} = \SI{0,5}{\volt} .
+\label{eq:ripple_item5_ind}
+\end{equation}
+
+A tensão mínima na saída do filtro é \(V_{\min} = 9{,}1 - 0{,}5 = \SI{8,6}{\volt}\), que será usada no projeto do resistor série do item~6.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_individual/montagem_5.png}
+\caption{Esquemático do \texttt{item\_5.asc}: ponte retificadora com capacitor de \SI{10}{\micro\farad} e carga de \SI{12}{\kilo\ohm}.}
+\label{fig:montagem_5_ind}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_individual/onda_5.png}
+\caption{Forma de onda do \texttt{item\_5.asc}: tensão na carga (ripple) e corrente em um dos diodos da ponte.}
+\label{fig:onda_5_ind}
+\end{figure}
+
+\subsubsection{Ponte, filtro e regulação com zener (\texttt{item\_6.asc})}
+
+O item~6 acrescenta o resistor série \(R_S\) e o zener BZX84C de \SI{7,5}{\volt}. O resistor série é calculado pela Equação~\eqref{eq:rs} com \(I_{Z,\min} = \SI{1}{\milli\ampere}\) e \(V_{\min} = \SI{8,6}{\volt}\):
+
+\begin{equation}
+R_S = \frac{V_{\min} - V_Z}{I_L + I_{Z,\min}} = \frac{8{,}6 - 7{,}5}{0{,}6 \times 10^{-3} + 1 \times 10^{-3}} = \SI{688}{\ohm} ,
+\label{eq:rs_item6_ind}
+\end{equation}
+
+arredondado para \SI{680}{\ohm} (E12 imediatamente inferior). A Figura~\ref{fig:montagem_6_ind} mostra o esquemático, e a Figura~\ref{fig:onda_6_ind} mostra a tensão na saída do filtro, a tensão na carga e a corrente no zener. Espera-se que a tensão na carga fique próxima de \SI{7,5}{\volt}, que o ripple na carga seja muito menor que o ripple na saída do filtro, e que a corrente no zener oscile entre um valor mínimo (no vale do ripple) e um valor máximo (no pico), mas nunca se anule. A potência dissipada no zener, no pior caso (pico da saída do filtro e carga retirada), é
+
+\begin{equation}
+P_Z = V_Z \frac{V_{\max} - V_Z}{R_S} = 7{,}5 \cdot \frac{9{,}1 - 7{,}5}{680} = \SI{17,6}{\milli\watt} ,
+\label{eq:pz_item6_ind}
+\end{equation}
+
+bem abaixo dos \SI{250}{\milli\watt} do BZX84C.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_individual/montagem_6.png}
+\caption{Esquemático do \texttt{item\_6.asc}: ponte, filtro de \SI{10}{\micro\farad}, resistor série de \SI{680}{\ohm} e zener BZX84C de \SI{7,5}{\volt}.}
+\label{fig:montagem_6_ind}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_individual/onda_6.png}
+\caption{Forma de onda do \texttt{item\_6.asc}: tensão na saída do filtro, tensão na carga (regulada) e corrente no zener.}
+\label{fig:onda_6_ind}
+\end{figure}
+
 \subsection{Montagem em bancada}
  
 A equipe montou a fonte linear completa, conforme a especificação da equipe~2. A montagem foi dividida em três etapas lógicas, seguindo a sequência do roteiro: a retificação de meia onda, a retificação em ponte e a regulação com zener. Todos os componentes foram medidos com o multímetro antes de serem inseridos no protoboard para garantir a precisão das equações de projeto, e os resultados estão consolidados na Tabela~\ref{tab:medidos_r5}.
@@ -442,37 +499,114 @@ $R_s$ do regulador & \SI{470}{\ohm} & \SI{462}{\ohm} & -1,7 \\
 
 \subsection{Simulação da montagem}
 
-Refaça a simulação usando os valores medidos dos componentes que estavam na bancada. Ela
-não substitui a simulação de projeto: é a comparação entre as duas que separa o efeito da
-tolerância dos componentes do restante.
+Refez-se a simulação de todos os seis itens do roteiro com os valores de componente efetivamente medidos na bancada, substituindo os valores nominais e os ideais de projeto. O objetivo é isolar o efeito da tolerância dos componentes e comparar o modelo com a montagem física, servindo de elo entre a simulação de projeto (Seção~4.1) e a medição real (Seção~5). As diretivas de análise foram mantidas em \texttt{.tran} de \SI{100}{\milli\second} para todos os itens, com leitura a partir do segundo período, quando o capacitor atinge o regime permanente. As figuras de cada item mostram o esquemático simulado e a forma de onda resultante.
 
-\begin{nota}{Três comparações, três causas diferentes}
-  Ao longo do relatório vocês vão confrontar três pares de resultados. Cada um responde a uma
-  pergunta distinta, e vale mantê-los separados na hora de discutir.
+\subsubsection{Meia onda sem filtro (\texttt{item\_1.asc})}
 
-  \smallskip
-  \textbf{Cálculo analítico contra simulação de projeto.} A conta está certa? Se aqui houver
-  diferença, procure na álgebra ou no esquemático.
+O item~1 simula o retificador de meia onda com o diodo 1N4007 e a carga $R_L = \SI{4,7}{\kilo\ohm}$, alimentado por uma senoide de \SI{60}{\hertz} e \SI{10}{\volt} de pico. A Figura~\ref{fig:montagem_1} mostra o esquemático, e a Figura~\ref{fig:onda_1} mostra a tensão de entrada e a tensão na carga. Espera-se que o pico da carga seja a tensão da fonte menos a queda direta do diodo, e que o valor médio seja próximo de $V_{p,\text{carga}}/\pi$.
 
-  \smallskip
-  \textbf{Simulação de projeto contra simulação da montagem.} Quanto custou a tolerância dos
-  componentes? A diferença aqui é a distância entre o valor nominal e o valor real da peça
-  que vocês pegaram.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/montagem_1.png}
+\caption{Esquemático do \texttt{item\_1.asc}: retificador de meia onda com 1N4007 e carga de \SI{4,7}{\kilo\ohm}.}
+\label{fig:montagem_1}
+\end{figure}
 
-  \smallskip
-  \textbf{Simulação da montagem contra medição.} O modelo descreve o circuito real? Diferença
-  aqui aponta algo que o modelo não representa, como a resistência série do indutor, a
-  impedância da ponta de prova ou a banda do instrumento.
-\end{nota}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/onda_1.png}
+\caption{Forma de onda do \texttt{item\_1.asc}: tensão de entrada (senoide) e tensão na carga (semiciclos positivos).}
+\label{fig:onda_1}
+\end{figure}
 
-\begin{figure}[htb]
-  \centering
-  % \includegraphics[width=0.8\linewidth]{arquivo.png}
-  \fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
-  substitua por \texttt{\textbackslash includegraphics}}}
-  \caption{Legenda descritiva. Diga o que a figura mostra e o que nela é relevante, e não
-  apenas o nome do circuito.}
-  \label{fig:exemplo}
+\subsubsection{Meia onda com capacitor projetado (\texttt{item\_2.asc})}
+
+O item~2 acrescenta o capacitor de \SI{47}{\micro\farad} em paralelo com a carga, conforme o projeto da equipe~2 (valor comercial adotado para atender ao ripple de \SI{1,5}{\volt}). A Figura~\ref{fig:montagem_2} mostra o esquemático, e a Figura~\ref{fig:onda_2} mostra a tensão na carga e a corrente no diodo. Espera-se que o ripple seja próximo de $I_L/(f C)$ com $f = \SI{60}{\hertz}$, e que a corrente no diodo apresente picos curtos e altos, confirmando a condução apenas nas proximidades do pico da senoide.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/montagem_2.png}
+\caption{Esquemático do \texttt{item\_2.asc}: meia onda com capacitor de \SI{47}{\micro\farad}.}
+\label{fig:montagem_2}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/onda_2.png}
+\caption{Forma de onda do \texttt{item\_2.asc}: tensão na carga (com ripple) e corrente no diodo (picos curtos).}
+\label{fig:onda_2}
+\end{figure}
+
+\subsubsection{Meia onda com capacitor dez vezes menor (\texttt{item\_3.asc})}
+
+O item~3 mantém o circuito do item~2 e substitui o capacitor de \SI{47}{\micro\farad} pelo de \SI{4,7}{\micro\farad}, simulando o efeito de um capacitor dez vezes menor sobre o ripple e sobre o pico de corrente no diodo. A Figura~\ref{fig:montagem_3} mostra o esquemático, e a Figura~\ref{fig:onda_3} mostra a tensão na carga e a corrente no diodo. Espera-se que o ripple cresça proporcionalmente à redução da capacitância, e que o pico de corrente no diodo diminua, porque a reposição de carga ocorre em um intervalo maior.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/montagem_3.png}
+\caption{Esquemático do \texttt{item\_3.asc}: meia onda com capacitor de \SI{4,7}{\micro\farad}.}
+\label{fig:montagem_3}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/onda_3.png}
+\caption{Forma de onda do \texttt{item\_3.asc}: tensão na carga (ripple maior) e corrente no diodo (picos mais estreitos).}
+\label{fig:onda_3}
+\end{figure}
+
+\subsubsection{Ponte retificadora sem filtro (\texttt{item\_4.asc})}
+
+O item~4 monta a ponte com os quatro diodos 1N4007. No LTspice, o terra é ligado ao terminal de referência da carga, e a fonte flutuante é ligada entre dois nós nomeados, conforme o roteiro. A Figura~\ref{fig:montagem_4} mostra o esquemático, e a Figura~\ref{fig:onda_4} mostra a tensão na carga e a tensão entre os terminais da fonte. Espera-se que o pico da carga seja a tensão da fonte menos duas quedas de diodo, e que o valor médio seja $2V_p/\pi$. A frequência de repetição dos picos deve ser \SI{120}{\hertz}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/montagem_4.png}
+\caption{Esquemático do \texttt{item\_4.asc}: ponte retificadora com quatro 1N4007 e carga de \SI{4,7}{\kilo\ohm}.}
+\label{fig:montagem_4}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/onda_4.png}
+\caption{Forma de onda do \texttt{item\_4.asc}: tensão na carga (picos a \SI{120}{\hertz}) e tensão da fonte.}
+\label{fig:onda_4}
+\end{figure}
+
+\subsubsection{Ponte com filtro (\texttt{item\_5.asc})}
+
+O item~5 acrescenta o capacitor de \SI{47}{\micro\farad} em paralelo com a carga. A Figura~\ref{fig:montagem_5} mostra o esquemático, e a Figura~\ref{fig:onda_5} mostra a tensão na carga e a corrente em um dos diodos. Espera-se que o ripple seja próximo de $I_L/(f C)$ com $f = \SI{120}{\hertz}$, e que a tensão mínima da saída do filtro ($V_{\min}$) seja o pico menos o ripple. A comparação com o item~2 deve mostrar que o ripple cai à metade, porque a frequência de repetição dobra.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/montagem_5.png}
+\caption{Esquemático do \texttt{item\_5.asc}: ponte retificadora com capacitor de \SI{47}{\micro\farad}.}
+\label{fig:montagem_5}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/onda_5.png}
+\caption{Forma de onda do \texttt{item\_5.asc}: tensão na carga (ripple menor que no item~2) e corrente no diodo.}
+\label{fig:onda_5}
+\end{figure}
+
+\subsubsection{Ponte, filtro e regulação com zener (\texttt{item\_6.asc})}
+
+O item~6 acrescenta o resistor série $R_S = \SI{462}{\ohm}$ (valor medido do resistor de \SI{470}{\ohm}) e o zener 1N754 de \SI{6,8}{\volt}. A Figura~\ref{fig:montagem_6} mostra o esquemático, e a Figura~\ref{fig:onda_6} mostra a tensão na saída do filtro, a tensão na carga e a corrente no zener. Espera-se que a tensão na carga fique próxima de \SI{6,8}{\volt}, que o ripple na carga seja muito menor que o ripple na saída do filtro, e que a corrente no zener oscile entre um valor mínimo (no vale do ripple) e um valor máximo (no pico), mas nunca se anule, se a regulação estiver funcionando.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/montagem_6.png}
+\caption{Esquemático do \texttt{item\_6.asc}: ponte, filtro de \SI{47}{\micro\farad}, resistor série de \SI{462}{\ohm} e zener 1N754.}
+\label{fig:montagem_6}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{imagens/simulacao_de_montagem/onda_6.png}
+\caption{Forma de onda do \texttt{item\_6.asc}: tensão na saída do filtro, tensão na carga (regulada) e corrente no zener.}
+\label{fig:onda_6}
 \end{figure}
 
 \section{Resultados}
