@@ -34,9 +34,7 @@
 \capa
 
 \begin{resumo}
-  Escreva este parágrafo por último, com 100 a 150 palavras. Diga o que você projetou, sob
-  qual especificação, o que simulou ou mediu, o principal resultado numérico e a que
-  conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o que encontrou.
+Foram analisados os estágios de retificação, filtragem capacitiva e regulação Zener por cálculos, simulações no LTspice e montagem em bancada. Na equipe 2, a ponte retificadora apresentou pico de \SI{8,8}{\volt} e frequência de aproximadamente \SI{120}{\hertz}. Com capacitor de \SI{47}{\micro\farad}, o ripple medido diminuiu de \SI{640}{\milli\volt} na meia onda para \SI{320}{\milli\volt} na ponte, redução de \SI{50}{\percent}. Após a etapa Zener, observou-se saída em torno de \SI{7,4}{\volt}, com pequena ondulação residual em relação ao nível contínuo. Os resultados confirmaram o comportamento esperado da retificação e da filtragem, além de indicar estabilização qualitativa da tensão de saída; diferenças entre previsões, simulações e medições foram discutidas.
 \end{resumo}
 
 \section{Introdução}
@@ -484,7 +482,7 @@ A Tabela~\ref{tab:medidos_r5} apresenta os valores nominais (ou teóricos) dos c
 \begin{table}[h]
 \centering
 \caption{Valores teóricos, adotados e medidos dos componentes da montagem da equipe~2.}
-\label{tab:medidos_r5}
+\label{tab:medidos_r5_metodologia}
 \begin{tabular}{@{}lrrr@{}}
 \toprule
 \textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio (\%)} \\
@@ -759,30 +757,117 @@ da montagem e nas medições efetuadas na bancada. Os erros percentuais foram ca
 
 \section{Discussão}
 
-Percorra as três comparações na ordem em que aparecem no quadro da Seção~4: a conta contra
-a simulação de projeto, esta contra a simulação da montagem, e esta contra a medição. Cada
-passo isola uma causa, e a discussão fica bem mais curta quando eles não se misturam.
+A análise foi organizada em três comparações: (i) previsão analítica e simulação de projeto, (ii) projeto e simulação da montagem, e (iii) simulação da montagem e medições. Os desvios percentuais são assinados e calculados por
+\(\varepsilon=(\text{obtido}-\text{referência})/\text{referência}\times100\%\), com a referência indicada em cada tabela.
 
-Compare também os projetos dos integrantes entre si. Como as especificações são diferentes,
-os resultados diferem, e mostrar que essa diferença é a que a teoria previa vale mais do
-que repetir três vezes a mesma análise.
+\subsection{Especificações e projetos individuais}
 
-Sempre que uma divergência for maior do que a incerteza esperada, aponte uma causa concreta
-e diga como ela poderia ser reduzida. Vale, por exemplo, a tolerância do componente, a
-resistência série do indutor, a impedância de entrada do osciloscópio, a banda do
-amplificador ou a resolução da varredura.
+As simulações individuais e a montagem da equipe partem de especificações distintas. A Tabela~\ref{tab:discussao_especificacoes} distingue os dados presentes na Seção~4.1 dos utilizados em bancada; por isso, tensões e cargas diferentes não representam, por si só, erros experimentais.
 
-Quando previsto e obtido coincidirem, explique por que era esperado que coincidissem, e o
-que essa coincidência não permite concluir.
+\begin{table}[H]
+\centering
+\small
+\caption{Especificações identificáveis nos projetos documentados e na montagem da equipe.}
+\label{tab:discussao_especificacoes}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Conjunto} & \(V_p\) & \(I_L\) espec. & \(V_Z\) nominal & \(R_L\) \\
+\midrule
+Individual, meia onda (4.1.1) & \SI{12}{\volt} & \SI{0,90}{\milli\ampere} & \SI{8,2}{\volt} & \SI{10}{\kilo\ohm} \\
+Individual, itens 5 e 6 & \SI{10,5}{\volt} & \SI{0,60}{\milli\ampere} & \SI{7,5}{\volt} & \SI{12}{\kilo\ohm} \\
+Bancada, equipe 2 & \SI{10}{\volt} & \SI{1,40}{\milli\ampere} & \SI{6,8}{\volt} & \SI{4,7}{\kilo\ohm} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-Por fim, retome as hipóteses que vocês declararam na fundamentação e diga quais se
-confirmaram. Se algo observado contrariar a previsão, resolva a contradição aqui.
+No projeto individual de meia onda, o valor analítico \(R_L=\SI{9,111}{\kilo\ohm}\) foi aproximado para \SI{10}{\kilo\ohm} (E12), com desvio de \(+\SI{9,76}{\percent}\). A imagem preservada nessa subseção mostra uma simulação anterior com \SI{9,1}{\kilo\ohm} (E24), e não uma validação do circuito corrigido. Para o outro projeto individual, a previsão registrada é \(V_r=\SI{0,5}{\volt}\) na ponte filtrada e \(R_S=\SI{680}{\ohm}\) no regulador de \SI{7,5}{\volt}. Não constam no texto valores numéricos extraídos de todas as simulações individuais nem os seis itens de cada integrante; assim, não há base para calcular erros individuais completos nem para atribuir diferenças à tolerância dos componentes.
+
+\subsection{Cálculo analítico e simulação da montagem}
+
+Para a configuração da equipe 2, as previsões com queda direta aproximada de \SI{0,7}{\volt} por diodo e a expressão \(V_r\simeq I_L/(fC)\) podem ser confrontadas com os valores numéricos registrados na Seção~5.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Previsão analítica e simulação da montagem da equipe 2. Erro relativo à previsão.}
+\label{tab:discussao_analitico_sim}
+\begin{tabular}{@{}p{6.4cm}rrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Analítico} & \textbf{Simulação} & \textbf{Erro} \\
+\midrule
+Pico, meia onda & \SI{9,30}{\volt} & \SI{9,40}{\volt} & \(+1,1\%\) \\
+Ripple, meia onda, \SI{47}{\micro\farad} & \SI{0,496}{\volt} & \SI{0,630}{\volt} & \(+26,9\%\) \\
+Ripple, meia onda, \SI{4,7}{\micro\farad} & \SI{4,965}{\volt} & \SI{4,40}{\volt} & \(-11,4\%\) \\
+Pico, ponte sem filtro & \SI{8,60}{\volt} & \SI{8,80}{\volt} & \(+2,3\%\) \\
+Ripple, ponte, \SI{47}{\micro\farad} & \SI{0,248}{\volt} & \SI{0,270}{\volt} & \(+8,8\%\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Os picos calculados e simulados são próximos; a pequena diferença decorre da aproximação por quedas fixas de \SI{0,7}{\volt}, pois a tensão direta do 1N4007 depende da corrente. Para \SI{47}{\micro\farad}, a simulação não reproduz exatamente a fórmula simplificada do ripple, que supõe descarga aproximadamente linear e corrente de carga constante. Essa hipótese fica especialmente limitada com \SI{4,7}{\micro\farad}, quando a variação da tensão ao longo do ciclo é grande. A previsão de \SI{4,965}{\volt} nesse caso deve, portanto, ser tratada apenas como estimativa.
+
+O uso de \SI{47}{\micro\farad} em lugar dos \SI{15,6}{\micro\farad} calculados para a meta de \SI{1,5}{\volt} reduz o ripple previsto para \SI{0,496}{\volt}. Esse aumento de capacitância é uma escolha de componente disponível, não um erro de medição. No regulador, o cálculo \(R_S\simeq\SI{542}{\ohm}\) foi convertido no valor E12 de \SI{470}{\ohm} (\(-13,3\%\)); a peça medida valeu \SI{462}{\ohm}, \(-1,7\%\) em relação aos \SI{470}{\ohm} nominais. Uma resistência menor aumenta a corrente disponível ao Zener, mas também sua dissipação. Para \(V_{\max}\simeq\SI{8,6}{\volt}\), a estimativa de potência sem carga permanece em \SI{26,5}{\milli\watt}, abaixo do limite de \SI{500}{\milli\watt} especificado para o 1N754.
+
+\subsection{Simulação da montagem e medição em bancada}
+
+A Tabela~\ref{tab:discussao_sim_bancada} reúne os resultados numéricos da Seção~5 sem alterar suas leituras. O erro toma a simulação da montagem como referência; o sinal positivo indica medição superior à simulação.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Comparação entre simulação da montagem e bancada da equipe 2.}
+\label{tab:discussao_sim_bancada}
+\begin{tabular}{@{}p{6.6cm}rrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Simulação} & \textbf{Bancada} & \textbf{Erro} \\
+\midrule
+Queda no diodo, meia onda & \SI{0,600}{\volt} & \SI{0,606}{\volt} & \(+1,0\%\) \\
+Pico da saída, meia onda & \SI{9,4}{\volt} & \SI{9,2}{\volt} & \(-2,1\%\) \\
+Ripple, meia onda, \SI{47}{\micro\farad} & \SI{0,630}{\volt} & \SI{0,640}{\volt} & \(+1,6\%\) \\
+Ripple, meia onda, \SI{4,7}{\micro\farad} & \SI{4,4}{\volt} & \SI{4,4}{\volt} & \(0,0\%\) \\
+Pico da ponte, sem filtro & \SI{8,8}{\volt} & \SI{8,8}{\volt} & \(0,0\%\) \\
+Frequência dos picos da ponte & \SI{120}{\hertz} & \SI{119}{\hertz} & \(-0,8\%\) \\
+Ripple, ponte, \SI{47}{\micro\farad} & \SI{0,270}{\volt} & \SI{0,320}{\volt} & \(+18,5\%\) \\
+Mínimo do filtro, \(V_{\min}\) & \SI{8,40}{\volt} & \SI{7,96}{\volt} & \(-5,2\%\) \\
+Saída do regulador (valor central) & \SI{7,4}{\volt} & \SI{7,4}{\volt} & \(0,0\%\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A boa concordância na meia onda (desvios de até \SI{2,1}{\percent}) confirma a condução em apenas um semiciclo. A ponte manteve o pico de \SI{8,8}{\volt} e aproximadamente duplicou a frequência dos picos; a diferença entre \SI{119}{\hertz} e \SI{120}{\hertz} é compatível com a leitura por cursores, não com uma alteração relevante na frequência de retificação. Com \SI{47}{\micro\farad}, a redução de ripple da meia onda para a ponte foi de \SI{640}{\milli\volt} para \SI{320}{\milli\volt}, exatamente metade na bancada. A maior discrepância entre simulação e medição ocorreu no ripple da ponte (\(+18,5\%\)), junto da tensão mínima \SI{0,44}{\volt} inferior à simulada. As diferenças podem envolver capacitância efetiva, resistência série do capacitor, perdas nos diodos, carregamento do gerador e resolução dos cursores; sem medidas desses parâmetros, não é possível atribuir-lhes percentuais individuais.
+
+\subsection{Regulação com Zener e avaliação da ondulação}
+
+A finalidade do estágio Zener é manter a tensão de saída aproximadamente constante, mesmo com a oscilação da tensão fornecida pelo filtro. A observação da bancada indica esse comportamento: após a regulação, a saída permaneceu próxima de \SI{7,4}{\volt}, com cursores entre \SI{7,2}{\volt} e \SI{7,6}{\volt}. A leitura automática de pico a pico foi de \SI{320}{\milli\volt}, equivalente a cerca de \SI{4,3}{\percent} do nível contínuo. Portanto, a existência de ripple residual não invalida a hipótese de estabilização; o regulador não precisa produzir tensão perfeitamente constante para apresentar efeito útil.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Evolução da ondulação medida nas etapas de filtragem e regulação da equipe 2.}
+\label{tab:discussao_evolucao_ripple}
+\begin{tabular}{@{}p{8.1cm}r@{}}
+\toprule
+\textbf{Etapa observada} & \textbf{Ripple medido} \\
+\midrule
+Meia onda com filtro de \SI{47}{\micro\farad} & \SI{640}{\milli\volt} \\
+Ponte com filtro de \SI{47}{\micro\farad} & \SI{320}{\milli\volt} \\
+Saída após Zener (leitura automática) & \SI{320}{\milli\volt} \\
+Saída após Zener (diferença entre cursores) & \SI{400}{\milli\volt} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Os resultados mostram uma redução de \SI{50}{\percent} da ondulação ao passar da meia onda filtrada para a ponte filtrada, coerente com a duplicação da frequência de recarga do capacitor. A tensão na saída do regulador, por sua vez, apresentou baixa variação relativa em torno do valor central, evidenciando o efeito estabilizador esperado. Como as leituras automáticas de ripple antes e depois do Zener foram ambas de \SI{320}{\milli\volt}, os registros não permitem atribuir numericamente uma redução adicional a esse componente isoladamente, embora sustentem a avaliação qualitativa da regulação.
+
+A diferença entre o modelo Zener mostrado na simulação e o componente especificado para a bancada limita a comparação exata da tensão nominal, mas não altera as observações de retificação, filtragem e comportamento aproximadamente estável da saída. A potência calculada para o Zener sem carga permanece abaixo do limite especificado; sua confirmação experimental exigiria uma medida adicional de corrente nessa condição.
+
+Em conjunto, os resultados são compatíveis com as hipóteses de condução unidirecional, duplicação da frequência na ponte, diminuição do ripple com a filtragem e estabilização aproximada da tensão pelo estágio Zener, dentro das limitações de medição observadas.
 
 \section{Conclusão}
 
-Retome o objetivo que vocês anunciaram na introdução e responda se ele foi atingido,
-apoiando a resposta em um número. Aponte a principal limitação do que foi feito e o que
-ela impede de afirmar. Evite trazer resultado novo nesta seção.
+O experimento permitiu verificar o funcionamento dos principais estágios de uma fonte linear. Na bancada, o retificador de meia onda apresentou pico de \SI{9,2}{\volt}, enquanto a ponte apresentou \SI{8,8}{\volt} e frequência de picos próxima de \SI{120}{\hertz}. Com um capacitor de \SI{47}{\micro\farad}, o ripple medido caiu de \SI{640}{\milli\volt} na meia onda para \SI{320}{\milli\volt} na ponte, redução de \SI{50}{\percent}, como esperado pela maior frequência de recarga. As discrepâncias entre cálculo, simulação e bancada foram, em geral, pequenas e explicáveis pela simplificação das quedas dos diodos, pela variação da corrente de carga e pelas condições reais de medição.
+
+Após a inclusão do Zener, a tensão permaneceu próxima de \SI{7,4}{\volt}, com ondulação residual relativamente pequena diante desse nível contínuo. Esse resultado sustenta qualitativamente a hipótese de estabilização, ainda que as leituras disponíveis não permitam quantificar uma atenuação adicional de ripple exclusivamente pelo Zener. Assim, os objetivos de retificação, filtragem e observação do comportamento regulador foram atendidos; a caracterização quantitativa mais precisa desse último estágio dependeria de medições adicionais sob as mesmas condições e com componentes equivalentes.
 
 \section{Referências}
 
