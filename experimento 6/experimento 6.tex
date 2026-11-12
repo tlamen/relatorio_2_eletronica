@@ -41,16 +41,34 @@
 
 \section{Introdução}
 
-Comece pelo problema, e não pelo circuito. Que necessidade de engenharia deu origem a esta
-topologia, onde você a encontraria em um equipamento real e o que aconteceria sem ela. Duas
-ou três referências ajudam aqui.
+Com o desenvolvimento da eletrônica, logo foi descoberto a possibilidade de fazer sistemas digitais
+usando os transistores criados. Um dos principais circuitos digitais possíveis é o \textit{flip-flop},
+um componente capaz de armazenar um bit de dados. Por causa dessa função, o \textit{flip-flop} é usando em
+praticamente todo dispositivo eletrônico hoje em dia. E isso traz um problema, o \textit{flip-flop} foi
+arquitetado para utilizar um sinal de sincronização chamado \textit{clock}, e se espera que este sinal
+\textit{clock} seja emitido periodicamente várias vezes por segundo.
 
-Depois estreite o foco: que aspecto você vai investigar, sob quais condições, e por que
-vale a pena verificá-lo. Se o roteiro impõe alguma restrição de projeto que parece
-arbitrária, aproveite para explicar a razão dela.
+Este problema de gerar sinais periódicos também é encontrado em outros contextos. Por exemplo,
+com a criação dos primeiros videogames, foi necessário criar uma forma de reproduzir áudio.
+Isso é ainda dificultado pelo fato dos primeiros videogames não possuírem grandes capacidades de
+processamento e de memória, assim, não é possível amostrar o som e armazenar cada amostra.
+Para esse caso especifico, armazenar apenas as frequências e durações das notas musicais era
+a única forma possível.
 
-No último parágrafo, diga qual é o objetivo deste relatório e como o texto está
-organizado, seção a seção.
+A solução encontrada para essas necessidades foi o circuito do oscilador, um circuito capaz de gerar um sinal
+periódico. Para o \textit{flip-flop}, o oscilador cria o sinal \textit{clock}, já para o videogame, cria as notas musicais.
+
+O oscilador consegue fazer isso usando \textit{Schmitt trigger}. Resumidamente, é um circuito comparador com
+histerese, que usa como entrada sua própria saída. Dessa forma, uma onda quadrada é gerada. Com outros
+circuitos, é possível transformar esta onda quadrada em uma onda triangular (usando um integrador) e
+em uma onda senoidal (usando um conformador).
+
+O objetivo deste relatório é então criar um oscilador de onda senoidal usando 3 estágios. Primeiro, o \textit{Schmitt trigger}
+implementado usando o amplificador operacional LM741 como um comparador, gera uma onda quadrada. Segundo,
+um integrador novamente utilizando o LM741 transforma a onda quadrada numa onda triangular. Por último, um conformador,
+implementado usando vários divisores de tensão e diodos, aproxima a onda triangular a uma onda senoidal.
+
+O texto está organizado nas secções: Fundamentação teórica, Especificação e projeto, Metodologia, Simulação e Resultados.
 
 \section{Fundamentação teórica}
 
