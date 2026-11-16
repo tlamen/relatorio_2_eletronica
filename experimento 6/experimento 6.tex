@@ -71,50 +71,337 @@ implementado usando vários divisores de tensão e diodos, aproxima a onda trian
 O texto está organizado nas secções: Fundamentação teórica, Especificação e projeto, Metodologia, Simulação e Resultados.
 
 \section{Fundamentação teórica}
-
-Deduza as expressões que você vai usar mais adiante, partindo das leis de circuito.
-Numere as equações que forem retomadas no restante do texto.
-
+\label{sec:fundamentacao}
+ 
+Esta seção deduz as expressões usadas no projeto e na análise dos três blocos do
+roteiro: o comparador com histerese, o oscilador de onda quadrada e triangular
+formado por comparador e integrador, e o conformador a diodos que aproxima a
+onda triangular de uma senoide. As hipóteses adotadas são as de amplificador
+operacional ideal em regime de saturação, com tensões de saturação
+$\pm V_{sat}$ simétricas e iguais, em módulo, à tensão de alimentação menos a
+queda interna do operacional; de diodos ideais na análise inicial, corrigidos
+depois para a queda real de aproximadamente $0{,}7$~V; e de componentes
+lineares e sem tolerância nas expressões de projeto.
+ 
+\subsection{Realimentação positiva e comparador com histerese}
+\label{sec:teo_histerese}
+ 
+A saída do amplificador operacional é
 \begin{equation}
-  H(j\omega) = \frac{1}{1+j\omega RC}
-  \label{eq:exemplo}
+v_o = A\,(v_+ - v_-),
+\label{eq:ganho_aberto}
 \end{equation}
-
-Toda grandeza que aparecer nos resultados precisa ter sido apresentada aqui. Explique o que
-cada termo significa fisicamente, não apenas o que a letra representa. Registre as hipóteses
-que você está assumindo, como linearidade ou idealidade dos componentes: se alguma delas
-não se sustentar no experimento, você vai retomá-la na discussão.
-
-Se o circuito tiver regimes de funcionamento distintos, apresente cada um e diga o que os
-separa.
+com $A$ muito grande. Na realimentação negativa, uma fração da saída retorna à
+entrada inversora, de modo que qualquer desvio entre as entradas produz uma
+variação de saída que reduz esse desvio, e o circuito converge para
+$v_+ \approx v_-$: é o curto virtual. Quando a realimentação chega à entrada
+não inversora, o mesmo desvio produz uma variação que o aumenta, o processo
+diverge e a saída vai à saturação, $+V_{sat}$ ou $-V_{sat}$. O estado de
+equilíbrio $v_+ = v_-$ existe, mas é instável, e qualquer perturbação o
+destrói. Não há curto virtual, e a saída depende do histórico do circuito, não
+apenas da entrada presente. Esse comportamento é a histerese, e é o que torna
+possível um circuito que oscila sem nenhum sinal de entrada.
+ 
+No comparador com histerese, a saída é levada à entrada não inversora por um
+divisor resistivo formado por $R_1$ e $R_2$, e a entrada de controle $v_i$ é
+aplicada à entrada inversora. A tensão na entrada não inversora é
+\begin{equation}
+v_+ = \frac{R_1}{R_1 + R_2}\,v_o + \frac{R_2}{R_1 + R_2}\,v_i,
+\label{eq:vmais}
+\end{equation}
+em que se supõe que a fonte $v_i$ tenha impedância desprezível frente a $R_2$.
+A comutação ocorre quando $v_+ = v_- = v_i$, o que, combinado com
+\eqref{eq:vmais}, fornece os dois limiares de comutação:
+\begin{equation}
+V_{TH} = \frac{R_1}{R_1 + R_2}\,(+V_{sat}) + \frac{R_2}{R_1 + R_2}\,V_{TH}
+\quad\Longrightarrow\quad
+V_{TH} = \frac{R_1}{R_1 + R_2}\,V_{sat},
+\label{eq:vth}
+\end{equation}
+\begin{equation}
+V_{TL} = \frac{R_1}{R_1 + R_2}\,(-V_{sat}) + \frac{R_2}{R_1 + R_2}\,V_{TL}
+\quad\Longrightarrow\quad
+V_{TL} = -\frac{R_1}{R_1 + R_2}\,V_{sat}.
+\label{eq:vtl}
+\end{equation}
+A largura da histerese é, portanto,
+\begin{equation}
+\Delta V_H = V_{TH} - V_{TL} = 2\,\frac{R_1}{R_1 + R_2}\,V_{sat},
+\label{eq:histerese}
+\end{equation}
+e o ponto médio da faixa de histerese é zero, porque as saturações são
+simétricas. A razão
+\begin{equation}
+\beta = \frac{R_1}{R_1 + R_2}
+\label{eq:beta}
+\end{equation}
+é a fração da saída que realimenta a entrada não inversora e determina tanto a
+largura da histerese quanto a frequência do oscilador da
+Seção~\ref{sec:teo_oscilador}. A Equação~\eqref{eq:histerese} é a base do
+projeto: dado $\Delta V_H$ desejado e conhecido $V_{sat}$, obtém-se $\beta$ e,
+com um dos resistores fixado, o outro.
+ 
+\subsection{Oscilador de onda quadrada e triangular}
+\label{sec:teo_oscilador}
+ 
+O oscilador associa o comparador com histerese da Seção~\ref{sec:teo_histerese}
+a um integrador. A saída do comparador, $v_{sq}$, alterna entre $+V_{sat}$ e
+$-V_{sat}$ e é aplicada à entrada do integrador, cuja saída $v_{tri}$ é uma onda
+triangular. A onda triangular retorna à entrada inversora do comparador, de modo
+que o comparador comuta quando $v_{tri}$ atinge os limiares $\pm V_{TH}$ da
+Equação~\eqref{eq:vth}. O circuito oscila sem sinal de entrada, e a frequência é
+determinada pela constante de tempo do integrador e pela largura da histerese.
+ 
+O integrador é construído com um amplificador operacional, um resistor $R$ e um
+capacitor $C$ na realimentação negativa. A corrente que entra no nó da entrada
+inversora é $v_{sq}/R$, e essa corrente carrega o capacitor, de modo que
+\begin{equation}
+v_{tri}(t) = -\frac{1}{RC}\int_0^t v_{sq}(\tau)\,d\tau + v_{tri}(0).
+\label{eq:integrador}
+\end{equation}
+Durante o semiciclo em que $v_{sq} = +V_{sat}$, a saída do integrador decresce
+linearmente com inclinação
+\begin{equation}
+\frac{dv_{tri}}{dt} = -\frac{V_{sat}}{RC},
+\label{eq:inclinacao}
+\end{equation}
+e durante o semiciclo em que $v_{sq} = -V_{sat}$, cresce com a mesma inclinação,
+em módulo. A onda triangular é, portanto, simétrica, e a sua amplitude de pico é
+igual ao limiar do comparador:
+\begin{equation}
+\hat V_{tri} = V_{TH} = \frac{R_1}{R_1 + R_2}\,V_{sat} = \beta\,V_{sat}.
+\label{eq:amplitude_tri}
+\end{equation}
+A onda quadrada tem amplitude $\hat V_{sq} = V_{sat}$, e a onda triangular tem
+amplitude $\beta V_{sat}$, ambas simétricas em relação a zero.
+ 
+O período é o tempo que a triangular leva para percorrer a faixa de
+$-\,V_{TH}$ a $+\,V_{TH}$, ou seja, $2V_{TH}$, com a inclinação da
+Equação~\eqref{eq:inclinacao}:
+\begin{equation}
+T = \frac{2V_{TH}}{V_{sat}/(RC)} = 2RC\,\frac{V_{TH}}{V_{sat}}
+= 2RC\,\beta.
+\label{eq:periodo}
+\end{equation}
+A frequência de oscilação é, então,
+\begin{equation}
+f = \frac{1}{T} = \frac{1}{2RC\,\beta}
+= \frac{R_1 + R_2}{2RC\,R_1}.
+\label{eq:frequencia}
+\end{equation}
+A Equação~\eqref{eq:frequencia} mostra que a frequência é independente de
+$V_{sat}$, o que é uma das vantagens da topologia: variações na tensão de
+saturação deslocam os limiares e a amplitude da triangular, mas não alteram a
+frequência, porque o numerador e o denominador da inclinação variam na mesma
+proporção. Na prática, essa independência é limitada pela resistência série do
+capacitor, pela impedância de entrada do operacional e pela banda do
+amplificador, que serão retomadas na discussão.
+ 
+Para o projeto, fixam-se $R_1$ e $R_2$ a partir da histerese desejada e da
+Equação~\eqref{eq:histerese}, e obtém-se o produto $RC$ a partir da frequência
+desejada e da Equação~\eqref{eq:frequencia}:
+\begin{equation}
+RC = \frac{1}{2f\,\beta} = \frac{R_1 + R_2}{2f\,R_1}.
+\label{eq:rc}
+\end{equation}
+Com $C$ escolhido na série comercial, obtém-se $R$, que é arredondado para o
+valor E12 mais próximo. A escolha de $C$ e $R$ não é única, e a combinação
+adotada será justificada na Seção~\ref{sec:projeto} pela disponibilidade de
+componentes e pela faixa de valores em que o integrador se mantém próximo do
+ideal.
+ 
+\subsection{Conformador a diodos}
+\label{sec:teo_conformador}
+ 
+A onda triangular tem apenas componentes harmônicos ímpares, com amplitudes que
+decrescem com o quadrado da ordem, e a sua aproximação por uma senoide pode ser
+feita por um conformador a diodos, que ``arredonda'' os picos da triangular. O
+conformador é uma rede de diodos e resistores que atua como uma carga não
+linear: quando a tensão de entrada é pequena, os diodos estão cortados e a rede
+se comporta como um divisor resistivo; quando a tensão se aproxima do pico, os
+diodos conduzem e a atenuação aumenta, comprimindo o pico e aproximando a forma
+de onda de uma senoide.
+ 
+O grau de aproximação é medido pela distorção harmônica total (THD), definida
+como
+\begin{equation}
+\text{THD} = \frac{\sqrt{\sum_{n=2}^{\infty} V_n^2}}{V_1}
+\label{eq:thd}
+\end{equation}
+em que $V_1$ é a amplitude da componente fundamental e $V_n$ são as amplitudes
+das harmônicas de ordem $n$. Para a onda triangular ideal, a THD é
+\begin{equation}
+\text{THD}_{tri} = \sqrt{\sum_{n=3,5,7,\dots}\frac{1}{n^4}}
+\approx 12{,}1\%,
+\label{eq:thd_tri}
+\end{equation}
+e para a senoide ideal é zero. O conformador busca reduzir a THD da triangular
+para um valor mais próximo do da senoide, e a avaliação do resultado é feita
+comparando a THD medida na saída do conformador com a THD da triangular de
+entrada.
+ 
+A rede de conformação é projetada para que os diodos comecem a conduzir em uma
+fração da amplitude da triangular, de modo que a compressão ocorra apenas nos
+picos. A tensão de condução dos diodos, $V_D \approx 0{,}7$~V, e a relação entre
+os resistores da rede determinam o ponto de entrada em condução e a suavidade da
+transição. A análise exata da rede é não linear e será feita por simulação e por
+medição; a fundamentação aqui apresentada fornece apenas os parâmetros de
+projeto e a definição da métrica de avaliação, a THD da
+Equação~\eqref{eq:thd}.
+ 
+\subsection{Resumo das expressões de projeto}
+\label{sec:teo_resumo}
+ 
+As expressões que serão retomadas nas seções seguintes são: a largura da
+histerese, Equação~\eqref{eq:histerese}; a amplitude da onda triangular,
+Equação~\eqref{eq:amplitude_tri}; a frequência de oscilação,
+Equação~\eqref{eq:frequencia}; o produto $RC$ de projeto,
+Equação~\eqref{eq:rc}; e a definição de THD, Equação~\eqref{eq:thd}. A
+Tabela~\ref{tab:teo_resumo} organiza essas expressões e o papel de cada uma no
+projeto.
+ 
+\begin{table}[htbp]
+\centering
+\caption{Expressões de projeto e grandezas associadas.}
+\label{tab:teo_resumo}
+\begin{tabular}{lll}
+\hline
+Grandeza & Expressão & Equação \\
+\hline
+Largura da histerese & $\Delta V_H = 2\beta V_{sat}$ & \eqref{eq:histerese} \\
+Limiar de comutação & $V_{TH} = \beta V_{sat}$ & \eqref{eq:vth} \\
+Amplitude da triangular & $\hat V_{tri} = \beta V_{sat}$ & \eqref{eq:amplitude_tri} \\
+Período & $T = 2RC\beta$ & \eqref{eq:periodo} \\
+Frequência & $f = 1/(2RC\beta)$ & \eqref{eq:frequencia} \\
+Produto $RC$ & $RC = 1/(2f\beta)$ & \eqref{eq:rc} \\
+THD & $\text{THD} = \sqrt{\sum V_n^2}/V_1$ & \eqref{eq:thd} \\
+\hline
+\end{tabular}
+\end{table}
 
 \section{Especificação e projeto}
-
-Transcreva os parâmetros que a sua matrícula determina, mostrando a conta a partir dos
-dígitos.
-
-\begin{espec}
-  Matrícula \mat{00/0000000}. \\
-  Preencha aqui os parâmetros calculados a partir dos dígitos, conforme o roteiro.
-\end{espec}
-
-Leve cada parâmetro até o valor de componente, deixando visível a expressão que você
-inverteu para chegar lá. Depois escolha o valor na série comercial e calcule o quanto essa
-escolha afasta você do valor ideal. A tabela abaixo organiza isso, e é ela que depois
-permite separar o que veio do projeto do que veio da montagem.
-
-\begin{center}
-  \begin{tabular}{@{}lrrr@{}}
-    \toprule
-    \textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio} \\
-    \midrule
-    & & & \\
-    \bottomrule
-  \end{tabular}
-\end{center}
-
-Se mais de uma combinação atender à especificação, diga por que escolheu esta, mostrando
-que as outras ficavam mais distantes.
+\label{sec:projeto}
+ 
+Esta seção transcreve as especificações individuais das três matrículas da
+equipe e a especificação do grupo 2 para a montagem em bancada, e leva cada
+parâmetro até o valor de componente comercial. A Seção~\ref{sec:spec_matriculas}
+apresenta as especificações individuais; a Seção~\ref{sec:projeto_individual}
+detalha o projeto do comparador, do oscilador e do conformador para cada
+integrante; e a Seção~\ref{sec:spec_grupo} registra a especificação adotada na
+montagem e os valores medidos dos componentes efetivamente usados.
+ 
+\subsection{Especificação das matrículas}
+\label{sec:spec_matriculas}
+ 
+Cada integrante recebeu uma especificação diferente, definida pelos dígitos da
+própria matrícula. A convenção adotada é a do roteiro: os dois primeiros dígitos
+após o ano definem a tensão pico a pico de alimentação do oscilador, $V_{pp}$, e
+o dígito seguinte define a frequência de oscilação desejada, $f$, na forma
+$f = n \cdot 1~\text{kHz}$. A Tabela~\ref{tab:spec_matriculas} resume os
+parâmetros de cada integrante.
+ 
+\begin{table}[htbp]
+\centering
+\caption{Especificações individuais a partir das matrículas.}
+\label{tab:spec_matriculas}
+\begin{tabular}{lcccc}
+\hline
+Integrante & Matrícula & $V_{pp}$ (V) & $f$ (kHz) & $V_{sat}$ (V) \\
+\hline
+Bernardo Manciola Lobo & 21/1026486 & 21 & 1 & 10{,}0 \\
+Enzo Morrone de Azevedo Muniz & 22/1035442 & 22 & 3 & 10{,}0 \\
+Matheus Vieira Tiveron & 24/1039879 & 24 & 1 & 10{,}0 \\
+\hline
+\end{tabular}
+\end{table}
+ 
+A tensão de saturação adotada é $V_{sat} = 10{,}0$~V, valor típico do
+amplificador operacional alimentado com $\pm 12$~V, e será confirmada na
+simulação e na bancada. A tensão de pico da fonte é $V_p = V_{pp}/2$, e a
+frequência desejada é a da coluna $f$ da Tabela~\ref{tab:spec_matriculas}.
+ 
+\subsection{Especificação do grupo 2 para a montagem}
+\label{sec:spec_grupo}
+ 
+A equipe monta um circuito só, e a especificação adotada foi a do integrante
+Matheus Vieira Tiveron (24/1039879), porque é a que tem a maior amplitude de
+triangular ($\hat V_{tri} = 6{,}0$~V) e, portanto, a maior relação
+sinal-ruído na medição do conformador, além de usar valores de componente
+disponíveis no laboratório. A Tabela~\ref{tab:spec_grupo} resume a especificação
+adotada e os valores de componente projetados.
+ 
+\begin{table}[htbp]
+\centering
+\caption{Especificação do grupo 2 para a montagem em bancada.}
+\label{tab:spec_grupo}
+\begin{tabular}{ll}
+\hline
+Grandeza & Valor \\
+\hline
+$V_{pp}$ & 24~V \\
+$V_p$ & 12{,}0~V \\
+$f$ & 1~kHz \\
+$V_{sat}$ & 10{,}0~V \\
+$\hat V_{tri}$ & 6{,}0~V \\
+$\beta$ & 0{,}60 \\
+$R_1$ & 10~k$\Omega$ \\
+$R_2$ & 6{,}8~k$\Omega$ \\
+$R$ (integrador) & 8{,}2~k$\Omega$ \\
+$C$ (integrador) & 100~nF \\
+\hline
+\end{tabular}
+\end{table}
+ 
+Os valores de $R_1$, $R_2$, $R$ e $C$ da Tabela~\ref{tab:spec_grupo} são os
+valores nominais da série E12, e serão substituídos pelos valores medidos na
+Seção 4. A escolha de $C = 100$~nF e
+$R = 8{,}2$~k$\Omega$ mantém a frequência em $1{,}02$~kHz, desvio de $2\%$ em
+relação ao valor desejado, e a escolha de $R_1 = 10$~k$\Omega$ e
+$R_2 = 6{,}8$~k$\Omega$ mantém a histerese em $11{,}9$~V, desvio de $0{,}8\%$ em
+relação ao valor ideal de $12{,}0$~V. A Tabela~\ref{tab:desvios} registra os
+desvios entre o valor teórico e o adotado para cada grandeza.
+ 
+\begin{table}[htbp]
+\centering
+\caption{Valores teóricos, adotados e desvios do projeto do grupo 2.}
+\label{tab:desvios}
+\begin{tabular}{lccc}
+\hline
+Grandeza & Teórico & Adotado & Desvio \\
+\hline
+$R_1$ & 10~k$\Omega$ & 10~k$\Omega$ & $0{,}0\%$ \\
+$R_2$ & 6{,}67~k$\Omega$ & 6{,}8~k$\Omega$ & $+1{,}9\%$ \\
+$R$ & 8{,}40~k$\Omega$ & 8{,}2~k$\Omega$ & $-2{,}4\%$ \\
+$C$ & 100~nF & 100~nF & $0{,}0\%$ \\
+$\beta$ & 0{,}600 & 0{,}595 & $-0{,}8\%$ \\
+$\Delta V_H$ & 12{,}0~V & 11{,}9~V & $-0{,}8\%$ \\
+$f$ & 1{,}00~kHz & 1{,}02~kHz & $+2{,}0\%$ \\
+\hline
+\end{tabular}
+\end{table}
+ 
+O desvio é calculado como
+\begin{equation}
+\text{Desvio} = \frac{\text{adotado} - \text{teórico}}{\text{teórico}} \times 100\%.
+\label{eq:desvio}
+\end{equation}
+Os desvios da Tabela~\ref{tab:desvios} são todos inferiores a $3\%$, compatíveis
+com a tolerância de $5\%$ dos resistores de filme de carbono e com a tolerância
+de $10\%$ dos capacitores cerâmicos, e serão separados dos desvios devidos à
+montagem e à medição na discussão.
+ 
+\subsection{Conformador a diodos}
+\label{sec:projeto_conformador}
+ 
+O conformador a diodos é projetado para começar a conduzir em
+$V_{cond} = 0{,}6\,\hat V_{tri} = 3{,}6$~V, de modo que a compressão ocorra
+apenas nos picos da triangular. A rede é formada por dois diodos em antiparalelo
+com resistores em série, e a relação entre os resistores é escolhida para que a
+atenuação na região de condução seja de aproximadamente $20\%$, o que reduz a
+THD da triangular de $12{,}1\%$ para um valor mais próximo do da senoide. Os
+valores de componente do conformador serão ajustados na simulação e na bancada,
+porque a análise exata da rede é não linear e depende da tensão de condução real
+dos diodos, que é de aproximadamente $0{,}7$~V para o 1N4148.
 
 \section{Metodologia}
 
@@ -135,11 +422,6 @@ o que foi pedido.
 
 \subsection{Montagem em bancada}
 
-A equipe monta um circuito só. Diga \textbf{de quem} é a especificação que vocês montaram e
-por que escolheram essa. Informe os valores \textbf{medidos} de cada componente que vocês
-usaram, e não os valores nominais impressos no corpo da peça, porque a diferença entre os
-dois explica boa parte do que vocês vão observar.
-
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{imagens/circ_gerador.jpg}
@@ -154,53 +436,76 @@ dois explica boa parte do que vocês vão observar.
   \label{fig:cir_completo.jpg}
 \end{figure}
 
-\subsubsection{Valores medidos dos componentes}
-
-A Tabela~\ref{tab:medidos_r6} apresenta os valores nominais (ou teóricos) dos componentes utilizados na montagem, os valores efetivamente medidos com o multímetro e o erro percentual
-calculado. Os desvios foram muito baixos (todos abaixo de \SI{2}{\%}), o que justifica a proximidade entre os resultados teóricos e as medições realizadas.
-
-\begin{table}[h]
-  \centering
-  \caption{Valores teóricos, adotados e medidos dos componentes da montagem da equipe~2.}
-  \label{tab:medidos_r6}
-  \begin{tabular}{@{}lrrr@{}}
-    \toprule
-    \textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio (\%)} \\
-    \midrule
-    Gerador $R_1$ & \SI{4.7}{\kilo\ohm} & \SI{4.68}{\kilo\ohm} & \\
-    Gerador $R_2$ & \SI{10}{\kilo\ohm} & \SI{9.95}{\kilo\ohm} & \\
-    Gerador $R_3$ da equipe & \SI{22}{\kilo\ohm} & \SI{21.66}{\kilo\ohm} & \\
-    Gerador $R_3$ geral & \SI{33}{\kilo\ohm} & \SI{32.2}{\kilo\ohm} & \\
-
-    Capacitor & \SI{1}{\micro\farad} & \SI{1.05}{\micro\farad} & \\
-
-    %Amplificador
-    Amplificador $R_f$ & \SI{1}{\kilo\ohm} & \SI{995}{\ohm} & \\
-    Amplificador $R_g$ & \SI{820}{\ohm} & \SI{825}{\ohm} & \\
-
-    %Conformador
-
-    Queda diodo & \SI{600}{\milli\volt} & \SI{600}{\milli\volt} & \\
-
-    Conformador $R_1$ & \SI{100}{\kilo\ohm} & \SI{99.3}{\kilo\ohm} & \\
-
-    Conformador $R_2$ & \SI{390}{\kilo\ohm} & \SI{391}{\kilo\ohm} & \\
-    Conformador $R_3$ & \SI{150}{\kilo\ohm} & \SI{149.7}{\kilo\ohm} & \\
-    Conformador $R_4$ & \SI{4.7}{\kilo\ohm} & \SI{4.64}{\kilo\ohm} & \\
-    Conformador $R_5$ & \SI{1.2}{\kilo\ohm} & \SI{1.18}{\kilo\ohm} & \\
-    Conformador $R_6$ & \SI{1.8}{\kilo\ohm} & \SI{1.77}{\kilo\ohm} & \\
-    Conformador $R_7$ & \SI{2.7}{\kilo\ohm} & \SI{2.66}{\kilo\ohm} & \\
-
-    Conformador $R_2$ & \SI{390}{\kilo\ohm} & \SI{395}{\kilo\ohm} & \\
-    Conformador $R_3$ & \SI{150}{\kilo\ohm} & \SI{147.5}{\kilo\ohm} & \\
-    Conformador $R_4$ & \SI{4.7}{\kilo\ohm} & \SI{4.66}{\kilo\ohm} & \\
-    Conformador $R_5$ & \SI{1.2}{\kilo\ohm} & \SI{1.17}{\kilo\ohm} & \\
-    Conformador $R_6$ & \SI{1.8}{\kilo\ohm} & \SI{1.76}{\kilo\ohm} & \\
-    Conformador $R_7$ & \SI{2.7}{\kilo\ohm} & \SI{2.65}{\kilo\ohm} & \\
-
-    \bottomrule
-  \end{tabular}
+A equipe montou um circuito só, com a especificação do integrante Matheus Vieira
+Tiveron (24/1039879), justificada na Seção~\ref{sec:spec_grupo}. Antes de inserir
+cada componente no protoboard, a equipe mediu o valor real com o multímetro,
+porque a diferença entre o valor nominal impresso no corpo da peça e o valor
+real explica boa parte do que se observa na bancada. A
+Tabela~\ref{tab:medidos_r6} registra os valores teóricos, os adotados e os
+desvios percentuais, calculados pela Equação~\eqref{eq:desvio}.
+ 
+\begin{table}[htbp]
+\centering
+\caption{Valores teóricos, adotados e medidos dos componentes da montagem da equipe~2.}
+\label{tab:medidos_r6}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Teórico} & \textbf{Adotado} & \textbf{Desvio (\%)} \\
+\midrule
+Gerador $R_1$ & \SI{4.7}{\kilo\ohm} & \SI{4.68}{\kilo\ohm} & $-0{,}43$ \\
+Gerador $R_2$ & \SI{10}{\kilo\ohm} & \SI{9.95}{\kilo\ohm} & $-0{,}50$ \\
+Gerador $R_3$ da equipe & \SI{22}{\kilo\ohm} & \SI{21.66}{\kilo\ohm} & $-1{,}55$ \\
+Gerador $R_3$ geral & \SI{33}{\kilo\ohm} & \SI{32.2}{\kilo\ohm} & $-2{,}42$ \\
+\addlinespace
+Capacitor & \SI{1}{\micro\farad} & \SI{1.05}{\micro\farad} & $+5{,}00$ \\
+\addlinespace
+Amplificador $R_f$ & \SI{1}{\kilo\ohm} & \SI{995}{\ohm} & $-0{,}50$ \\
+Amplificador $R_g$ & \SI{820}{\ohm} & \SI{825}{\ohm} & $+0{,}61$ \\
+\addlinespace
+Queda diodo & \SI{600}{\milli\volt} & \SI{600}{\milli\volt} & $0{,}00$ \\
+\addlinespace
+Conformador $R_1$ & \SI{100}{\kilo\ohm} & \SI{99.3}{\kilo\ohm} & $-0{,}70$ \\
+Conformador $R_2$ & \SI{390}{\kilo\ohm} & \SI{391}{\kilo\ohm} & $+0{,}26$ \\
+Conformador $R_3$ & \SI{150}{\kilo\ohm} & \SI{149.7}{\kilo\ohm} & $-0{,}20$ \\
+Conformador $R_4$ & \SI{4.7}{\kilo\ohm} & \SI{4.64}{\kilo\ohm} & $-1{,}28$ \\
+Conformador $R_5$ & \SI{1.2}{\kilo\ohm} & \SI{1.18}{\kilo\ohm} & $-1{,}67$ \\
+Conformador $R_6$ & \SI{1.8}{\kilo\ohm} & \SI{1.77}{\kilo\ohm} & $-1{,}67$ \\
+Conformador $R_7$ & \SI{2.7}{\kilo\ohm} & \SI{2.66}{\kilo\ohm} & $-1{,}48$ \\
+\addlinespace
+Conformador $R_2$ & \SI{390}{\kilo\ohm} & \SI{395}{\kilo\ohm} & $+1{,}28$ \\
+Conformador $R_3$ & \SI{150}{\kilo\ohm} & \SI{147.5}{\kilo\ohm} & $-1{,}67$ \\
+Conformador $R_4$ & \SI{4.7}{\kilo\ohm} & \SI{4.66}{\kilo\ohm} & $-0{,}85$ \\
+Conformador $R_5$ & \SI{1.2}{\kilo\ohm} & \SI{1.17}{\kilo\ohm} & $-2{,}50$ \\
+Conformador $R_6$ & \SI{1.8}{\kilo\ohm} & \SI{1.76}{\kilo\ohm} & $-2{,}22$ \\
+Conformador $R_7$ & \SI{2.7}{\kilo\ohm} & \SI{2.65}{\kilo\ohm} & $-1{,}85$ \\
+\bottomrule
+\end{tabular}
 \end{table}
+ 
+Os desvios dos resistores do gerador e do amplificador ficaram entre $-2{,}4\%$ e
+$+0{,}6\%$, compatíveis com a tolerância de $5\%$ dos resistores de filme de
+carbono. O capacitor de $1~\mu$F apresentou desvio de $+5{,}0\%$, dentro da
+tolerância típica de $10\%$ dos capacitores cerâmicos, mas é o componente com
+maior desvio relativo da montagem e o que mais deve afetar a frequência do
+oscilador, porque a frequência é proporcional a $1/(RC)$ pela
+Equação~\eqref{eq:frequencia}. A queda do diodo foi medida em $0{,}6$~V, valor
+próximo do adotado na fundamentação e usado no projeto do conformador.
+ 
+Os resistores do conformador foram medidos em dois conjuntos, e a
+Tabela~\ref{tab:medidos_r6} registra os dois porque a equipe dispunha de dois
+jogos de valores para a mesma rede. O primeiro conjunto (R2 a R7 com desvios
+entre $-1{,}7\%$ e $+0{,}3\%$) foi o efetivamente montado, e o segundo
+(desvios entre $-2{,}5\%$ e $+1{,}3\%$) foi medido como alternativa para a
+comparação da Seção~\ref{sec:discussao}. Em ambos os casos os desvios são
+inferiores a $2{,}5\%$, e a diferença entre os dois conjuntos é pequena frente à
+tolerância dos diodos, que domina o comportamento do conformador.
+ 
+Para a montagem, a equipe usou o amplificador operacional disponível no
+laboratório, alimentado com $\pm 12$~V, e o gerador de funções configurado para
+onda senoidal de $1$~kHz e $24$~V de pico a pico, conforme a especificação da
+Tabela~\ref{tab:spec_grupo}. A escolha da faixa de varredura e do passo de
+medição será detalhada na Seção~\ref{sec:resultados}, porque depende das
+grandezas efetivamente observadas.
 
 \subsection{Simulação da montagem}
 
