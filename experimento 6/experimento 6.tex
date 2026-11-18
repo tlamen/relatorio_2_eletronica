@@ -576,7 +576,7 @@ porque a diferença entre o valor nominal impresso no corpo da peça e o valor
 real explica boa parte do que se observa na bancada. A
 Tabela~\ref{tab:medidos_r6} registra os valores teóricos, os adotados e os
 desvios percentuais, calculados pela Equação~\eqref{eq:desvio}.
- 
+
 \begin{table}[htbp]
 \centering
 \caption{Valores teóricos, adotados e medidos dos componentes da montagem da equipe~2.}
@@ -642,38 +642,85 @@ grandezas efetivamente observadas.
 
 \subsection{Simulação da montagem}
 
-Refaça a simulação usando os valores medidos dos componentes que estavam na bancada. Ela
-não substitui a simulação de projeto: é a comparação entre as duas que separa o efeito da
-tolerância dos componentes do restante.
+A simulação da montagem refaz os três circuitos com os valores medidos dos componentes efetivamente usados na bancada, mantendo a topologia, a alimentação de \(\pm15\,\mathrm{V}\), o LM741 e o modelo da ene0046.lib. Ela não substitui a simulação de projeto: é a comparação entre as duas que separa o efeito da tolerância dos componentes do restante. A Tabela~\ref{tab:medidos_r6} registra os valores teóricos de projeto e os medidos com o multímetro antes da montagem, com o desvio calculado por \(\varepsilon = (\text{medido} - \text{teórico})/\text{teórico} \times 100\%\).
 
-\begin{nota}{Três comparações, três causas diferentes}
-  Ao longo do relatório vocês vão confrontar três pares de resultados. Cada um responde a uma
-  pergunta distinta, e vale mantê-los separados na hora de discutir.
+\subsubsection{Comparador com histerese (item\_1)}
 
-  \smallskip
-  \textbf{Cálculo analítico contra simulação de projeto.} A conta está certa? Se aqui houver
-  diferença, procure na álgebra ou no esquemático.
-
-  \smallskip
-  \textbf{Simulação de projeto contra simulação da montagem.} Quanto custou a tolerância dos
-  componentes? A diferença aqui é a distância entre o valor nominal e o valor real da peça
-  que vocês pegaram.
-
-  \smallskip
-  \textbf{Simulação da montagem contra medição.} O modelo descreve o circuito real? Diferença
-  aqui aponta algo que o modelo não representa, como a resistência série do indutor, a
-  impedância da ponta de prova ou a banda do instrumento.
-\end{nota}
+O item\_1.asc foi ressmiulado com \(R_1\) e \(R_2\) ajustados, mantendo a entrada senoidal de \(10\,\mathrm{V}\) de pico em \(10\,\mathrm{Hz}\) e a análise transiente de \(300\,\mathrm{ms}\). A Figura~\ref{fig:circuito-1-mont} mostra o esquemático e a Figura~\ref{fig:onda-1-mont} mostra a entrada e a saída no mesmo gráfico.
 
 \begin{figure}[htb]
-  \centering
-  % \includegraphics[width=0.8\linewidth]{arquivo.png}
-  \fbox{\parbox[c][3.2cm][c]{0.8\linewidth}{\centering\color{cinza}
-  substitua por \texttt{\textbackslash includegraphics}}}
-  \caption{Legenda descritiva. Diga o que a figura mostra e o que nela é relevante, e não
-  apenas o nome do circuito.}
-  \label{fig:exemplo}
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/circuito_1.png}
+\caption{Esquemático do item\_1.asc com os valores medidos de \(R_1\) e \(R_2\).}
+\label{fig:circuito-1-mont}
 \end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/onda_1.png}
+\caption{Formas de onda do item\_1.asc com os valores medidos: entrada senoidal \(v_i\) e saída \(v_o\) do comparador com histerese.}
+\label{fig:onda-1-mont}
+\end{figure}
+
+A razão \(R_1/R_2\) medida desloca os limiares em relação ao projeto. A Equação~(1) prevê \(V_L = \pm(R_1/R_2)V_{sat}\); com os valores medidos, o limiar simulado afasta-se do de projeto na mesma proporção em que a razão medida se afasta de \(6/21 \approx 0{,}286\). Como \(V_{sat}\) é propriedade do LM741 e não muda com os resistores, a comparação entre os dois limiares isola o efeito da tolerância dos resistores. Esse resultado será confrontado com a medição na Seção~6.
+
+\subsubsection{Gerador de ondas quadrada e triangular (item\_2)}
+
+O item\_2.asc foi ressmiulado com \(R_1\), \(R_2\), \(R_3\) e \(C\) medidos. A Figura~\ref{fig:circuito-2-mont} mostra o esquemático e a Figura~\ref{fig:onda-2-mont} mostra \(v_{qua}\) e \(v_{tri}\) com o \(R_3 = 33\,\mathrm{k\Omega}\) medido.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/circuito_2.png}
+\caption{Esquemático do item\_2.asc com os valores medidos de \(R_1\), \(R_2\), \(R_3 = 33\,\mathrm{k\Omega}\) e \(C\).}
+\label{fig:circuito-2-mont}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/onda_2.png}
+\caption{Formas de onda do item\_2.asc com os valores medidos e \(R_3 = 33\,\mathrm{k\Omega}\): \(v_{qua}\) e \(v_{tri}\).}
+\label{fig:onda-2-mont}
+\end{figure}
+
+Em seguida, o \(R_3\) foi trocado pelo segundo valor da equipe (\(22\,\mathrm{k\Omega}\)) e o circuito foi ressmiulado. A Figura~\ref{fig:circuito-2-2-mont} mostra o esquemático e a Figura~\ref{fig:onda-2-2-mont} mostra as formas de onda nessa condição.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/circuito_2_2.png}
+\caption{Esquemático do item\_2.asc com o segundo \(R_3\) da equipe (\(22\,\mathrm{k\Omega}\)) medido.}
+\label{fig:circuito-2-2-mont}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/onda_2_2.png}
+\caption{Formas de onda do item\_2.asc com o segundo \(R_3\) (\(22\,\mathrm{k\Omega}\)) medido: \(v_{qua}\) e \(v_{tri}\).}
+\label{fig:onda-2-2-mont}
+\end{figure}
+
+A frequência simulada é comparada à prevista pela Equação~(3) com os valores medidos, e a razão entre as duas frequências é comparada à razão entre os dois \(R_3\). Como a Equação~(3) é \(f = R_2/(4R_1R_3C)\), a troca de \(R_3\) por um valor \(33/22 = 1{,}5\) vezes menor deve elevar a frequência na mesma proporção, se os demais componentes não mudarem. A amplitude \(V_{tri}\), pela Equação~(2), depende apenas de \(R_1/R_2\) e \(V_{sat}\), e portanto não deve mudar com \(R_3\); se mudar, a causa está no tempo finito de comutação do LM741, que será discutido na Seção~6.
+
+\subsubsection{Gerador, amplificador e conformador (item\_3)}
+
+O item\_3.asc foi ressmiulado com todos os componentes medidos: o gerador do item\_2, o amplificador de bancada (\(R_f = 1\,\mathrm{k\Omega}\) e \(R_g = 820\,\Omega\), que dão \(G = 1 + 1/0{,}82 = 2{,}22\), e não o \(3{,}5\) da matrícula) e o conformador da tabela de bancada da Seção~4.3 do roteiro, com \(R_1 = 100\,\mathrm{k\Omega}\), \(R_2 = 390\,\mathrm{k\Omega}\), \(R_3 = 150\,\mathrm{k\Omega}\), \(R_4 = 4{,}7\,\mathrm{k\Omega}\), \(R_5 = 1{,}2\,\mathrm{k\Omega}\), \(R_6 = 1{,}8\,\mathrm{k\Omega}\) e \(R_7 = 2{,}7\,\mathrm{k\Omega}\), todos substituídos pelos valores ajustados conforme a montagem. A diretiva \texttt{.four} foi recalculada para a frequência obtida com os valores medidos, resultando em \(36{,}4\,\mathrm{Hz}\), e o comando usado foi \texttt{.four 36.4 V(vsen)}, porque a frequência de projeto de \(26{,}5\,\mathrm{Hz}\) não vale mais para a montagem. A Figura~\ref{fig:circuito-3-mont} mostra o esquemático e a Figura~\ref{fig:onda-3-mont} mostra \(v_T\) e \(v_{sen}\).
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/circuito_3.png}
+\caption{Esquemático do item\_3.asc com os valores medidos: gerador do item\_2, amplificador de bancada (\(R_f = 1\,\mathrm{k\Omega}\), \(R_g = 820\,\Omega\)) e conformador da tabela de bancada.}
+\label{fig:circuito-3-mont}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_de_montagem/onda_3.png}
+\caption{Formas de onda do item\_3.asc com os valores medidos: \(v_T\) (triângulo amplificado) e \(v_{sen}\) (saída do conformador).}
+\label{fig:onda-3-mont}
+\end{figure}
+
+Com \(G = 2{,}22\), o pico de \(v_T\) cai para \(V_T \approx 2{,}22\,V_{tri} \approx 0{,}634\,V_{sat}\), bem abaixo dos \(14\,\mathrm{V}\) para os quais o conformador de bancada foi projetado. Isso desloca todos os limiares: como os nós do divisor são fixos pelos resistores de bancada, mas a amplitude do triângulo que chega ao conformador é menor, os diodos passam a conduzir em frações diferentes do ciclo, e a forma de \(v_{sen}\) se afasta da senoide pretendida. A distorção harmônica total simulada foi \(68{,}44\%\), muito acima dos \(5{,}11\%\) da simulação de projeto, o que confirma quantitativamente essa incoerência. O harmônico dominante continua sendo o 3º, mas a participação dos demais harmônicos cresce porque a onda passa a ser grampeada antes de percorrer todos os segmentos previstos.
+
+A comparação entre a simulação de projeto e a simulação de montagem isola o efeito da tolerância dos componentes e da troca de especificação. A comparação entre a simulação de montagem e a medição isola o que o modelo do LTspice não representa, como a resistência série dos instrumentos, a impedância da ponta de prova e a banda do osciloscópio. As causas concretas das divergências são discutidas na Seção~6.
 
 \section{Resultados}
 
