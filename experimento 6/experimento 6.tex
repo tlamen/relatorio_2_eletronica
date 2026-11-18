@@ -415,10 +415,143 @@ parágrafo, ela provavelmente não precisa estar aqui.
 
 \subsection{Simulação de projeto, uma por integrante}
 
-Cada integrante recebeu uma especificação diferente da própria matrícula, e portanto chegou
-a um dimensionamento diferente. Traga aqui \textbf{uma simulação por integrante}, cada uma
-com os componentes que aquela pessoa projetou. São elas que mostram se cada projeto cumpre
-o que foi pedido.
+\subsubsection{Amplificador e conformador (\texttt{item\_3.asc})}
+
+O item\_3.asc reúne o gerador de ondas quadrada e triangular da Seção 3.2, o amplificador não inversor e o conformador a diodos. A especificação da matrícula 211026486 está consolidada na tabela~\ref{tab:espec-33}.
+
+\begin{table}[htb]
+\centering
+\caption{Especificação da etapa 3.3 obtida da matrícula 211026486.}
+\label{tab:espec-33}
+\begin{tabular}{lll}
+\hline
+Grandeza & Expressão & Valor adotado \\
+\hline
+\(R_1\) & \(I\,\mathrm{k\Omega}\) & \(6\,\mathrm{k\Omega}\) \\
+\(R_2\) & \(AB\,\mathrm{k\Omega}\) & \(21\,\mathrm{k\Omega}\) \\
+\(R_3\) & fixo no roteiro & \(33\,\mathrm{k\Omega}\) \\
+\(C\) & fixo no roteiro & \(1\,\mu\mathrm{F}\) \\
+\(A\) & \((0{,}45+H/40)V_T\) & \(0{,}65\,V_T\) \\
+\(\theta_1,\theta_2,\theta_3\) & fixos no roteiro & \(30^\circ,50^\circ,75^\circ\) \\
+\hline
+\end{tabular}
+\end{table}
+
+Com \(R_1 = 6\,\mathrm{k\Omega}\) e \(R_2 = 21\,\mathrm{k\Omega}\), a amplitude do triângulo, pela Equação~(2), é
+\begin{equation}
+V_{tri} = \frac{R_1}{R_2}V_{sat} = \frac{6}{21}V_{sat} \approx 0{,}2857\,V_{sat},
+\end{equation}
+e a frequência, pela Equação~(3), é
+\begin{equation}
+f = \frac{R_2}{4R_1R_3C} = \frac{21 \times 10^3}{4 \cdot 6 \times 10^3 \cdot 33 \times 10^3 \cdot 1 \times 10^{-6}} \approx 26{,}5\,\mathrm{Hz}.
+\end{equation}
+A oscilação exige \(R_1 < R_2\), condição satisfeita, já que \(6\,\mathrm{k\Omega} < 21\,\mathrm{k\Omega}\). O valor de \(V_{sat}\) foi lido no item\_2.asc e usado como referência para o amplificador e para o conformador.
+
+O amplificador devolve ao triângulo a amplitude da onda quadrada, com ganho dado pela Equação~(4):
+\begin{equation}
+G = 1 + \frac{R_f}{R_g} = \frac{R_2}{R_1} = \frac{21}{6} = 3{,}5.
+\end{equation}
+Adotando \(R_g = 10\,\mathrm{k\Omega}\) (série E12), obtém-se \(R_f = (G - 1)R_g = 2{,}5 \times 10\,\mathrm{k\Omega} = 25\,\mathrm{k\Omega}\). Como esse valor não pertence à série E12, foi realizado por dois resistores em série, \(R_f = 22\,\mathrm{k\Omega} + 3{,}3\,\mathrm{k\Omega} = 25{,}3\,\mathrm{k\Omega}\), resultando em
+\begin{equation}
+G_{\text{adotado}} = 1 + \frac{25{,}3}{10} = 3{,}53,
+\end{equation}
+com desvio de \(+0{,}9\%\) em relação ao ganho ideal de \(3{,}5\). O pico de \(v_T\) fica, portanto, \(V_T \approx 3{,}53\,V_{tri} \approx 1{,}008\,V_{sat}\), ou seja, praticamente igual a \(V_{sat}\), como pede o roteiro. Os vértices do triângulo tocam a saturação do amplificador, o que não prejudica o conformador, pois acima da terceira quebra a saída já está grampeada.
+
+Os limiares são dados pela Equação~(5):
+\begin{equation}
+V_k = A\,\mathrm{sen}\,\theta_k, \qquad k = 1, 2, 3.
+\end{equation}
+Com \(A = 0{,}65\,V_T\) e \(V_T \approx V_{sat}\), resultam
+\begin{align}
+V_1 &= 0{,}65\,V_T\,\mathrm{sen}\,30^\circ = 0{,}325\,V_T, \\
+V_2 &= 0{,}65\,V_T\,\mathrm{sen}\,50^\circ \approx 0{,}498\,V_T, \\
+V_3 &= 0{,}65\,V_T\,\mathrm{sen}\,75^\circ \approx 0{,}628\,V_T.
+\end{align}
+Tomando o valor de \(V_{sat}\) lido na simulação do item\_2.asc, esses limiares foram convertidos em tensões e usados nas Equações~(6) e~(7). O divisor foi dimensionado com \(R_T = R_4 + R_5 + R_6 + R_7\) arbitrado em \(22\,\mathrm{k\Omega}\), dentro da faixa de 15 a \(30\,\mathrm{k\Omega}\) sugerida pelo roteiro, e o resistor de entrada foi fixado em \(R_1 = 10R_T = 220\,\mathrm{k\Omega}\), realizado por \(220\,\mathrm{k\Omega}\) da série E12. Os nós do divisor ficam \(0{,}7\,\mathrm{V}\) abaixo dos limiares correspondentes, conforme as Equações~(6):
+\begin{align}
+R_7 &= R_T\frac{V_1 - 0{,}7}{V_{CC}}, \\
+R_6 &= R_T\frac{V_2 - 0{,}7}{V_{CC}} - R_7, \\
+R_5 &= R_T\frac{V_3 - 0{,}7}{V_{CC}} - R_7 - R_6, \\
+R_4 &= R_T - R_5 - R_6 - R_7.
+\end{align}
+Os resistores \(R_2\) e \(R_3\), que definem as inclinações dos segmentos entre quebras, foram calculados pelas Equações~(7):
+\begin{equation}
+R_2 = R_1\left(\frac{V_{\theta_2} - V_1}{V_{\theta_2} - V_2} - 1\right), \quad
+V^* = V_{\theta_3} - \frac{R_1(V_{\theta_3} - V_1)}{R_1 + R_2}, \quad
+R_3 = R_1\left(\frac{V^* - V_2}{V^* - V_3} - 1\right),
+\end{equation}
+com \(V_\theta = V_T\,\theta/90^\circ\). Todos os valores foram aproximados para a série E12 e, quando necessário, realizados por dois resistores em série, conforme a Tabela~\ref{tab:componentes-33}. Os diodos são o 1N4148 da lista do LTspice, e os amplificadores são o LM741 alimentado com \(\pm15\,\mathrm{V}\), usando o símbolo do item\_4.asy e o modelo da ene0046.lib.
+
+\begin{table}[htb]
+\centering
+\caption{Componentes do conformador para a matrícula 211026486, com valores ideais e adotados na série E12 (\(V_{sat} = 13{,}5\,\mathrm{V}\), \(A = 0{,}65\,V_T = 8{,}775\,\mathrm{V}\), \(R_T = 22\,\mathrm{k\Omega}\)).}
+\label{tab:componentes-33}
+\begin{tabular}{ccccc}
+\hline
+Resistor & Expressão & Valor ideal & Valor E12 adotado & Desvio \\
+\hline
+\(R_1\) & \(10R_T\) & \(220\,\mathrm{k\Omega}\) & \(220\,\mathrm{k\Omega}\) & \(0\%\) \\
+\(R_2\) & Eq.~(7) & \(660\,\mathrm{k\Omega}\) & \(680\,\mathrm{k\Omega}\) & \(+3{,}0\%\) \\
+\(R_3\) & Eq.~(7) & \(365\,\mathrm{k\Omega}\) & \(330\,\mathrm{k\Omega}\) & \(-9{,}5\%\) \\
+\(R_4\) & Eq.~(6) & \(10{,}59\,\mathrm{k\Omega}\) & \(10\,\mathrm{k\Omega}\) & \(-5{,}6\%\) \\
+\(R_5\) & Eq.~(6) & \(2{,}57\,\mathrm{k\Omega}\) & \(2{,}7\,\mathrm{k\Omega}\) & \(+4{,}9\%\) \\
+\(R_6\) & Eq.~(6) & \(3{,}42\,\mathrm{k\Omega}\) & \(3{,}3\,\mathrm{k\Omega}\) & \(-3{,}6\%\) \\
+\(R_7\) & Eq.~(6) & \(5{,}41\,\mathrm{k\Omega}\) & \(5{,}6\,\mathrm{k\Omega}\) & \(+3{,}5\%\) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Análise transiente e distorção harmônica}
+
+A análise é um transiente de \(300\,\mathrm{ms}\), com a diretiva \texttt{.four} aplicada a \(v_{sen}\) na frequência da Equação~(3), que acompanha a \texttt{.tran} e fornece a distorção harmônica total no arquivo de registro. O oscilador parte do repouso, e as leituras foram feitas depois do primeiro período. A Figura~\ref{fig:circuito-33} mostra o esquemático completo do item\_3.asc, com o gerador, o amplificador e o conformador; a Figura~\ref{fig:ondas-33} mostra as formas de onda de \(v_T\) e \(v_{sen}\) no mesmo gráfico; e a Figura~\ref{fig:fourier-33} mostra o espectro de harmônicos de \(v_{sen}\) extraído da diretiva \texttt{.four}.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_4_3/circuito_simulacao_33.png}
+\caption{Esquemático do item\_3.asc: gerador de ondas quadrada e triangular, amplificador não inversor com ganho \(3{,}53\) e conformador a diodos 1N4148, com o LM741 alimentado com \(\pm15\,\mathrm{V}\).}
+\label{fig:circuito-33}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{imagens/simulacao_4_3/onda_simulacao_33.png}
+\caption{Formas de onda simuladas no item\_3.asc: \(v_T\) (triângulo amplificado, em verde) e \(v_{sen}\) (saída do conformador, em azul), após o primeiro período de oscilação.}
+\label{fig:ondas-33}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{imagens/simulacao_4_3/fourier_simulacao_33.png}
+\caption{Componentes de Fourier de \(v_{sen}\) obtidos pela diretiva \texttt{.four} na frequência fundamental de \(26{,}5\,\mathrm{Hz}\), com a THD total indicada no arquivo de registro.}
+\label{fig:fourier-33}
+\end{figure}
+
+O valor de \(V_{sat}\) lido no item\_2.asc foi \(13{,}939\,\mathrm{V}\). Com o ganho adotado de \(3{,}53\), o pico de \(v_T\) simulado resultou em \(13{,}979\,\mathrm{V}\), praticamente igual a \(V_T = 13{,}988\,\mathrm{V}\) previsto pelo produto \(G_{\text{adotado}} \cdot V_{tri}\), com desvio de \(-0{,}06\%\). Esse resultado confirma que o amplificador devolve ao triângulo a amplitude da onda quadrada, como pede a Equação~(4), e que os vértices tocam a saturação sem ultrapassá-la de forma significativa.
+
+A Tabela~\ref{tab:resultados-33} confronta os valores analíticos com os obtidos na simulação para as grandezas pedidas no roteiro. Os limiares \(V_1\), \(V_2\) e \(V_3\) simulados são as tensões em que a inclinação de \(v_{sen}\) muda, lidas diretamente no gráfico da Figura~\ref{fig:ondas-33}; a amplitude de \(v_{sen}\) é o pico da mesma curva; e a THD e o harmônico dominante vêm da diretiva \texttt{.four}, cujo espectro aparece na Figura~\ref{fig:fourier-33}.
+
+\begin{table}[htb]
+\centering
+\caption{Confronto entre valores analíticos e simulados na etapa 3.3, matrícula 211026486, com \(V_{sat} = 13{,}939\,\mathrm{V}\) e \(V_T = 13{,}988\,\mathrm{V}\).}
+\label{tab:resultados-33}
+\begin{tabular}{lcccc}
+\hline
+Grandeza & Analítico & Simulado & Desvio \\
+\hline
+Pico de \(v_T\) & \(13{,}988\,\mathrm{V}\) & \(13{,}979\,\mathrm{V}\) & \(-0{,}06\%\) \\
+Limiar \(V_1\) & \(0{,}325\,V_T = 4{,}546\,\mathrm{V}\) & \(3{,}907\,\mathrm{V}\) & \(-14{,}1\%\) \\
+Limiar \(V_2\) & \(0{,}498\,V_T = 6{,}966\,\mathrm{V}\) & \(6{,}182\,\mathrm{V}\) & \(-11{,}3\%\) \\
+Limiar \(V_3\) & \(0{,}628\,V_T = 8{,}784\,\mathrm{V}\) & \(8{,}059\,\mathrm{V}\) & \(-8{,}3\%\) \\
+Amplitude de \(v_{sen}\) & \(A = 0{,}65\,V_T = 9{,}092\,\mathrm{V}\) & \(8{,}551\,\mathrm{V}\) & \(-5{,}9\%\) \\
+THD & -- & \(5{,}11\%\) & -- \\
+Harmônico dominante & 3º (previsto) & 3º & -- \\
+\hline
+\end{tabular}
+\end{table}
+
+O pico de \(v_T\) confirma a previsão da Equação~(4) dentro de \(0{,}1\%\), o que valida o dimensionamento do amplificador. Os limiares, no entanto, afastam-se dos valores da Equação~(5) em \(8\%\) a \(14\%\), e a amplitude de \(v_{sen}\) fica \(5{,}9\%\) abaixo de \(A\). Esses desvios não são erro de conta: decorrem de duas causas concretas que serão discutidas na Seção~6. A primeira é que os limiares medidos correspondem ao instante em que o diodo começa a conduzir, o que ocorre em \(V_{\text{divisor}} + V_D\), e não em \(V_{\text{divisor}}\) puro; o divisor foi projetado com os nós \(0{,}7\,\mathrm{V}\) abaixo dos limiares ideais, mas a queda real do 1N4148 sob corrente baixa é menor que \(0{,}7\,\mathrm{V}\), o que antecipa a condução e reduz o limiar observado. A segunda é que os resistores E12 adotados (Tabela~\ref{tab:componentes-33}) desviam os nós do divisor dos valores ideais, e esse desvio se propaga para os limiares. A amplitude de \(v_{sen}\), por sua vez, é limitada pelo grampeamento do terceiro diodo e pela queda dos diodos em condução, que reduzem o pico alcançável em relação a \(A\).
+
+A distorção harmônica total obtida foi \(5{,}11\%\), com o 3º harmônico dominante, como mostra a Figura~\ref{fig:fourier-33}. Esse resultado é coerente com a simetria ímpar do conformador: a onda \(v_{sen}\) é antissimétrica em relação ao eixo vertical, o que zera todos os harmônicos pares, e as quebras introduzidas pelos três diodos excitam sobretudo a 3ª e a 5ª harmônicas, com a 3ª predominando. A THD de \(5{,}11\%\) é substancialmente menor que a de uma onda triangular pura (cerca de \(12\%\)), o que confirma qualitativamente a ação do conformador. A discussão quantitativa desses desvios, separando o efeito da série E12 do efeito do modelo do LM741 e dos diodos, é feita na Seção~6.
 
 \subsection{Montagem em bancada}
 
