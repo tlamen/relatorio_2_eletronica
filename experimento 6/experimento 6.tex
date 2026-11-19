@@ -415,6 +415,45 @@ parágrafo, ela provavelmente não precisa estar aqui.
 
 \subsection{Simulação de projeto, uma por integrante}
 
+\subsubsection{Gerador de ondas quadrada e triangular (\texttt{item\_2.asc})}
+
+O item\_2.asc expande o comparador do item anterior ao adicionar um integrador para gerar uma onda triangular. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/simulacao_item_2.png}
+  \caption{Simulação do item\_2}
+  \label{fig:simulacao_item_2}
+\end{figure}
+
+Na figura~\ref{fig:simulacao_item_2} tem-se o circuito simulado. Observa-se que a saída do comparador serve para alimentar
+o integrador. Foram utilizado as seguintes grandezas conforme a especificação da matrícula:
+
+\begin{table}[htb]
+\centering
+\caption{Especificação da simulacao do item\_2 obtida da matrícula 221035442.}
+\begin{tabular}{lll}
+\hline
+Grandeza & Expressão & Valor adotado \\
+\hline
+  \(R_1\) & \(I\,\mathrm{k\Omega}\) & \SI{2.2}{\kilo\ohm} \\
+  \(R_2\) & \(AB\,\mathrm{k\Omega}\) & \SI{22}{\kilo\ohm} \\
+\(R_3\) & fixo no roteiro & \(33\,\mathrm{k\Omega}\) \\
+\(C\) & fixo no roteiro & \(1\,\mu\mathrm{F}\) \\
+\hline
+\end{tabular}
+\end{table}
+
+Com o circuito pronto, as saídas vqua e vtri foram obtidas, vide imagem~\ref{fig:simulacao_item_2_resultados}. A frequência foi obtida usando cursores.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{imagens/simulacao_item_2_resultados.png}
+  \caption{Resultados do item\_2. Observa-se que as ondas quadradas e triangular, ambos com frequência de \SI{75}{\hertz}}
+  \label{fig:simulacao_item_2_resultados}
+\end{figure}
+
+
 \subsubsection{Amplificador e conformador (\texttt{item\_3.asc})}
 
 O item\_3.asc reúne o gerador de ondas quadrada e triangular da Seção 3.2, o amplificador não inversor e o conformador a diodos. A especificação da matrícula 211026486 está consolidada na tabela~\ref{tab:espec-33}.
