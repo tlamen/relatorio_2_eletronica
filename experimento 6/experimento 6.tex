@@ -34,9 +34,18 @@
 \capa
 
 \begin{resumo}
-  Escreva este parágrafo por último, com 100 a 150 palavras. Diga o que você projetou, sob
-  qual especificação, o que simulou ou mediu, o principal resultado numérico e a que
-  conclusão chegou. Quem ler só este parágrafo deve saber o que você fez e o que encontrou.
+Foram projetados e avaliados um comparador com histerese, um gerador de
+ondas quadrada e triangular e um conformador a diodos, utilizando LM741,
+resistores E12 e especificações individuais das matrículas. Os cálculos
+foram confrontados com simulações, componentes medidos e registros de
+bancada. As frequências simuladas dos três projetos foram $25{,}7$,
+$75{,}1$ e $20{,}25\,\mathrm{Hz}$, com desvios de até $0{,}8\%$ frente
+aos valores adotados. No comparador, os limiares calculados de
+$\pm5{,}25\,\mathrm{V}$ concordaram com as leituras gráficas em cerca de
+$1\%$. A bancada apresentou oscilação de $15{,}43\,\mathrm{Hz}$ e
+concordância das tensões do divisor com a simulação na precisão
+registrada. A compressão dos picos confirmou a ação do conformador,
+demonstrando a geração e a transformação das formas de onda.
 \end{resumo}
 
 \section{Introdução}
@@ -540,7 +549,7 @@ Resistor & Expressão & Valor ideal & Valor E12 adotado & Desvio \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Análise transiente e distorção harmônica}
+\subsubsection*{Análise transiente e distorção harmônica}
 
 A análise é um transiente de \(300\,\mathrm{ms}\), com a diretiva \texttt{.four} aplicada a \(v_{sen}\) na frequência da Equação~(3), que acompanha a \texttt{.tran} e fornece a distorção harmônica total no arquivo de registro. O oscilador parte do repouso, e as leituras foram feitas depois do primeiro período. A Figura~\ref{fig:circuito-33} mostra o esquemático completo do item\_3.asc, com o gerador, o amplificador e o conformador; a Figura~\ref{fig:ondas-33} mostra as formas de onda de \(v_T\) e \(v_{sen}\) no mesmo gráfico; e a Figura~\ref{fig:fourier-33} mostra o espectro de harmônicos de \(v_{sen}\) extraído da diretiva \texttt{.four}.
 
@@ -591,6 +600,149 @@ Harmônico dominante & 3º (previsto) & 3º & -- \\
 O pico de \(v_T\) confirma a previsão da Equação~(4) dentro de \(0{,}1\%\), o que valida o dimensionamento do amplificador. Os limiares, no entanto, afastam-se dos valores da Equação~(5) em \(8\%\) a \(14\%\), e a amplitude de \(v_{sen}\) fica \(5{,}9\%\) abaixo de \(A\). Esses desvios não são erro de conta: decorrem de duas causas concretas que serão discutidas na Seção~6. A primeira é que os limiares medidos correspondem ao instante em que o diodo começa a conduzir, o que ocorre em \(V_{\text{divisor}} + V_D\), e não em \(V_{\text{divisor}}\) puro; o divisor foi projetado com os nós \(0{,}7\,\mathrm{V}\) abaixo dos limiares ideais, mas a queda real do 1N4148 sob corrente baixa é menor que \(0{,}7\,\mathrm{V}\), o que antecipa a condução e reduz o limiar observado. A segunda é que os resistores E12 adotados (Tabela~\ref{tab:componentes-33}) desviam os nós do divisor dos valores ideais, e esse desvio se propaga para os limiares. A amplitude de \(v_{sen}\), por sua vez, é limitada pelo grampeamento do terceiro diodo e pela queda dos diodos em condução, que reduzem o pico alcançável em relação a \(A\).
 
 A distorção harmônica total obtida foi \(5{,}11\%\), com o 3º harmônico dominante, como mostra a Figura~\ref{fig:fourier-33}. Esse resultado é coerente com a simetria ímpar do conformador: a onda \(v_{sen}\) é antissimétrica em relação ao eixo vertical, o que zera todos os harmônicos pares, e as quebras introduzidas pelos três diodos excitam sobretudo a 3ª e a 5ª harmônicas, com a 3ª predominando. A THD de \(5{,}11\%\) é substancialmente menor que a de uma onda triangular pura (cerca de \(12\%\)), o que confirma qualitativamente a ação do conformador. A discussão quantitativa desses desvios, separando o efeito da série E12 do efeito do modelo do LM741 e dos diodos, é feita na Seção~6.
+
+\clearpage
+% BEGIN ADICAO LOCAL 4.1.3 - COMPARADOR COM HISTERESE
+\subsubsection{Comparador com histerese}
+\label{sec:proj-histerese-241039879}
+
+A simulação do comparador com histerese foi realizada para a matrícula
+\texttt{241039879}, cujos dígitos fornecem $AB=24$ e $I=9$. Conforme a
+Seção~3.1 do roteiro, a resistência equivalente de entrada é
+$R_{\mathrm{in}}=I\,\mathrm{k\Omega}=9\,\mathrm{k\Omega}$ e a de
+realimentação positiva é
+$R_{\mathrm{fb}}=AB\,\mathrm{k\Omega}=24\,\mathrm{k\Omega}$.
+Essas resistências correspondem, respectivamente, a $R_1$ e $R_2$ do
+roteiro. No esquemático da Figura~\ref{fig:proj-hist-circuito-241039879},
+cada equivalente foi realizado por dois resistores E12 em série, conforme
+a tabela a seguir.
+
+\begin{table}[H]
+\centering
+\caption*{\textbf{Resistências especificadas pela matrícula e associações E12 utilizadas.}}
+\small
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Equivalente & Componentes no esquemático & \shortstack{Especificado\\($\mathrm{k\Omega}$)} & \shortstack{Adotado\\($\mathrm{k\Omega}$)} & \shortstack{Erro\\(\%)} \\
+\midrule
+$R_{\mathrm{in}}$ & $R_1+R_2=6{,}8+2{,}2\,\mathrm{k\Omega}$ & $9{,}0$ & $9{,}0$ & $0{,}0$ \\
+$R_{\mathrm{fb}}$ & $R_3+R_4=12+12\,\mathrm{k\Omega}$ & $24{,}0$ & $24{,}0$ & $0{,}0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+O LM741 foi alimentado com $\pm15\,\mathrm{V}$ e excitado por
+$v_i(t)=10\sin(2\pi\,10t)\,\mathrm{V}$, com $t$ em segundos, por meio
+da fonte \texttt{SINE(0 10 10)}. A análise transiente foi configurada
+com \texttt{.tran 300m}; a entrada inversora permaneceu aterrada e a
+saída foi realimentada à entrada não inversora por $R_{\mathrm{fb}}$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.77\linewidth,trim={312.027bp 1.200bp 334.229bp 285.025bp},clip]{imagens/simulacao_projeto_histerese/comp_histerese.png}
+\caption{Circuito simulado do comparador com histerese: entrada senoidal de
+$10\,\mathrm{V}$ de pico a $10\,\mathrm{Hz}$, LM741 alimentado com
+$\pm15\,\mathrm{V}$ e resistências equivalentes de $9\,\mathrm{k\Omega}$
+e $24\,\mathrm{k\Omega}$.}
+\label{fig:proj-hist-circuito-241039879}
+\end{figure}
+
+Desprezando a corrente de entrada do amplificador, a lei dos nós na entrada
+não inversora fornece
+\[
+\frac{v_i-v_+}{R_{\mathrm{in}}}
++\frac{v_o-v_+}{R_{\mathrm{fb}}}=0
+\quad\Longrightarrow\quad
+v_+=\frac{R_{\mathrm{fb}}v_i+R_{\mathrm{in}}v_o}
+{R_{\mathrm{in}}+R_{\mathrm{fb}}}.
+\]
+A comutação ocorre quando $v_+$ cruza a referência $v_-=0$, de modo que
+\[
+v_{i,\mathrm{com}}=-\frac{R_{\mathrm{in}}}{R_{\mathrm{fb}}}v_o,
+\qquad
+\frac{R_{\mathrm{in}}}{R_{\mathrm{fb}}}=\frac{9}{24}=0{,}375.
+\]
+A igualdade entre as entradas é considerada apenas no instante de
+comutação; nos patamares de saída, o amplificador permanece saturado,
+sem a hipótese de curto virtual.
+
+\clearpage
+A Figura~\ref{fig:proj-hist-ondas-241039879} apresenta a entrada e a saída
+no mesmo gráfico. Os patamares indicam aproximadamente $+14{,}0\,\mathrm{V}$
+e $-14{,}0\,\mathrm{V}$; portanto, adota-se
+$V_{\mathrm{sat}}\approx14{,}0\,\mathrm{V}$ na expressão dos limiares.
+Esse valor é uma leitura da simulação, e não a tensão de alimentação.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.99\linewidth,trim={0bp 231.620bp 0bp 24.002bp},clip]{imagens/simulacao_projeto_histerese/comp_histerese.png}
+\caption{Análise transiente de $300\,\mathrm{ms}$: entrada senoidal
+$v_i$ em azul e saída $v_o$ em verde, com patamares próximos de
+$\pm14\,\mathrm{V}$. As leituras comparativas foram feitas após
+$100\,\mathrm{ms}$, correspondente ao primeiro período da entrada.}
+\label{fig:proj-hist-ondas-241039879}
+\end{figure}
+
+Com a saída inicialmente no patamar positivo, o limiar para a comutação
+descendente é
+\[
+V_{L-}=-0{,}375\,(14{,}0)=-5{,}25\,\mathrm{V}.
+\]
+Após a saída atingir o patamar negativo, a comutação ascendente exige
+\[
+V_{L+}=-0{,}375\,(-14{,}0)=+5{,}25\,\mathrm{V}.
+\]
+Assim, a largura de histerese prevista é
+$V_H=V_{L+}-V_{L-}=10{,}50\,\mathrm{V}$.
+Entre os dois limiares, a saída mantém o estado anterior.
+
+Na captura fornecida, a transição de positivo para negativo ocorre em
+aproximadamente $158{,}8\,\mathrm{ms}$, com
+$v_i\approx-5{,}3\,\mathrm{V}$. A transição de negativo para positivo,
+em aproximadamente $208{,}7\,\mathrm{ms}$, ocorre com
+$v_i\approx+5{,}2\,\mathrm{V}$. Esses eventos pertencem aos ciclos
+posteriores ao primeiro período. A comparação com os valores analíticos
+é apresentada na tabela a seguir, usando
+\[
+\Delta V=\left|V_{\mathrm{sim}}-V_{\mathrm{anal}}\right|,
+\qquad
+\varepsilon=100\,
+\frac{\left|V_{\mathrm{sim}}-V_{\mathrm{anal}}\right|}
+{\left|V_{\mathrm{anal}}\right|}.
+\]
+
+\begin{table}[H]
+\centering
+\caption*{\textbf{Comparação dos limiares analíticos com as leituras gráficas da simulação.}}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Limiar & \shortstack{Analítico\\(V)} & \shortstack{Simulado\textsuperscript{*}\\(V)} & \shortstack{Erro absoluto\\(V)} & \shortstack{Erro relativo\\(\%)} \\
+\midrule
+$V_{L-}$: saída $+\to-$ & $-5{,}25$ & $\approx-5{,}3$ & $\approx0{,}05$ & $\approx1{,}0$ \\
+$V_{L+}$: saída $-\to+$ & $+5{,}25$ & $\approx+5{,}2$ & $\approx0{,}05$ & $\approx1{,}0$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{4pt}
+\begin{minipage}{0.96\linewidth}
+\footnotesize
+\textsuperscript{*}Leituras aproximadas da imagem, arredondadas a
+$0{,}1\,\mathrm{V}$, sem cursores numéricos. Os erros calculados
+também são estimativas gráficas.
+\end{minipage}
+\end{table}
+
+A saída apresenta patamares estáveis e comuta em valores de entrada
+próximos dos limiares previstos. Os desvios estimados, da ordem de
+$1\%$, são inferiores ao limite de $15\%$ do roteiro e compatíveis com
+a resolução da leitura gráfica. A separação entre os dois limiares
+confirma a histerese: a mudança de estado exige cruzar o limiar oposto,
+e não apenas inverter o sinal da entrada. A saída repete o período de
+aproximadamente $100\,\mathrm{ms}$ da excitação, correspondente a
+$10\,\mathrm{Hz}$.
+\clearpage
+% END ADICAO LOCAL 4.1.3 - COMPARADOR COM HISTERESE
 
 \subsection{Montagem em bancada}
 
@@ -800,20 +952,61 @@ Aqui estão as grandezas obtidas para as simulações de cada integrante.
 \end{table}
 
 \begin{table}[H]
-\begin{center}
-  \caption{Resultados integrante Matheus Vieira Tiveron - 24/1039879}
-  \begin{tabular}{@{}lrr@{}}
-    \toprule
-    \textbf{Grandeza} & \textbf{Analítico} & \textbf{Simulado} \\
-    \midrule
-    Frequência   & \SI{}{\hertz} & \SI{}{\hertz} \\
-    Tensão $V_1$ & \SI{}{\volt}   & \SI{}{\volt} \\
-    Tensão $V_2$ & \SI{}{\volt}   & \SI{}{\volt} \\
-    Tensão $V_3$ & \SI{}{\volt}   & \SI{}{\volt} \\
-    \bottomrule
-  \end{tabular}
-\end{center}
+\centering
+\caption{Resultados integrante Matheus Vieira Tiveron - 24/1039879}
+\label{tab:resultados-matheus-241039879}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Grandeza} & \textbf{Analítico} & \textbf{Simulado} & \textbf{Erro (\%)} \\
+\midrule
+Frequência & \SI{20.20}{\hertz} & \SI{20.25}{\hertz} & $0{,}22$ \\
+Nó $V_1$ & \SI{3.68}{\volt} & \SI{3.68}{\volt} & $<0{,}01$ \\
+Nó $V_2$ & \SI{5.99}{\volt} & \SI{5.99}{\volt} & $<0{,}01$ \\
+Nó $V_3$ & \SI{7.75}{\volt} & \SI{7.75}{\volt} & $<0{,}01$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{4pt}
+\begin{minipage}{0.97\linewidth}
+\footnotesize
+A coluna simulada provém de uma simulação complementar em ngspice~39.3,
+com a topologia e os valores de \texttt{conformador.asc}, o modelo LM741
+da \texttt{ene0046.lib} e diodos 1N4148. A frequência foi medida entre
+cruzamentos ascendentes consecutivos de $v_{qua}$ após $100\,\mathrm{ms}$.
+Os nós foram lidos nas passagens de $v_{sen}$ por zero após esse instante,
+com os diodos bloqueados. Os erros usam os valores antes do arredondamento:
+$\varepsilon=100|x_{\mathrm{sim}}-x_{\mathrm{anal}}|/|x_{\mathrm{anal}}|$.
+\end{minipage}
 \end{table}
+
+Para a matrícula \texttt{241039879}, $R_{\mathrm{in}}=9\,\mathrm{k\Omega}$,
+$R_{\mathrm{fb}}=24\,\mathrm{k\Omega}$, $R_3=33\,\mathrm{k\Omega}$ e
+$C=1\,\mu\mathrm{F}$ fornecem
+\[
+f=\frac{24\times10^3}
+{4\,(9\times10^3)(33\times10^3)(1\times10^{-6})}
+=20{,}2020\,\mathrm{Hz}.
+\]
+No divisor positivo do arquivo \texttt{conformador.asc}, as associações
+E12 equivalem, do terminal $+15\,\mathrm{V}$ até o terra, a
+$7{,}27$, $1{,}76$, $2{,}32$ e $3{,}69\,\mathrm{k\Omega}$, totalizando
+$R_T=15{,}04\,\mathrm{k\Omega}$. Portanto, sem corrente nos diodos,
+\[
+\begin{aligned}
+(V_1,V_2,V_3)&=\frac{15\,\mathrm{V}}{15{,}04}
+(3{,}69;\,6{,}01;\,7{,}77)\\
+&\approx(3{,}68;\,5{,}99;\,7{,}75)\,\mathrm{V}.
+\end{aligned}
+\]
+Nesta tabela, $V_1$, $V_2$ e $V_3$ identificam os nós nomeados no
+esquemático; a condução de cada diodo exige que a saída ultrapasse o nó
+correspondente pela sua queda direta. Esses valores não são, portanto,
+as próprias tensões de quebra da Equação~(5) do roteiro. Para $H=7$,
+a amplitude especificada é $A=0{,}625V_T$; com
+$V_T\approx13{,}95\,\mathrm{V}$, os limiares ideais dessa equação são
+$4{,}36$, $6{,}68$ e $8{,}42\,\mathrm{V}$. A simulação complementar
+confirma a frequência e as tensões do divisor para os resistores
+efetivamente usados no arquivo.
 
 \subsection{Circuito montado}
 
@@ -866,31 +1059,269 @@ Estes valores foram medidos usando o multímetro Agilent da bancada.
 \end{figure}
 
 \section{Discussão}
+\label{sec:discussao}
+\begingroup
+\clubpenalty=10000
+\widowpenalty=10000
 
-Percorra as três comparações na ordem em que aparecem no quadro da Seção~4: a conta contra
-a simulação de projeto, esta contra a simulação da montagem, e esta contra a medição. Cada
-passo isola uma causa, e a discussão fica bem mais curta quando eles não se misturam.
+A comparação considera os circuitos e os resultados registrados nas
+Seções~4 e~5, distinguindo valores nominais, componentes medidos e leituras
+dos instrumentos. Para a topologia do roteiro, com a entrada inversora do
+comparador aterrada, as relações aplicáveis são
+\[
+V_L=\pm\frac{R_1}{R_2}V_{sat},\qquad
+V_{tri}=\frac{R_1}{R_2}V_{sat},\qquad
+f=\frac{R_2}{4R_1R_3C}.
+\]
+O percurso da triangular entre os dois limiares corresponde a um
+semiperíodo; o período completo inclui a subida e a descida. Os desvios
+percentuais apresentados a seguir são calculados por
+\[
+\delta=100\,\frac{x_{\mathrm{obtido}}-x_{\mathrm{ref}}}
+{|x_{\mathrm{ref}}|},
+\]
+e o sinal indica se o resultado ficou acima ou abaixo da referência.
 
-Compare também os projetos dos integrantes entre si. Como as especificações são diferentes,
-os resultados diferem, e mostrar que essa diferença é a que a teoria previa vale mais do
-que repetir três vezes a mesma análise.
+\subsection{Síntese dos projetos individuais}
 
-Sempre que uma divergência for maior do que a incerteza esperada, aponte uma causa concreta
-e diga como ela poderia ser reduzida. Vale, por exemplo, a tolerância do componente, a
-resistência série do indutor, a impedância de entrada do osciloscópio, a banda do
-amplificador ou a resolução da varredura.
+A Tabela~\ref{tab:disc-projetos} reúne as frequências da Seção~5.1 e os
+resistores E12 indicados nos esquemáticos. Como $R_3=33\,\mathrm{k\Omega}$
+e $C=1\,\mu\mathrm{F}$ são comuns, as diferenças de frequência decorrem
+principalmente da razão $R_2/R_1$. A maior frequência do projeto de Enzo
+e a menor do de Matheus seguem essa dependência. A amplitude relativa
+da senoide também muda com a matrícula, pelo fator
+$A/V_T=0{,}45+H/40$.
 
-Quando previsto e obtido coincidirem, explique por que era esperado que coincidissem, e o
-que essa coincidência não permite concluir.
+\begin{table}[H]
+\centering
+\caption{Síntese dos projetos individuais com os valores adotados nos circuitos.}
+\label{tab:disc-projetos}
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Integrante & \shortstack{$R_1$\\(k$\Omega$)}
+& \shortstack{$R_2$\\(k$\Omega$)} & $A/V_T$
+& \shortstack{$f_{\mathrm{anal}}$\\(Hz)}
+& \shortstack{$f_{\mathrm{sim}}$\\(Hz)} & \shortstack{$\delta_f$\\(\%)}\\
+\midrule
+Bernardo & $6{,}10$ & $20{,}70$ & $0{,}650$ & $25{,}7$ & $25{,}7$ & $0{,}0^{*}$\\
+Enzo     & $2{,}20$ & $22{,}00$ & $0{,}550$ & $75{,}7$ & $75{,}1$ & $-0{,}8$\\
+Matheus  & $9{,}00$ & $24{,}00$ & $0{,}625$ & $20{,}20$ & $20{,}25$ & $+0{,}2$\\
+\bottomrule
+\end{tabular}
 
-Por fim, retome as hipóteses que vocês declararam na fundamentação e diga quais se
-confirmaram. Se algo observado contrariar a previsão, resolva a contradição aqui.
+\vspace{3pt}
+\begin{minipage}{0.97\linewidth}\footnotesize
+$^{*}$Coincidência na precisão apresentada, sem implicar erro exatamente
+nulo. Para Matheus, o desvio usa os valores anteriores ao arredondamento
+da simulação complementar identificada na Tabela~\ref{tab:resultados-matheus-241039879}.
+\end{minipage}
+\end{table}
+
+Os desvios de frequência não ultrapassam $0{,}8\%$ frente aos cálculos
+com os valores adotados. Essa concordância confirma a relação entre
+constante de tempo e razão resistiva, mas não elimina a aproximação E12:
+no circuito de Bernardo, por exemplo, $R_1=6{,}1\,\mathrm{k\Omega}$ e
+$R_2=20{,}7\,\mathrm{k\Omega}$ explicam os $25{,}7\,\mathrm{Hz}$,
+enquanto os valores especificados de $6$ e $21\,\mathrm{k\Omega}$
+forneceriam $26{,}5\,\mathrm{Hz}$. São efeitos distintos do erro do modelo.
+
+Nas tensões da Seção~5.1, as diferenças relativas de Bernardo são
+$-13{,}3\%$, $-11{,}6\%$ e $-8{,}0\%$, ao passo que os pares de Enzo
+coincidem no arredondamento apresentado. Já os valores de Matheus
+representam explicitamente os nós do divisor, com diferença inferior a
+$0{,}01\%$ para a análise da rede sem condução dos diodos. A comparação
+entre integrantes exige conservar essa distinção: concordância de uma
+tensão contínua do divisor não equivale à verificação de uma quebra da
+curva de transferência.
+
+O comparador da Seção~4.1.3 fornece uma verificação direta da histerese:
+os limiares calculados de $\pm5{,}25\,\mathrm{V}$ correspondem às leituras
+gráficas de aproximadamente $-5{,}3$ e $+5{,}2\,\mathrm{V}$, com desvios
+da ordem de $1\%$. A permanência do estado entre os limiares confirma a
+realimentação positiva; a igualdade entre entradas só descreve o instante
+de comutação. No oscilador, o desvio de entrada do operacional rompe o
+equilíbrio inicial e inicia a integração, justificando a exclusão do
+transiente de partida das leituras periódicas.
+
+\subsection{Frequência da simulação e da montagem}
+
+Na passagem dos projetos individuais à bancada, mudam as razões
+resistivas; a referência passa a ser o próprio gerador de bancada.
+A substituição dos componentes nominais pelos valores medidos da
+Tabela~\ref{tab:medidos_r6} permite avaliar o efeito das tolerâncias. Com $R_1=4{,}68\,\mathrm{k\Omega}$,
+$R_2=9{,}95\,\mathrm{k\Omega}$ e $C=1{,}05\,\mu\mathrm{F}$,
+as previsões são $15{,}72\,\mathrm{Hz}$ para
+$R_3=32{,}2\,\mathrm{k\Omega}$ e $23{,}37\,\mathrm{Hz}$ para
+$R_3=21{,}66\,\mathrm{k\Omega}$, conforme a
+Tabela~\ref{tab:disc-frequencia-bancada}.
+
+\begin{table}[H]
+\centering
+\caption{Frequências por configuração do integrador e confronto com os registros disponíveis.}
+\label{tab:disc-frequencia-bancada}
+\small
+\begin{tabular}{@{}lrrlr@{}}
+\toprule
+\shortstack{$R_3$ nominal\\(k$\Omega$)}
+& \shortstack{Previsão\\nominal (Hz)}
+& \shortstack{Previsão com\\medidos (Hz)}
+& Registro (Hz) & \shortstack{Desvio frente\\aos medidos (\%)}\\
+\midrule
+$33$ & $16{,}12$ & $15{,}72$ & $15{,}43$ (bancada)$^{*}$ & $-1{,}85$\\
+$22$ & $24{,}18$ & $23{,}37$ & $23{,}4$ (simulação)$^{*}$ & $+0{,}13$\\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+\begin{minipage}{0.97\linewidth}\footnotesize
+$^{*}$Os registros são os consolidados na Seção~5.2.
+A associação a cada $R_3$ é indicada pela proximidade das previsões;
+a leitura de bancada não identifica explicitamente o resistor ativo.
+Os desvios desta tabela pressupõem essa correspondência.
+\end{minipage}
+\end{table}
+
+\begin{samepage}
+A diferença direta entre $23{,}4$ e $15{,}43\,\mathrm{Hz}$ é
+$-34{,}06\%$, como registrado na Seção~5.2, mas esses valores são
+compatíveis com configurações diferentes do integrador. A leitura de
+$15{,}43\,\mathrm{Hz}$ aproxima-se da condição de $33\,\mathrm{k\Omega}$:
+o desvio é $-4{,}27\%$ frente à previsão nominal e cai para $-1{,}85\%$
+quando se usam os componentes medidos. Assim, atribuir os $34\%$ apenas
+à tolerância ou ao LM741 não é sustentado pelos dados. Para fechar essa
+comparação, a frequência deve ser registrada junto do $R_3$ efetivamente
+instalado.
+\end{samepage}
+
+O aumento de $C$ em $5\%$ reduz a frequência, enquanto a redução de $R_3$
+compensa parte desse efeito. Em conjunto, as tolerâncias deslocam a
+previsão de $16{,}12$ para $15{,}72\,\mathrm{Hz}$, cerca de $-2{,}47\%$.
+A troca entre os dois resistores medidos prevê uma razão de frequências
+$32{,}2/21{,}66=1{,}487$, próxima de $1{,}5$ para os valores nominais.
+As capturas de simulação mostram esse aumento de frequência sem mudança
+expressiva da amplitude triangular; falta uma segunda leitura de bancada
+identificada para verificar experimentalmente a razão.
+
+Os esquemáticos das Figuras~\ref{fig:circuito-2-mont}
+e~\ref{fig:circuito-2-2-mont} exibem os valores nominais. Por isso,
+as previsões recalculadas com componentes medidos foram identificadas
+na tabela, sem tratá-las como novas simulações. Para isolar a tolerância,
+a simulação deve conservar a topologia, a alimentação e o modelo,
+alterando apenas os valores dos componentes.
+
+As rampas observadas sustentam a aproximação de corrente constante no
+capacitor. A condição $R_1<R_2$ permite comutar antes da saturação do
+integrador; com $R_1=R_2$, o limiar coincidiria com esse limite e a
+oscilação poderia parar. O tempo de comutação e a velocidade finita
+de variação da saída explicam o arredondamento dos vértices, efeitos
+que se tornam mais relevantes em frequências maiores.
+
+\subsection{Conformação e concordância com a bancada}
+
+A Tabela~\ref{tab:disc-tensoes-bancada} reúne os valores de tensão
+consolidados na Seção~5.2. As leituras contínuas com multímetro referem-se
+aos nós do divisor, enquanto os valores de referência do roteiro
+representam os limiares de condução. Para aproximar grandezas equivalentes,
+a última coluna utiliza o limiar estimado
+$V_{k,\mathrm{est}}=V_{k,\mathrm{nó}}+V_D$, com a queda de
+$V_D=0{,}6\,\mathrm{V}$ medida pela equipe.
+
+\begin{table}[H]
+\centering
+\caption{Tensões do divisor e estimativa dos limiares do conformador de bancada.}
+\label{tab:disc-tensoes-bancada}
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Nó & \shortstack{Limiar do\\roteiro (V)}
+& \shortstack{Nó na\\simulação (V)}
+& \shortstack{Nó na\\bancada (V)}
+& \shortstack{Erro do nó\\banc./sim. (\%)}
+& \shortstack{Limiar\\estimado (V)}
+& \shortstack{Desvio do\\limiar (\%)}\\
+\midrule
+$V_1$ & $4{,}6$ & $3{,}9$ & $3{,}9$ & $0{,}0^{*}$ & $4{,}5$ & $-2{,}2$\\
+$V_2$ & $7{,}2$ & $6{,}5$ & $6{,}5$ & $0{,}0^{*}$ & $7{,}1$ & $-1{,}4$\\
+$V_3$ & $8{,}9$ & $8{,}2$ & $8{,}2$ & $0{,}0^{*}$ & $8{,}8$ & $-1{,}1$\\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+\begin{minipage}{0.97\linewidth}\footnotesize
+$^{*}$Concordância dos valores arredondados da Seção~5.2.
+Os limiares estimados não são leituras diretas das quebras:
+a queda do diodo depende da corrente e da temperatura.
+\end{minipage}
+\end{table}
+
+As diferenças diretas de $-15{,}2\%$, $-9{,}7\%$ e $-7{,}9\%$
+entre as tensões dos nós e as referências incluem a queda do diodo.
+Ao considerá-la, os limiares estimados ficam entre $1{,}1\%$ e $2{,}2\%$
+abaixo do previsto. No primeiro conjunto de resistores medidos,
+$R_T=10{,}25\,\mathrm{k\Omega}$ fornece tensões nodais de
+$3{,}89$, $6{,}48$ e $8{,}21\,\mathrm{V}$, que se arredondam para
+os valores registrados. A concordância entre simulação e multímetro é,
+portanto, esperada para essa rede resistiva, mas não determina a
+incerteza da medição nem comprova a distorção da saída. A verificação mais direta seria localizar
+as quebras na curva XY com as mesmas alimentações e os mesmos componentes.
+
+O ganho também deve corresponder ao gerador de bancada. Para
+$R_1=4{,}7\,\mathrm{k\Omega}$ e $R_2=10\,\mathrm{k\Omega}$,
+o ganho necessário é $R_2/R_1\approx2{,}13$, próximo do ganho nominal
+$1+1/0{,}82\approx2{,}22$. Com $R_f=995\,\Omega$ e $R_g=825\,\Omega$,
+o ganho é $2{,}206$, cerca de $3{,}8\%$ acima do necessário para as
+resistências medidas. Portanto, essa configuração permite recuperar a
+amplitude da triangular, com possível saturação nos vértices;
+o fator $0{,}634V_{sat}$ obtido para a razão resistiva de outro projeto
+não se aplica a esse gerador.
+
+As formas de onda da Figura~\ref{fig:ocl_saida_conformador.jpg} mostram a
+compressão dos picos e uma saída mais próxima de uma senoide, evidenciando
+a condução progressiva dos diodos. No projeto de Bernardo, o registro
+espectral apresenta THD de $5{,}11\%$, inferior aos cerca de $12{,}1\%$
+da triangular ideal, e o terceiro harmônico é o maior entre os não
+fundamentais listados. O espectro também contém componentes pares;
+a simetria ímpar é, portanto, uma aproximação, não um cancelamento
+exato na análise registrada.
+
+Para comparar quantitativamente a THD entre projeto e montagem, a diretiva
+\texttt{.four} precisa usar a frequência real e uma janela periódica após
+a partida. A captura da simulação da montagem mostra
+\texttt{.four 36.4 V(vsen)}, enquanto as formas de onda têm frequência
+próxima de $16\,\mathrm{Hz}$. Assim, o valor registrado de $68{,}44\%$
+não pode ser atribuído somente à forma da saída. Mesmo no projeto,
+a frequência de $26{,}5\,\mathrm{Hz}$ usada na análise deve ser ajustada
+aos aproximadamente $25{,}7\,\mathrm{Hz}$ do circuito E12.
+Repetir essa análise com o período efetivamente medido e a alimentação
+da bancada separaria o efeito da janela espectral do efeito do circuito.
+As hipóteses de integração e histerese são sustentadas pelas ondas
+observadas; a queda fixa dos diodos, a simetria perfeita e a comutação
+instantânea permanecem aproximações, e a pureza espectral experimental
+não foi quantificada.
+
+\endgroup
 
 \section{Conclusão}
 
-Retome o objetivo que vocês anunciaram na introdução e responda se ele foi atingido,
-apoiando a resposta em um número. Aponte a principal limitação do que foi feito e o que
-ela impede de afirmar. Evite trazer resultado novo nesta seção.
+O circuito demonstrou a geração de ondas quadrada e triangular e sua
+transformação em uma aproximação senoidal, atendendo ao objetivo
+funcional do experimento. As simulações
+dos três integrantes apresentaram frequências de $25{,}7$, $75{,}1$ e
+$20{,}25\,\mathrm{Hz}$, com desvios de até $0{,}8\%$ em relação aos
+cálculos com os componentes adotados. O comparador apresentou os dois
+limiares previstos, próximos de $\pm5{,}25\,\mathrm{V}$, demonstrando a
+memória associada à histerese.
+
+Na bancada, a geração periódica foi confirmada pela leitura de
+$15{,}43\,\mathrm{Hz}$, e as tensões do divisor concordaram com as da
+simulação na precisão registrada. A compressão dos picos e o
+arredondamento da saída do conformador evidenciam a ação dos diodos na
+aproximação senoidal. Permanecem como limitações a identificação da
+configuração usada em cada leitura de frequência e o ajuste da análise
+de Fourier à fundamental real; sem uma THD experimental validada, não
+se quantifica a pureza da senoide. Os registros confirmam o funcionamento integrado das etapas de
+comparação, integração, amplificação e conformação.
 
 \section{Referências}
 
